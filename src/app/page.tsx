@@ -1,12 +1,17 @@
-import { Button } from "@/components/ui/button";
+import { CtaSection } from "@/components/sections/cta-section";
+import { Hero } from "@/components/sections/hero";
+import { ProjectsPreview } from "@/components/sections/projects-preview";
+import { ServicesPreview } from "@/components/sections/services-preview";
 
 export default function Home() {
   return (
-    <main className="flex flex-1 flex-col items-start justify-center gap-4 p-8">
-      <h1 className="text-3xl font-semibold tracking-tight">MBN Строй</h1>
-      <p className="text-muted-foreground">Ремонт квартир и домов в Туле</p>
-      <p>Project foundation is ready.</p>
-      <Button type="button">Смотреть проекты</Button>
+    <main>
+      <Hero />
+      <ServicesPreview />
+      <div id="calculator" className="scroll-mt-20" aria-hidden="true" />
+      <div id="about" className="scroll-mt-20" aria-hidden="true" />
+      <ProjectsPreview />
+      <CtaSection />
     </main>
   );
 }
