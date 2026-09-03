@@ -2,9 +2,10 @@ export type ProjectType = "apartment" | "house" | "commercial" | "room";
 
 export type RenovationType = "cosmetic" | "capital" | "turnkey";
 
+export type DurationUnit = "day" | "month" | "year";
+
 /**
  * Work performed on the object (independent from rooms / object type).
- * Later may become a CMS collection instead of a fixed enum.
  */
 export type WorkType =
   | "finishing"
@@ -42,7 +43,11 @@ export type ProjectMediaType = "image" | "video";
 export interface ProjectMedia {
   id: string;
   type: ProjectMediaType;
-  /** Public path starting with `/media/...` (without site basePath). */
+  /**
+   * Final media URL or path.
+   * Static demo: `/media/...` (resolved via mediaUrl / basePath).
+   * Payload: `/api/media/file/...` or absolute URL — never GitHub Pages-prefixed.
+   */
   src: string;
   alt?: string;
   caption?: string;
@@ -55,8 +60,11 @@ export interface ProjectMedia {
 
 export interface ProjectSection {
   id: string;
-  type: ProjectSectionType;
   title: string;
+  /** Optional room / zone. Omit for work-focused sections (e.g. stretch ceilings). */
+  roomType?: ProjectSectionType;
+  /** Works shown in this section (media ↔ work type link). */
+  workTypes: WorkType[];
   description?: string;
   media: ProjectMedia[];
 }
@@ -69,15 +77,22 @@ export interface Project {
   area?: number;
   projectType: ProjectType;
   /**
-   * Demo taxonomy for Milestone 03.
-   * Not verified against actual scope of works for real-photo objects.
+   * Effective work types for the project (domain-normalized):
+   * union of Project.workTypes and all Section.workTypes.
    */
   workTypes: WorkType[];
   renovationType?: RenovationType;
   status: "completed";
+  durationValue?: number;
+  durationUnit?: DurationUnit;
+  /** Formatted display string, e.g. "3 месяца". */
   duration?: string;
   year?: number;
   description?: string;
+  /** CMS "show on homepage" flag. */
+  featured?: boolean;
+  /** Explicit catalog sort; omit to sort by publish/created date. */
+  sortOrder?: number;
   cover: ProjectMedia;
   sections: ProjectSection[];
   /** Demo placeholder without real photography. */

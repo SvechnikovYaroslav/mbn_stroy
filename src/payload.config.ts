@@ -1,5 +1,6 @@
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import { ru } from "@payloadcms/translations/languages/ru";
 import path from "path";
 import { buildConfig } from "payload";
 import { fileURLToPath } from "url";
@@ -23,6 +24,10 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
+  i18n: {
+    supportedLanguages: { ru },
+    fallbackLanguage: "ru",
+  },
   collections: [Users, WorkTypes, Media, Projects],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
@@ -33,8 +38,13 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL || "",
     },
-    // Local/dev convenience. Use migrations for staging/production.
-    push: process.env.NODE_ENV !== "production",
+    /**
+     * Interactive drizzle `push` hangs the Node process on Windows when it asks
+     * "create or rename column?" — that surfaces in admin as "Failed to fetch".
+     * Schema changes go through explicit migrate scripts (e.g. migrate:duration).
+     * Opt-in: PAYLOAD_DB_PUSH=true
+     */
+    push: process.env.PAYLOAD_DB_PUSH === "true",
   }),
   sharp,
   plugins: [],

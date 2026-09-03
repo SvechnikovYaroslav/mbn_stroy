@@ -12,22 +12,25 @@ import {
   workTypeLabels,
 } from "@/config/project";
 import { siteConfig } from "@/config/site";
-import { cn } from "@/lib/utils";
 import { getProjectBySlug, getProjectSlugs } from "@/lib/projects";
+import { ensurePortfolioDynamic } from "@/lib/projects/dynamic";
+import { cn } from "@/lib/utils";
 
 type ProjectPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return getProjectSlugs().map((slug) => ({ slug }));
+export async function generateStaticParams() {
+  const slugs = await getProjectSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
   params,
 }: ProjectPageProps): Promise<Metadata> {
+  await ensurePortfolioDynamic();
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const project = await getProjectBySlug(slug);
 
   if (!project) {
     return { title: "Проект не найден — MBN Строй" };
@@ -42,8 +45,9 @@ export async function generateMetadata({
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
+  await ensurePortfolioDynamic();
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const project = await getProjectBySlug(slug);
 
   if (!project) {
     notFound();
@@ -133,6 +137,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               {section.description ? (
                 <p className="mt-3 max-w-2xl text-body text-muted-foreground">
                   {section.description}
+                </p>
+              ) : null}
+              {section.workTypes.length > 0 ? (
+                <p className="mt-3 text-small text-muted-foreground">
+                  Виды работ:{" "}
+                  {section.workTypes
+                    .map((workType) => workTypeLabels[workType])
+                    .join(" · ")}
                 </p>
               ) : null}
               <div className="mt-8">

@@ -1,4 +1,4 @@
-import type { CollectionConfig } from "payload";
+import type { CollectionConfig, FieldHook } from "payload";
 
 import { authenticated } from "@/access";
 import { toSlug } from "@/lib/slugify";
@@ -16,10 +16,53 @@ const renovationTypeOptions = (
   Object.entries(renovationTypeLabels) as [string, string][]
 ).map(([value, label]) => ({ value, label }));
 
-const sectionTypeOptions = (
+const roomTypeOptions = (
   Object.entries(sectionTypeLabels) as [string, string][]
 ).map(([value, label]) => ({ value, label }));
 
+const ensureUniqueProjectSlug: FieldHook = async ({
+  value,
+  data,
+  req,
+  originalDoc,
+}) => {
+  const title = data?.title ?? originalDoc?.title;
+  const base =
+    toSlug(String(value || title || "project")) || "project";
+
+  let candidate = base;
+  let suffix = 2;
+
+  while (true) {
+    const existing = await req.payload.find({
+      collection: "projects",
+      where: {
+        and: [
+          { slug: { equals: candidate } },
+          ...(originalDoc?.id
+            ? [{ id: { not_equals: originalDoc.id } }]
+            : []),
+        ],
+      },
+      limit: 1,
+      depth: 0,
+      overrideAccess: true,
+      req,
+    });
+
+    if (!existing.docs.length) {
+      return candidate;
+    }
+
+    candidate = `${base}-${suffix}`;
+    suffix += 1;
+  }
+};
+
+/**
+ * Projects admin is the primary content workflow:
+ * create project → object work types → sections → inline media → Publish.
+ */
 export const Projects: CollectionConfig = {
   slug: "projects",
   labels: {
@@ -29,6 +72,8 @@ export const Projects: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "projectType", "location", "_status", "updatedAt"],
+    description:
+      "Создайте проект, укажите виды работ, добавьте разделы и загрузите фото/видео прямо в форму — затем Publish.",
   },
   versions: {
     drafts: true,
@@ -48,155 +93,242 @@ export const Projects: CollectionConfig = {
   },
   fields: [
     {
-      name: "title",
-      type: "text",
-      label: "Название",
-      required: true,
-    },
-    {
-      name: "slug",
-      type: "text",
-      label: "URL",
-      required: true,
-      unique: true,
-      index: true,
-      admin: {
-        position: "sidebar",
-      },
-      hooks: {
-        beforeValidate: [
-          ({ value, data }) => {
-            if (value) return toSlug(String(value));
-            if (data?.title) return toSlug(String(data.title));
-            return value;
-          },
-        ],
-      },
-    },
-    {
-      name: "location",
-      type: "text",
-      label: "Расположение",
-      required: true,
-    },
-    {
-      name: "area",
-      type: "number",
-      label: "Площадь",
-      admin: {
-        description: "м²",
-      },
-    },
-    {
-      name: "projectType",
-      type: "select",
-      label: "Тип объекта",
-      required: true,
-      options: projectTypeOptions,
-    },
-    {
-      name: "renovationType",
-      type: "select",
-      label: "Тип ремонта",
-      options: renovationTypeOptions,
-    },
-    {
-      name: "workTypes",
-      type: "relationship",
-      label: "Виды работ",
-      relationTo: "work-types",
-      hasMany: true,
-    },
-    {
-      name: "duration",
-      type: "text",
-      label: "Срок",
-    },
-    {
-      name: "year",
-      type: "number",
-      label: "Год",
-    },
-    {
-      name: "description",
-      type: "textarea",
-      label: "Описание",
+      type: "tabs",
+      tabs: [
+        {
+          label: "Основное",
+          fields: [
+            {
+              name: "title",
+              type: "text",
+              label: "Название",
+              required: true,
+            },
+            {
+              name: "location",
+              type: "text",
+              label: "Расположение",
+              required: true,
+            },
+            {
+              name: "area",
+              type: "number",
+              label: "Площадь",
+              admin: {
+                description: "м²",
+              },
+            },
+            {
+              name: "projectType",
+              type: "select",
+              label: "Тип объекта",
+              required: true,
+              options: projectTypeOptions,
+            },
+            {
+              name: "renovationType",
+              type: "select",
+              label: "Тип ремонта",
+              options: renovationTypeOptions,
+            },
+            {
+              type: "row",
+              fields: [
+                {
+                  name: "durationValue",
+                  type: "number",
+                  label: "Срок",
+                  min: 1,
+                  admin: {
+                    width: "50%",
+                    description: "Число",
+                  },
+                },
+                {
+                  name: "durationUnit",
+                  type: "select",
+                  label: "Единица срока",
+                  options: [
+                    { label: "День", value: "day" },
+                    { label: "Месяц", value: "month" },
+                    { label: "Год", value: "year" },
+                  ],
+                  admin: {
+                    width: "50%",
+                    description: "День / месяц / год",
+                  },
+                },
+              ],
+            },
+            {
+              name: "year",
+              type: "number",
+              label: "Год завершения",
+            },
+            {
+              name: "description",
+              type: "textarea",
+              label: "Описание",
+            },
+            {
+              name: "cover",
+              type: "upload",
+              label: "Обложка",
+              relationTo: "media",
+              admin: {
+                allowCreate: true,
+                description:
+                  "Перетащите или выберите файл. Alt и подпись заполнять не обязательно.",
+              },
+            },
+          ],
+        },
+        {
+          label: "Виды работ",
+          description:
+            "Все работы на объекте целиком. В разделах ниже можно уточнить, какие работы показаны в конкретной галерее.",
+          fields: [
+            {
+              name: "workTypes",
+              type: "relationship",
+              label: "Виды работ объекта",
+              relationTo: "work-types",
+              hasMany: true,
+              admin: {
+                allowCreate: false,
+                description:
+                  "Например: отделка, электрика, сантехника, натяжные потолки.",
+              },
+            },
+          ],
+        },
+        {
+          label: "Разделы и медиа",
+          description:
+            "Раздел = помещение (ванная) или вид работ (натяжные потолки). Медиа загружайте inline в нужном порядке.",
+          fields: [
+            {
+              name: "sections",
+              type: "array",
+              label: "Разделы",
+              labels: {
+                singular: "Раздел",
+                plural: "Разделы",
+              },
+              admin: {
+                initCollapsed: true,
+                description:
+                  "Порядок разделов = порядок на странице проекта. Перетаскивайте для сортировки.",
+              },
+              fields: [
+                {
+                  name: "title",
+                  type: "text",
+                  label: "Название",
+                  required: true,
+                  admin: {
+                    description:
+                      "Например: «Ванная» или «Натяжные потолки».",
+                  },
+                },
+                {
+                  name: "roomType",
+                  type: "select",
+                  label: "Помещение",
+                  options: roomTypeOptions,
+                  admin: {
+                    description:
+                      "Необязательно. Для разделов по виду работ (например натяжные потолки) оставьте пустым.",
+                  },
+                },
+                {
+                  name: "workTypes",
+                  type: "relationship",
+                  label: "Виды работ в разделе",
+                  relationTo: "work-types",
+                  hasMany: true,
+                  admin: {
+                    allowCreate: false,
+                    description:
+                      "Какие работы показаны в этом разделе (связка медиа ↔ вид работ).",
+                  },
+                },
+                {
+                  name: "description",
+                  type: "textarea",
+                  label: "Описание",
+                },
+                {
+                  name: "mediaItems",
+                  type: "array",
+                  label: "Медиа",
+                  labels: {
+                    singular: "Файл",
+                    plural: "Файлы",
+                  },
+                  admin: {
+                    description:
+                      "Достаточно выбрать или перетащить файлы. Порядок сохраняется.",
+                  },
+                  fields: [
+                    {
+                      name: "media",
+                      type: "upload",
+                      label: "Файл",
+                      relationTo: "media",
+                      required: true,
+                      admin: {
+                        allowCreate: true,
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
     },
     {
       name: "featured",
       type: "checkbox",
-      label: "Избранный",
+      label: "Показывать на главной",
       defaultValue: false,
       admin: {
         position: "sidebar",
       },
     },
     {
-      name: "sortOrder",
-      type: "number",
-      label: "Порядок",
-      defaultValue: 0,
+      type: "collapsible",
+      label: "Дополнительно",
       admin: {
         position: "sidebar",
-      },
-    },
-    {
-      name: "cover",
-      type: "upload",
-      label: "Обложка",
-      relationTo: "media",
-    },
-    {
-      name: "sections",
-      type: "array",
-      label: "Помещения",
-      labels: {
-        singular: "Помещение",
-        plural: "Помещения",
-      },
-      admin: {
         initCollapsed: true,
       },
       fields: [
         {
-          name: "title",
+          name: "slug",
           type: "text",
-          label: "Название",
+          label: "URL (slug)",
           required: true,
-        },
-        {
-          name: "type",
-          type: "select",
-          label: "Тип помещения",
-          required: true,
-          options: sectionTypeOptions,
-        },
-        {
-          name: "description",
-          type: "textarea",
-          label: "Описание",
-        },
-        {
-          name: "mediaItems",
-          type: "array",
-          label: "Медиа",
-          labels: {
-            singular: "Медиафайл",
-            plural: "Медиа",
-          },
+          unique: true,
+          index: true,
           admin: {
             description:
-              "Фото и видео в одном списке. Порядок сохраняется при перетаскивании.",
+              "Генерируется из названия автоматически. Меняйте только при необходимости.",
           },
-          fields: [
-            {
-              name: "media",
-              type: "upload",
-              label: "Файл",
-              relationTo: "media",
-              required: true,
-            },
-          ],
+          hooks: {
+            beforeValidate: [ensureUniqueProjectSlug],
+          },
+        },
+        {
+          name: "sortOrder",
+          type: "number",
+          label: "Порядок сортировки",
+          admin: {
+            description:
+              "Необязательно. Если не задан — на сайте сортировка по дате публикации.",
+          },
         },
       ],
     },

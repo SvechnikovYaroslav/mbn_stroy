@@ -1,12 +1,11 @@
 import type { Project } from "@/types/project";
 
 /**
- * Local demo portfolio data for Milestone 03.
- * First projects use real company photos from public/media/projects.
- * Remaining entries are explicit placeholders — not real MBN Stroy objects.
+ * Local demo portfolio data (GitHub Pages snapshot).
+ * Same domain model as Payload-mapped projects: roomType + section.workTypes.
  *
- * `workTypes` values are demo taxonomy for UI/filtering only.
- * They are not verified as the actual scope of works for real-photo objects.
+ * Project.workTypes here are authoring-level values; static-source normalizes
+ * them to the effective union with section.workTypes.
  */
 export const projects: Project[] = [
   {
@@ -17,6 +16,7 @@ export const projects: Project[] = [
     projectType: "apartment",
     // Demo taxonomy — not confirmed against actual works
     workTypes: ["finishing", "electrical", "plumbing"],
+    featured: true,
     status: "completed",
     description:
       "Ремонт квартиры в Туле. Фотографии реальных работ компании. Детали площади и сроков будут уточнены позже.",
@@ -30,7 +30,8 @@ export const projects: Project[] = [
     sections: [
       {
         id: "project-001-bathroom",
-        type: "bathroom",
+        roomType: "bathroom",
+        workTypes: ["plumbing", "electrical"],
         title: "Ванная комната",
         media: [
           {
@@ -44,7 +45,8 @@ export const projects: Project[] = [
       },
       {
         id: "project-001-living-room",
-        type: "living-room",
+        roomType: "living-room",
+        workTypes: ["finishing"],
         title: "Гостиная",
         media: [
           {
@@ -58,7 +60,8 @@ export const projects: Project[] = [
       },
       {
         id: "project-001-bedroom",
-        type: "bedroom",
+        roomType: "bedroom",
+        workTypes: ["finishing"],
         title: "Спальня",
         media: [
           {
@@ -72,7 +75,8 @@ export const projects: Project[] = [
       },
       {
         id: "project-001-hallway",
-        type: "hallway",
+        roomType: "hallway",
+        workTypes: ["electrical"],
         title: "Прихожая",
         media: [
           {
@@ -107,7 +111,8 @@ export const projects: Project[] = [
     sections: [
       {
         id: "project-002-interior",
-        type: "interior",
+        roomType: "interior",
+        workTypes: ["finishing", "stretch-ceilings", "painting"],
         title: "Интерьер",
         description: "Общие фотографии объекта без привязки к отдельным зонам.",
         media: [
@@ -179,19 +184,22 @@ export const projects: Project[] = [
     sections: [
       {
         id: "project-003-bathroom",
-        type: "bathroom",
+        roomType: "bathroom",
+        workTypes: [],
         title: "Ванная",
         media: [],
       },
       {
         id: "project-003-kitchen",
-        type: "kitchen",
+        roomType: "kitchen",
+        workTypes: [],
         title: "Кухня",
         media: [],
       },
       {
         id: "project-003-balcony",
-        type: "balcony",
+        roomType: "balcony",
+        workTypes: [],
         title: "Балкон",
         media: [],
       },
@@ -216,13 +224,15 @@ export const projects: Project[] = [
     sections: [
       {
         id: "project-004-bathroom",
-        type: "bathroom",
+        roomType: "bathroom",
+        workTypes: [],
         title: "Ванная",
         media: [],
       },
       {
         id: "project-004-kitchen",
-        type: "kitchen",
+        roomType: "kitchen",
+        workTypes: [],
         title: "Кухня",
         media: [],
       },
@@ -248,19 +258,22 @@ export const projects: Project[] = [
     sections: [
       {
         id: "project-005-living-room",
-        type: "living-room",
+        roomType: "living-room",
+        workTypes: [],
         title: "Гостиная",
         media: [],
       },
       {
         id: "project-005-bedroom",
-        type: "bedroom",
+        roomType: "bedroom",
+        workTypes: [],
         title: "Спальня",
         media: [],
       },
       {
         id: "project-005-balcony",
-        type: "balcony",
+        roomType: "balcony",
+        workTypes: [],
         title: "Балкон",
         media: [],
       },
@@ -292,19 +305,22 @@ export const projects: Project[] = [
     sections: [
       {
         id: "project-006-kitchen",
-        type: "kitchen",
+        roomType: "kitchen",
+        workTypes: [],
         title: "Кухня",
         media: [],
       },
       {
         id: "project-006-bathroom",
-        type: "bathroom",
+        roomType: "bathroom",
+        workTypes: [],
         title: "Ванная",
         media: [],
       },
       {
         id: "project-006-living-room",
-        type: "living-room",
+        roomType: "living-room",
+        workTypes: [],
         title: "Гостиная",
         media: [],
       },
@@ -329,7 +345,8 @@ export const projects: Project[] = [
     sections: [
       {
         id: "project-007-bathroom",
-        type: "bathroom",
+        roomType: "bathroom",
+        workTypes: [],
         title: "Ванная комната",
         media: [],
       },
@@ -354,19 +371,22 @@ export const projects: Project[] = [
     sections: [
       {
         id: "project-008-kitchen",
-        type: "kitchen",
+        roomType: "kitchen",
+        workTypes: [],
         title: "Кухня",
         media: [],
       },
       {
         id: "project-008-balcony",
-        type: "balcony",
+        roomType: "balcony",
+        workTypes: [],
         title: "Балкон",
         media: [],
       },
       {
         id: "project-008-bedroom",
-        type: "bedroom",
+        roomType: "bedroom",
+        workTypes: [],
         title: "Спальня",
         media: [],
       },

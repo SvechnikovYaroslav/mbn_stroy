@@ -17,6 +17,37 @@ MBN Строй
 - Payload CMS
 - PostgreSQL
 
+## Architecture
+
+### Development / future production
+
+```text
+PostgreSQL
+   ↓
+Payload CMS (/admin)
+   ↓
+Payload Local API (getPayload)
+   ↓
+Public frontend (/, /projects, /projects/[slug])
+```
+
+Портфолио в server runtime читает **только published** проекты. Изменения в `/admin` после Publish видны на сайте без `npm run build` / redeploy (dynamic routes).
+
+### GitHub Pages demo
+
+```text
+src/data/projects.ts
+   ↓
+static export frontend
+```
+
+GitHub Pages **не** подключается к PostgreSQL и **не** отражает изменения из `/admin`.
+Demo — зафиксированный snapshot mock data.
+
+```bash
+npm run build:pages
+```
+
 ## Local database
 
 PostgreSQL нужен для `/admin` и Payload API.
@@ -86,27 +117,17 @@ npm run seed
 ```bash
 npm run payload -- migrate:create
 npm run payload -- migrate
+npm run migrate:duration
 npm run generate:types
 npm run generate:importmap
 ```
 
-## GitHub Pages demo
+Schema push в dev по умолчанию **выключен** (`PAYLOAD_DB_PUSH=true` только при необходимости).
+Интерактивный drizzle push на Windows зависает и даёт в `/admin` ошибку `Failed to fetch`.
 
-Публичный frontend demo собирается отдельно (без Payload admin/API):
+## Planned
 
-```bash
-npm run build:pages
-```
-
-Публичные `/projects` пока читают локальные данные из `src/data/projects.ts`.
-
-## Planned architecture
-
-Позже будут добавлены:
-
-- подключение frontend `/projects` к Payload
 - renovation calculator
-- S3-compatible media storage
-- SEO
-- Yandex Metrica
+- S3-compatible media storage (Yandex Object Storage)
+- SEO / Yandex Metrica
 - production hosting в РФ

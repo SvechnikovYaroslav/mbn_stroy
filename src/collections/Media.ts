@@ -8,6 +8,12 @@ export const Media: CollectionConfig = {
     singular: "Медиафайл",
     plural: "Медиа",
   },
+  admin: {
+    group: "Система",
+    description:
+      "Техническая медиатека. Основной workflow — загрузка файлов прямо из формы Проекта (обложка и разделы).",
+    defaultColumns: ["filename", "mimeType", "updatedAt"],
+  },
   access: {
     create: authenticated,
     delete: authenticated,
@@ -43,27 +49,43 @@ export const Media: CollectionConfig = {
   },
   fields: [
     {
-      name: "alt",
-      type: "text",
-      label: "Alt-текст",
-    },
-    {
-      name: "caption",
-      type: "text",
-      label: "Подпись",
-    },
-    {
-      name: "orientation",
-      type: "select",
-      label: "Ориентация",
-      options: [
-        { label: "Альбомная", value: "landscape" },
-        { label: "Портретная", value: "portrait" },
-        { label: "Квадрат", value: "square" },
-      ],
+      type: "collapsible",
+      label: "Дополнительно",
       admin: {
-        description: "Необязательно. Полезно для вертикальных видео и фото.",
+        initCollapsed: true,
       },
+      fields: [
+        {
+          name: "alt",
+          type: "text",
+          label: "Alt-текст",
+          admin: {
+            description:
+              "Необязательно. Если пусто — на сайте подставится автоматически из названия раздела и проекта.",
+          },
+        },
+        {
+          name: "caption",
+          type: "text",
+          label: "Подпись",
+          admin: {
+            description: "Необязательно. Не нужна для обычной загрузки фото.",
+          },
+        },
+        {
+          name: "orientation",
+          type: "select",
+          label: "Ориентация",
+          options: [
+            { label: "Альбомная", value: "landscape" },
+            { label: "Портретная", value: "portrait" },
+            { label: "Квадрат", value: "square" },
+          ],
+          admin: {
+            description: "Необязательно. Полезно для вертикальных видео и фото.",
+          },
+        },
+      ],
     },
   ],
 };
