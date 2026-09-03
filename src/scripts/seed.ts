@@ -40,9 +40,9 @@ const demoProjects = [
     description:
       "Демонстрационный объект в CMS. Публичный сайт пока читает mock data.",
     sections: [
-      { title: "Ванная", type: "bathroom" as const },
-      { title: "Кухня", type: "kitchen" as const },
-      { title: "Балкон", type: "balcony" as const },
+      { title: "Ванная", roomType: "bathroom" as const },
+      { title: "Кухня", roomType: "kitchen" as const },
+      { title: "Балкон", roomType: "balcony" as const },
     ],
   },
   {
@@ -55,9 +55,9 @@ const demoProjects = [
     workSlugs: ["finishing", "electrical", "plumbing", "heating", "windows"],
     description: "Демонстрационный объект дома для проверки taxonomy в admin.",
     sections: [
-      { title: "Кухня", type: "kitchen" as const },
-      { title: "Ванная", type: "bathroom" as const },
-      { title: "Гостиная", type: "living-room" as const },
+      { title: "Кухня", roomType: "kitchen" as const },
+      { title: "Ванная", roomType: "bathroom" as const },
+      { title: "Гостиная", roomType: "living-room" as const },
     ],
   },
   {
@@ -68,7 +68,7 @@ const demoProjects = [
     projectType: "room" as const,
     workSlugs: ["plumbing", "tiling", "finishing"],
     description: "Демонстрационный объект отдельного помещения.",
-    sections: [{ title: "Ванная комната", type: "bathroom" as const }],
+    sections: [{ title: "Ванная комната", roomType: "bathroom" as const }],
   },
 ];
 
@@ -141,7 +141,8 @@ async function seed() {
           .filter((id): id is number => typeof id === "number"),
         sections: project.sections.map((section) => ({
           title: section.title,
-          type: section.type,
+          roomType: section.roomType,
+          workTypes: [],
           mediaItems: [],
         })),
       },

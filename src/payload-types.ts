@@ -163,6 +163,8 @@ export interface WorkType {
   createdAt: string;
 }
 /**
+ * Техническая медиатека. Основной workflow — загрузка файлов прямо из формы Проекта (обложка и разделы).
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
@@ -213,13 +215,14 @@ export interface Media {
   };
 }
 /**
+ * Создайте проект, укажите виды работ, добавьте разделы и загрузите фото/видео прямо в форму — затем Publish.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "projects".
  */
 export interface Project {
   id: number;
   title: string;
-  slug: string;
   location: string;
   /**
    * м²
@@ -227,21 +230,49 @@ export interface Project {
   area?: number | null;
   projectType: 'apartment' | 'house' | 'commercial' | 'room';
   renovationType?: ('cosmetic' | 'capital' | 'turnkey') | null;
-  workTypes?: (number | WorkType)[] | null;
   duration?: string | null;
   year?: number | null;
   description?: string | null;
-  featured?: boolean | null;
-  sortOrder?: number | null;
+  /**
+   * Загрузите обложку прямо здесь — без перехода в Медиа.
+   */
   cover?: (number | null) | Media;
+  /**
+   * Например: отделка, электрика, сантехника, натяжные потолки.
+   */
+  workTypes?: (number | WorkType)[] | null;
+  /**
+   * Порядок разделов = порядок на странице проекта. Перетаскивайте для сортировки.
+   */
   sections?:
     | {
+        /**
+         * Например: «Ванная» или «Натяжные потолки».
+         */
         title: string;
-        type:
-          'bathroom' | 'kitchen' | 'bedroom' | 'living-room' | 'balcony' | 'hallway' | 'floor' | 'interior' | 'other';
+        /**
+         * Необязательно. Для разделов по виду работ (например натяжные потолки) оставьте пустым.
+         */
+        roomType?:
+          | (
+              | 'bathroom'
+              | 'kitchen'
+              | 'bedroom'
+              | 'living-room'
+              | 'balcony'
+              | 'hallway'
+              | 'floor'
+              | 'interior'
+              | 'other'
+            )
+          | null;
+        /**
+         * Какие работы показаны в этом разделе (связка медиа ↔ вид работ).
+         */
+        workTypes?: (number | WorkType)[] | null;
         description?: string | null;
         /**
-         * Фото и видео в одном списке. Порядок сохраняется при перетаскивании.
+         * Фото и видео в одном списке. Порядок сохраняется. Загружайте файлы здесь.
          */
         mediaItems?:
           | {
@@ -252,6 +283,9 @@ export interface Project {
         id?: string | null;
       }[]
     | null;
+  slug: string;
+  featured?: boolean | null;
+  sortOrder?: number | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -435,23 +469,21 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface ProjectsSelect<T extends boolean = true> {
   title?: T;
-  slug?: T;
   location?: T;
   area?: T;
   projectType?: T;
   renovationType?: T;
-  workTypes?: T;
   duration?: T;
   year?: T;
   description?: T;
-  featured?: T;
-  sortOrder?: T;
   cover?: T;
+  workTypes?: T;
   sections?:
     | T
     | {
         title?: T;
-        type?: T;
+        roomType?: T;
+        workTypes?: T;
         description?: T;
         mediaItems?:
           | T
@@ -461,6 +493,9 @@ export interface ProjectsSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  slug?: T;
+  featured?: T;
+  sortOrder?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;

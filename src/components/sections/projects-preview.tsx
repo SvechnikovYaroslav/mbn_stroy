@@ -4,10 +4,12 @@ import { Container } from "@/components/layout/container";
 import { ProjectCard } from "@/components/projects/project-card";
 import { buttonVariants } from "@/components/ui/button";
 import { getFeaturedProjects } from "@/lib/projects";
+import { ensurePortfolioDynamic } from "@/lib/projects/dynamic";
 import { cn } from "@/lib/utils";
 
-export function ProjectsPreview() {
-  const projects = getFeaturedProjects(3);
+export async function ProjectsPreview() {
+  await ensurePortfolioDynamic();
+  const projects = await getFeaturedProjects(3);
 
   return (
     <section id="projects" className="scroll-mt-20 border-b border-border">
@@ -19,13 +21,19 @@ export function ProjectsPreview() {
           </p>
         </div>
 
-        <ul className="mt-10 grid gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-          {projects.map((project) => (
-            <li key={project.id}>
-              <ProjectCard project={project} />
-            </li>
-          ))}
-        </ul>
+        {projects.length === 0 ? (
+          <p className="mt-10 text-body text-muted-foreground">
+            Проекты скоро появятся.
+          </p>
+        ) : (
+          <ul className="mt-10 grid gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+            {projects.map((project) => (
+              <li key={project.id}>
+                <ProjectCard project={project} />
+              </li>
+            ))}
+          </ul>
+        )}
 
         <div className="mt-10">
           <Link

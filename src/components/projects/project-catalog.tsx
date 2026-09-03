@@ -11,7 +11,7 @@ import {
   type CatalogSectionFilter,
   type CatalogWorkTypeFilter,
 } from "@/config/project";
-import { filterProjects } from "@/lib/projects";
+import { filterProjects } from "@/lib/projects/filter";
 import { cn } from "@/lib/utils";
 import type { Project } from "@/types/project";
 

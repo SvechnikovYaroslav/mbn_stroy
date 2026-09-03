@@ -8,6 +8,12 @@ export const Media: CollectionConfig = {
     singular: "Медиафайл",
     plural: "Медиа",
   },
+  admin: {
+    group: "Система",
+    description:
+      "Техническая медиатека. Основной workflow — загрузка файлов прямо из формы Проекта (обложка и разделы).",
+    defaultColumns: ["filename", "alt", "mimeType", "updatedAt"],
+  },
   access: {
     create: authenticated,
     delete: authenticated,

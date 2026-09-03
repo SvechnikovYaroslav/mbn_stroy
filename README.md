@@ -17,6 +17,37 @@ MBN Строй
 - Payload CMS
 - PostgreSQL
 
+## Architecture
+
+### Development / future production
+
+```text
+PostgreSQL
+   ↓
+Payload CMS (/admin)
+   ↓
+Payload Local API (getPayload)
+   ↓
+Public frontend (/, /projects, /projects/[slug])
+```
+
+Портфолио в server runtime читает **только published** проекты. Изменения в `/admin` после Publish видны на сайте без `npm run build` / redeploy (dynamic routes).
+
+### GitHub Pages demo
+
+```text
+src/data/projects.ts
+   ↓
+static export frontend
+```
+
+GitHub Pages **не** подключается к PostgreSQL и **не** отражает изменения из `/admin`.
+Demo — зафиксированный snapshot mock data.
+
+```bash
+npm run build:pages
+```
+
 ## Local database
 
 PostgreSQL нужен для `/admin` и Payload API.
@@ -90,23 +121,9 @@ npm run generate:types
 npm run generate:importmap
 ```
 
-## GitHub Pages demo
+## Planned
 
-Публичный frontend demo собирается отдельно (без Payload admin/API):
-
-```bash
-npm run build:pages
-```
-
-Публичные `/projects` пока читают локальные данные из `src/data/projects.ts`.
-
-## Planned architecture
-
-Позже будут добавлены:
-
-- подключение frontend `/projects` к Payload
 - renovation calculator
-- S3-compatible media storage
-- SEO
-- Yandex Metrica
+- S3-compatible media storage (Yandex Object Storage)
+- SEO / Yandex Metrica
 - production hosting в РФ

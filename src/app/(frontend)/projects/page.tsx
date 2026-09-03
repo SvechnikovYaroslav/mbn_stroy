@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { Container } from "@/components/layout/container";
 import { ProjectCatalog } from "@/components/projects/project-catalog";
+import { ensurePortfolioDynamic } from "@/lib/projects/dynamic";
 import { getProjects } from "@/lib/projects";
 
 export const metadata: Metadata = {
@@ -10,8 +11,9 @@ export const metadata: Metadata = {
     "Реализованные ремонты квартир, домов и отдельных помещений в Туле и Тульской области.",
 };
 
-export default function ProjectsPage() {
-  const projects = getProjects();
+export default async function ProjectsPage() {
+  await ensurePortfolioDynamic();
+  const projects = await getProjects();
 
   return (
     <main>
@@ -27,7 +29,13 @@ export default function ProjectsPage() {
 
       <section>
         <Container className="py-10 md:py-14">
-          <ProjectCatalog projects={projects} />
+          {projects.length === 0 ? (
+            <p className="text-body text-muted-foreground">
+              Проекты скоро появятся.
+            </p>
+          ) : (
+            <ProjectCatalog projects={projects} />
+          )}
         </Container>
       </section>
     </main>
