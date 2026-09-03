@@ -10,6 +10,7 @@ import { Media } from "./collections/Media";
 import { Projects } from "./collections/Projects";
 import { Users } from "./collections/Users";
 import { WorkTypes } from "./collections/WorkTypes";
+import { CalculatorSettings } from "./globals/CalculatorSettings";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -29,6 +30,7 @@ export default buildConfig({
     fallbackLanguage: "ru",
   },
   collections: [Users, WorkTypes, Media, Projects],
+  globals: [CalculatorSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
@@ -39,10 +41,8 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL || "",
     },
     /**
-     * Interactive drizzle `push` hangs the Node process on Windows when it asks
-     * "create or rename column?" — that surfaces in admin as "Failed to fetch".
-     * Schema changes go through explicit migrate scripts (e.g. migrate:duration).
-     * Opt-in: PAYLOAD_DB_PUSH=true
+     * Interactive drizzle `push` hangs on Windows rename prompts → admin "Failed to fetch".
+     * Opt-in: PAYLOAD_DB_PUSH=true (use for new globals/collections once).
      */
     push: process.env.PAYLOAD_DB_PUSH === "true",
   }),

@@ -21,7 +21,7 @@ export function Hero() {
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
             <a
-              href="#calculator"
+              href="/calculator"
               className={cn(buttonVariants({ size: "lg" }), "h-11 px-5")}
             >
               Рассчитать стоимость
