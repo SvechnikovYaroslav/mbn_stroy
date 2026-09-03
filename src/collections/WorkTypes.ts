@@ -1,8 +1,26 @@
-import type { CollectionConfig } from "payload";
+import type { CollectionConfig, FieldHook } from "payload";
 
 import { authenticated } from "@/access";
 import { toSlug } from "@/lib/slugify";
 
+const ensureSlug: FieldHook = ({ value, data, operation, originalDoc }) => {
+  if (value) return toSlug(String(value));
+
+  // Never rewrite an existing slug used by Projects / Calculator.
+  if (originalDoc?.slug) return originalDoc.slug;
+
+  if (operation === "create" && data?.title) {
+    return toSlug(String(data.title));
+  }
+
+  if (data?.title) return toSlug(String(data.title));
+  return value;
+};
+
+/**
+ * Work Types are the shared taxonomy for:
+ * projects, sections, calculator extras, and public /services pages.
+ */
 export const WorkTypes: CollectionConfig = {
   slug: "work-types",
   labels: {
@@ -11,7 +29,15 @@ export const WorkTypes: CollectionConfig = {
   },
   admin: {
     useAsTitle: "title",
-    defaultColumns: ["title", "slug", "active", "sortOrder"],
+    defaultColumns: [
+      "title",
+      "active",
+      "showOnServicesPage",
+      "featured",
+      "updatedAt",
+    ],
+    description:
+      "Виды работ для проектов, калькулятора и публичных страниц услуг.",
   },
   access: {
     create: authenticated,
@@ -34,35 +60,45 @@ export const WorkTypes: CollectionConfig = {
       required: true,
     },
     {
-      name: "slug",
-      type: "text",
-      label: "URL",
-      required: true,
-      unique: true,
-      index: true,
+      name: "shortDescription",
+      type: "textarea",
+      label: "Короткое описание",
       admin: {
-        position: "sidebar",
-      },
-      hooks: {
-        beforeValidate: [
-          ({ value, data }) => {
-            if (value) return toSlug(String(value));
-            if (data?.title) return toSlug(String(data.title));
-            return value;
-          },
-        ],
+        description: "Для карточки на /services. Без маркетинговых обещаний.",
       },
     },
     {
       name: "description",
-      type: "textarea",
+      type: "richText",
       label: "Описание",
+      admin: {
+        description: "Полное описание на странице услуги.",
+      },
     },
     {
-      name: "sortOrder",
-      type: "number",
-      label: "Порядок",
-      defaultValue: 0,
+      name: "cover",
+      type: "upload",
+      label: "Обложка",
+      relationTo: "media",
+      admin: {
+        allowCreate: true,
+        description: "Необязательно. Можно загрузить прямо здесь.",
+      },
+    },
+    {
+      name: "showOnServicesPage",
+      type: "checkbox",
+      label: "Показывать в разделе «Услуги»",
+      defaultValue: true,
+      admin: {
+        position: "sidebar",
+      },
+    },
+    {
+      name: "featured",
+      type: "checkbox",
+      label: "Показывать среди основных услуг",
+      defaultValue: false,
       admin: {
         position: "sidebar",
       },
@@ -74,7 +110,67 @@ export const WorkTypes: CollectionConfig = {
       defaultValue: true,
       admin: {
         position: "sidebar",
+        description: "Выключенные виды не показываются публично.",
       },
+    },
+    {
+      type: "collapsible",
+      label: "Дополнительно",
+      admin: {
+        initCollapsed: true,
+        position: "sidebar",
+      },
+      fields: [
+        {
+          name: "slug",
+          type: "text",
+          label: "URL",
+          required: true,
+          unique: true,
+          index: true,
+          admin: {
+            description:
+              "Для новых записей генерируется из названия. Существующие slug не меняйте без необходимости.",
+          },
+          hooks: {
+            beforeValidate: [ensureSlug],
+          },
+        },
+        {
+          name: "sortOrder",
+          type: "number",
+          label: "Порядок",
+          defaultValue: 0,
+          admin: {
+            description: "Меньше — выше в списке.",
+          },
+        },
+      ],
+    },
+    {
+      type: "collapsible",
+      label: "SEO",
+      admin: {
+        initCollapsed: true,
+      },
+      fields: [
+        {
+          name: "seoTitle",
+          type: "text",
+          label: "SEO заголовок",
+          admin: {
+            description: "Если пусто: «{Название} в Туле — MBN Строй».",
+          },
+        },
+        {
+          name: "seoDescription",
+          type: "textarea",
+          label: "SEO описание",
+          admin: {
+            description: "Если пусто — из короткого описания или нейтральный текст.",
+          },
+        },
+      ],
     },
   ],
 };

@@ -153,16 +153,62 @@ export interface User {
   collection: 'users';
 }
 /**
+ * Виды работ для проектов, калькулятора и публичных страниц услуг.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "work-types".
  */
 export interface WorkType {
   id: number;
   title: string;
-  slug: string;
-  description?: string | null;
-  sortOrder?: number | null;
+  /**
+   * Для карточки на /services. Без маркетинговых обещаний.
+   */
+  shortDescription?: string | null;
+  /**
+   * Полное описание на странице услуги.
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Необязательно. Можно загрузить прямо здесь.
+   */
+  cover?: (number | null) | Media;
+  showOnServicesPage?: boolean | null;
+  featured?: boolean | null;
+  /**
+   * Выключенные виды не показываются публично.
+   */
   active?: boolean | null;
+  /**
+   * Для новых записей генерируется из названия. Существующие slug не меняйте без необходимости.
+   */
+  slug: string;
+  /**
+   * Меньше — выше в списке.
+   */
+  sortOrder?: number | null;
+  /**
+   * Если пусто: «{Название} в Туле — MBN Строй».
+   */
+  seoTitle?: string | null;
+  /**
+   * Если пусто — из короткого описания или нейтральный текст.
+   */
+  seoDescription?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -425,10 +471,16 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface WorkTypesSelect<T extends boolean = true> {
   title?: T;
-  slug?: T;
+  shortDescription?: T;
   description?: T;
-  sortOrder?: T;
+  cover?: T;
+  showOnServicesPage?: T;
+  featured?: T;
   active?: T;
+  slug?: T;
+  sortOrder?: T;
+  seoTitle?: T;
+  seoDescription?: T;
   updatedAt?: T;
   createdAt?: T;
 }
