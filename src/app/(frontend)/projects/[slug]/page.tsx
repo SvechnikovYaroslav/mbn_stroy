@@ -11,7 +11,6 @@ import {
   renovationTypeLabels,
   workTypeLabels,
 } from "@/config/project";
-import { siteConfig } from "@/config/site";
 import { getProjectBySlug, getProjectSlugs } from "@/lib/projects";
 import { ensurePortfolioDynamic } from "@/lib/projects/dynamic";
 import { cn } from "@/lib/utils";
@@ -160,12 +159,12 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             Расскажите о задаче — поможем оценить объём работ и предварительную
             стоимость.
           </p>
-          <a
-            href={siteConfig.cta.href}
+          <Link
+            href={`/contacts?project=${encodeURIComponent(project.slug)}`}
             className={cn(buttonVariants({ size: "lg" }), "mt-8 inline-flex h-11 px-5")}
           >
-            {siteConfig.cta.title}
-          </a>
+            Обсудить ремонт
+          </Link>
         </section>
       </Container>
     </main>

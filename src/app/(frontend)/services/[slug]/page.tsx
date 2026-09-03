@@ -8,7 +8,6 @@ import { ProjectMediaItem } from "@/components/media/project-media";
 import { ProjectCard } from "@/components/projects/project-card";
 import { ServiceDescription } from "@/components/services/service-description";
 import { buttonVariants } from "@/components/ui/button";
-import { siteConfig } from "@/config/site";
 import { getProjects } from "@/lib/projects";
 import {
   getRelevantServiceMedia,
@@ -26,6 +25,7 @@ import {
 } from "@/types/service";
 import type { WorkType } from "@/types/project";
 import { cn } from "@/lib/utils";
+import { siteConfig } from "@/config/site";
 
 type ServicePageProps = {
   params: Promise<{ slug: string }>;
@@ -171,15 +171,15 @@ export default async function ServicePage({ params }: ServicePageProps) {
             >
               Рассчитать стоимость
             </Link>
-            <a
-              href={siteConfig.cta.href}
+            <Link
+              href={`/contacts?service=${encodeURIComponent(service.slug)}`}
               className={cn(
                 buttonVariants({ variant: "outline", size: "lg" }),
                 "inline-flex"
               )}
             >
               Обсудить проект
-            </a>
+            </Link>
           </div>
         </section>
       </Container>

@@ -71,6 +71,7 @@ export interface Config {
     'work-types': WorkType;
     media: Media;
     projects: Project;
+    leads: Lead;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -82,6 +83,7 @@ export interface Config {
     'work-types': WorkTypesSelect<false> | WorkTypesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    leads: LeadsSelect<false> | LeadsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -362,6 +364,58 @@ export interface Project {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Заявки с сайта. Публичный доступ к списку закрыт.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads".
+ */
+export interface Lead {
+  id: number;
+  displayTitle?: string | null;
+  name?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  /**
+   * Необязательно. Заполняется, если пользователь указал.
+   */
+  preferredContact?: ('phone' | 'telegram' | 'whatsapp' | 'email') | null;
+  comment?: string | null;
+  /**
+   * Устанавливается сайтом автоматически.
+   */
+  source: 'contact' | 'calculator' | 'project' | 'service' | 'other';
+  contextType?: ('project' | 'service') | null;
+  contextSlug?: string | null;
+  hasCalculatorSnapshot?: boolean | null;
+  /**
+   * Снимок того, что видел пользователь. Не пересчитывается.
+   */
+  calculatorSummary?: string | null;
+  calculatorSnapshot?: {
+    objectType?: ('apartment' | 'house' | 'commercial') | null;
+    apartmentLayout?: ('studio' | '1-room' | '2-room' | '3-room' | '4-plus') | null;
+    area?: number | null;
+    renovationType?: ('cosmetic' | 'capital' | 'turnkey') | null;
+    condition?: ('new-build' | 'secondary' | 'rough') | null;
+    workTypes?:
+      | {
+          slug: string;
+          title?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    estimateMin?: number | null;
+    estimateMax?: number | null;
+    calculatedAt?: string | null;
+  };
+  status: 'new' | 'in-progress' | 'contacted' | 'completed' | 'spam';
+  consentAccepted: boolean;
+  consentAcceptedAt?: string | null;
+  consentVersion?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -400,6 +454,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'projects';
         value: number | Project;
+      } | null)
+    | ({
+        relationTo: 'leads';
+        value: number | Lead;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -577,6 +635,48 @@ export interface ProjectsSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads_select".
+ */
+export interface LeadsSelect<T extends boolean = true> {
+  displayTitle?: T;
+  name?: T;
+  phone?: T;
+  email?: T;
+  preferredContact?: T;
+  comment?: T;
+  source?: T;
+  contextType?: T;
+  contextSlug?: T;
+  hasCalculatorSnapshot?: T;
+  calculatorSummary?: T;
+  calculatorSnapshot?:
+    | T
+    | {
+        objectType?: T;
+        apartmentLayout?: T;
+        area?: T;
+        renovationType?: T;
+        condition?: T;
+        workTypes?:
+          | T
+          | {
+              slug?: T;
+              title?: T;
+              id?: T;
+            };
+        estimateMin?: T;
+        estimateMax?: T;
+        calculatedAt?: T;
+      };
+  status?: T;
+  consentAccepted?: T;
+  consentAcceptedAt?: T;
+  consentVersion?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

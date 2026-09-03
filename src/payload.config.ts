@@ -10,6 +10,7 @@ import { Media } from "./collections/Media";
 import { Projects } from "./collections/Projects";
 import { Users } from "./collections/Users";
 import { WorkTypes } from "./collections/WorkTypes";
+import { Leads } from "./collections/Leads";
 import { CalculatorSettings } from "./globals/CalculatorSettings";
 import { SiteSettings } from "./globals/SiteSettings";
 
@@ -30,7 +31,7 @@ export default buildConfig({
     supportedLanguages: { ru },
     fallbackLanguage: "ru",
   },
-  collections: [Users, WorkTypes, Media, Projects],
+  collections: [Users, WorkTypes, Media, Projects, Leads],
   globals: [SiteSettings, CalculatorSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
