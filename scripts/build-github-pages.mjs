@@ -14,35 +14,32 @@ import path from "node:path";
 const payloadDir = path.resolve("src/app/(payload)");
 const backupDir = path.resolve(".cache/payload-app-backup");
 
-mkdirSync(path.resolve(".cache"), { recursive: true });
+function removeDir(target) {
+  if (!existsSync(target)) return;
+  rmSync(target, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
+}
 
-let backedUp = false;
+mkdirSync(path.resolve(".cache"), { recursive: true });
 
 try {
   if (existsSync(backupDir) && !existsSync(payloadDir)) {
     // Recover from a previously interrupted Pages build.
     cpSync(backupDir, payloadDir, { recursive: true });
-    rmSync(backupDir, { recursive: true, force: true });
+    removeDir(backupDir);
     console.log("Recovered src/app/(payload) from a previous backup.");
   }
 
   if (existsSync(payloadDir)) {
-    if (existsSync(backupDir)) {
-      rmSync(backupDir, { recursive: true, force: true });
-    }
+    removeDir(backupDir);
     cpSync(payloadDir, backupDir, { recursive: true });
-    rmSync(payloadDir, { recursive: true, force: true });
-    backedUp = true;
+    removeDir(payloadDir);
     console.log("Temporarily removed src/app/(payload) for GitHub Pages export.");
   }
 
   process.env.GITHUB_PAGES = "true";
 
   // Clear stale typed routes that still reference (payload) from prior server builds.
-  const nextDir = path.resolve(".next");
-  if (existsSync(nextDir)) {
-    rmSync(nextDir, { recursive: true, force: true });
-  }
+  removeDir(path.resolve(".next"));
 
   const result = spawnSync("npm", ["run", "build"], {
     stdio: "inherit",
@@ -55,11 +52,9 @@ try {
   }
 } finally {
   if (existsSync(backupDir)) {
-    if (existsSync(payloadDir)) {
-      rmSync(payloadDir, { recursive: true, force: true });
-    }
+    removeDir(payloadDir);
     cpSync(backupDir, payloadDir, { recursive: true });
-    rmSync(backupDir, { recursive: true, force: true });
+    removeDir(backupDir);
     console.log("Restored src/app/(payload).");
   }
 }

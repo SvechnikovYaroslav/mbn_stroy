@@ -98,11 +98,15 @@ PAYLOAD_SECRET=
 
 ```bash
 npm install
+npm run seed
+npm run seed:calculator
 npm run dev
 ```
 
 - Сайт: [http://localhost:3000](http://localhost:3000)
 - Admin: [http://localhost:3000/admin](http://localhost:3000/admin)
+- Калькулятор: [http://localhost:3000/calculator](http://localhost:3000/calculator)
+- Настройки цен в admin: **Калькулятор** (Global)
 
 Первого администратора создайте через `/admin` при первом запуске.
 

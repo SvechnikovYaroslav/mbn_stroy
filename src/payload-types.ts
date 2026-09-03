@@ -91,8 +91,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'calculator-settings': CalculatorSetting;
+  };
+  globalsSelect: {
+    'calculator-settings': CalculatorSettingsSelect<false> | CalculatorSettingsSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -559,6 +563,110 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Цены и коэффициенты для калькулятора на сайте. Формула расчёта фиксирована в коде и здесь не редактируется.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "calculator-settings".
+ */
+export interface CalculatorSetting {
+  id: number;
+  enabled?: boolean | null;
+  /**
+   * ₽. Итоговый минимум не ниже этого значения.
+   */
+  minimumPrice: number;
+  /**
+   * ₽. Например 10000 → 1 480 000, а не 1 483 472.
+   */
+  roundingStep: number;
+  /**
+   * ₽ за м². Диапазон min–max для типа объекта и ремонта.
+   */
+  baseRates?:
+    | {
+        objectType: 'apartment' | 'house' | 'commercial';
+        renovationType: 'cosmetic' | 'capital' | 'turnkey';
+        active?: boolean | null;
+        minPricePerM2: number;
+        maxPricePerM2: number;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Множители к базовой стоимости.
+   */
+  conditionRules?:
+    | {
+        condition: 'new-build' | 'secondary' | 'rough';
+        active?: boolean | null;
+        minMultiplier: number;
+        maxMultiplier: number;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Если «Входит в базу» — работа видна в wizard, но не добавляет цену отдельно.
+   */
+  workRules?:
+    | {
+        workType: number | WorkType;
+        pricingMode: 'per_m2' | 'fixed' | 'percent';
+        includedInBase?: boolean | null;
+        active?: boolean | null;
+        /**
+         * ₽/м², ₽ или % — в зависимости от способа расчёта.
+         */
+        minPrice: number;
+        maxPrice: number;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "calculator-settings_select".
+ */
+export interface CalculatorSettingsSelect<T extends boolean = true> {
+  enabled?: T;
+  minimumPrice?: T;
+  roundingStep?: T;
+  baseRates?:
+    | T
+    | {
+        objectType?: T;
+        renovationType?: T;
+        active?: T;
+        minPricePerM2?: T;
+        maxPricePerM2?: T;
+        id?: T;
+      };
+  conditionRules?:
+    | T
+    | {
+        condition?: T;
+        active?: T;
+        minMultiplier?: T;
+        maxMultiplier?: T;
+        id?: T;
+      };
+  workRules?:
+    | T
+    | {
+        workType?: T;
+        pricingMode?: T;
+        includedInBase?: T;
+        active?: T;
+        minPrice?: T;
+        maxPrice?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
