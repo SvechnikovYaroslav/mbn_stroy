@@ -1,13 +1,13 @@
+import Link from "next/link";
+
 import { Container } from "@/components/layout/container";
+import { getFeaturedServices } from "@/lib/services";
+import { ensureServicesDynamic } from "@/lib/services/dynamic";
 
-const services = [
-  { number: "01", title: "Квартиры под ключ" },
-  { number: "02", title: "Ванные комнаты" },
-  { number: "03", title: "Дома" },
-  { number: "04", title: "Отделка" },
-] as const;
+export async function ServicesPreview() {
+  await ensureServicesDynamic();
+  const services = await getFeaturedServices(6);
 
-export function ServicesPreview() {
   return (
     <section id="services" className="scroll-mt-20 border-b border-border">
       <Container className="py-14 md:py-20">
@@ -19,19 +19,45 @@ export function ServicesPreview() {
           </p>
         </div>
 
-        <ul className="mt-10 divide-y divide-border border-y border-border">
-          {services.map((service) => (
-            <li
-              key={service.number}
-              className="grid grid-cols-[3.5rem_1fr] items-baseline gap-4 py-5 md:grid-cols-[5rem_1fr] md:gap-8 md:py-6"
-            >
-              <span className="text-caption text-muted-foreground">
-                {service.number}
-              </span>
-              <span className="text-h3 text-foreground">{service.title}</span>
-            </li>
-          ))}
-        </ul>
+        {services.length === 0 ? (
+          <p className="mt-10 text-body text-muted-foreground">
+            Список услуг скоро появится.
+          </p>
+        ) : (
+          <ul className="mt-10 divide-y divide-border border-y border-border">
+            {services.map((service, index) => (
+              <li key={service.id}>
+                <Link
+                  href={`/services/${service.slug}`}
+                  className="grid grid-cols-[3.5rem_1fr] items-baseline gap-4 py-5 transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:grid-cols-[5rem_1fr] md:gap-8 md:py-6"
+                >
+                  <span className="text-caption text-muted-foreground">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span>
+                    <span className="block text-h3 text-foreground">
+                      {service.title}
+                    </span>
+                    {service.shortDescription ? (
+                      <span className="mt-1 block text-small text-muted-foreground">
+                        {service.shortDescription}
+                      </span>
+                    ) : null}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div className="mt-8">
+          <Link
+            href="/services"
+            className="text-small text-foreground underline-offset-4 hover:underline"
+          >
+            Все услуги →
+          </Link>
+        </div>
       </Container>
     </section>
   );

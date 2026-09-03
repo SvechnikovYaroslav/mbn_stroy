@@ -6,7 +6,7 @@ export const siteConfig = {
   location: "Тула и Тульская область",
   navigation: [
     { title: "Проекты", href: "/projects" },
-    { title: "Услуги", href: "#services" },
+    { title: "Услуги", href: "/services" },
     { title: "Калькулятор", href: "/calculator" },
     { title: "О компании", href: "#about" },
   ],
