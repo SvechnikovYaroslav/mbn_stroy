@@ -17,6 +17,34 @@ import {
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
+function NavLink({
+  href,
+  className,
+  children,
+  onNavigate,
+}: {
+  href: string;
+  className?: string;
+  children: React.ReactNode;
+  onNavigate?: () => void;
+}) {
+  const isInternal = href.startsWith("/") && !href.startsWith("//");
+
+  if (isInternal) {
+    return (
+      <Link href={href} className={className} onClick={onNavigate}>
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <a href={href} className={className} onClick={onNavigate}>
+      {children}
+    </a>
+  );
+}
+
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
@@ -35,13 +63,13 @@ export function SiteHeader() {
           className="hidden items-center gap-8 md:flex"
         >
           {siteConfig.navigation.map((item) => (
-            <a
+            <NavLink
               key={item.href}
               href={item.href}
               className="text-small text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {item.title}
-            </a>
+            </NavLink>
           ))}
         </nav>
 
@@ -75,18 +103,14 @@ export function SiteHeader() {
               className="flex flex-col gap-1 px-3 py-4"
             >
               {siteConfig.navigation.map((item) => (
-                <SheetClose
+                <NavLink
                   key={item.href}
-                  render={
-                    <a
-                      href={item.href}
-                      className="rounded-sm px-3 py-3 text-body text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      onClick={() => setOpen(false)}
-                    />
-                  }
+                  href={item.href}
+                  className="rounded-sm px-3 py-3 text-body text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  onNavigate={() => setOpen(false)}
                 >
                   {item.title}
-                </SheetClose>
+                </NavLink>
               ))}
             </nav>
 

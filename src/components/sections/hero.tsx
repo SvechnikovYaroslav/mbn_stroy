@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Container } from "@/components/layout/container";
 import { buttonVariants } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
@@ -24,15 +26,15 @@ export function Hero() {
             >
               Рассчитать стоимость
             </a>
-            <a
-              href="#projects"
+            <Link
+              href="/projects"
               className={cn(
                 buttonVariants({ variant: "outline", size: "lg" }),
                 "h-11 px-5"
               )}
             >
               Смотреть проекты
-            </a>
+            </Link>
           </div>
         </div>
 

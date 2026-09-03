@@ -42,6 +42,9 @@ yarn-error.log*
 # local temp
 .tmp-shots/
 
+# Original HEIC uploads (not web-safe; convert before publishing)
+/media-source/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

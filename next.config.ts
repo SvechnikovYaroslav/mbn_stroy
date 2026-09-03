@@ -7,6 +7,7 @@ import type { NextConfig } from "next";
  */
 const isGithubPages = process.env.GITHUB_PAGES === "true";
 const repoBasePath = "/mbn_stroy";
+const publicBasePath = isGithubPages ? repoBasePath : "";
 
 const nextConfig: NextConfig = {
   output: "export",
@@ -14,6 +15,9 @@ const nextConfig: NextConfig = {
   assetPrefix: isGithubPages ? repoBasePath : undefined,
   images: {
     unoptimized: true,
+  },
+  env: {
+    NEXT_PUBLIC_BASE_PATH: publicBasePath,
   },
 };
 

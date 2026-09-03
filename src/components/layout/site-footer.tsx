@@ -1,5 +1,33 @@
+import Link from "next/link";
+
 import { Container } from "@/components/layout/container";
 import { siteConfig } from "@/config/site";
+
+function FooterNavLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  const isInternal = href.startsWith("/") && !href.startsWith("//");
+  const className =
+    "text-small text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+
+  if (isInternal) {
+    return (
+      <Link href={href} className={className}>
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <a href={href} className={className}>
+      {children}
+    </a>
+  );
+}
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
@@ -25,12 +53,7 @@ export function SiteFooter() {
             <ul className="mt-4 space-y-3">
               {siteConfig.navigation.map((item) => (
                 <li key={item.href}>
-                  <a
-                    href={item.href}
-                    className="text-small text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    {item.title}
-                  </a>
+                  <FooterNavLink href={item.href}>{item.title}</FooterNavLink>
                 </li>
               ))}
             </ul>
