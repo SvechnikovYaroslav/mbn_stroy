@@ -170,7 +170,13 @@ export interface WorkType {
  */
 export interface Media {
   id: number;
+  /**
+   * Необязательно. Если пусто — на сайте подставится автоматически из названия раздела и проекта.
+   */
   alt?: string | null;
+  /**
+   * Необязательно. Не нужна для обычной загрузки фото.
+   */
   caption?: string | null;
   /**
    * Необязательно. Полезно для вертикальных видео и фото.
@@ -230,11 +236,18 @@ export interface Project {
   area?: number | null;
   projectType: 'apartment' | 'house' | 'commercial' | 'room';
   renovationType?: ('cosmetic' | 'capital' | 'turnkey') | null;
-  duration?: string | null;
+  /**
+   * Число
+   */
+  durationValue?: number | null;
+  /**
+   * День / месяц / год
+   */
+  durationUnit?: ('day' | 'month' | 'year') | null;
   year?: number | null;
   description?: string | null;
   /**
-   * Загрузите обложку прямо здесь — без перехода в Медиа.
+   * Перетащите или выберите файл. Alt и подпись заполнять не обязательно.
    */
   cover?: (number | null) | Media;
   /**
@@ -272,7 +285,7 @@ export interface Project {
         workTypes?: (number | WorkType)[] | null;
         description?: string | null;
         /**
-         * Фото и видео в одном списке. Порядок сохраняется. Загружайте файлы здесь.
+         * Достаточно выбрать или перетащить файлы. Порядок сохраняется.
          */
         mediaItems?:
           | {
@@ -283,8 +296,14 @@ export interface Project {
         id?: string | null;
       }[]
     | null;
-  slug: string;
   featured?: boolean | null;
+  /**
+   * Генерируется из названия автоматически. Меняйте только при необходимости.
+   */
+  slug: string;
+  /**
+   * Необязательно. Если не задан — на сайте сортировка по дате публикации.
+   */
   sortOrder?: number | null;
   updatedAt: string;
   createdAt: string;
@@ -473,7 +492,8 @@ export interface ProjectsSelect<T extends boolean = true> {
   area?: T;
   projectType?: T;
   renovationType?: T;
-  duration?: T;
+  durationValue?: T;
+  durationUnit?: T;
   year?: T;
   description?: T;
   cover?: T;
@@ -493,8 +513,8 @@ export interface ProjectsSelect<T extends boolean = true> {
             };
         id?: T;
       };
-  slug?: T;
   featured?: T;
+  slug?: T;
   sortOrder?: T;
   updatedAt?: T;
   createdAt?: T;

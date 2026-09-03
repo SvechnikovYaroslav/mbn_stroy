@@ -123,12 +123,12 @@ async function main() {
     projectType: "apartment" as const,
     renovationType: "turnkey" as const,
     workTypes: projectWorkTypes,
-    duration: "3 месяца",
+    durationValue: 3,
+    durationUnit: "month" as const,
     year: 2025,
     description:
       "Тестовый опубликованный проект из Payload CMS для проверки frontend integration.",
     featured: true,
-    sortOrder: 10,
     cover: cover.id,
     sections: [
       {

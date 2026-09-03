@@ -135,7 +135,6 @@ async function seed() {
         renovationType: project.renovationType,
         description: project.description,
         featured: false,
-        sortOrder: 0,
         workTypes: project.workSlugs
           .map((slug) => workTypeIds.get(slug))
           .filter((id): id is number => typeof id === "number"),

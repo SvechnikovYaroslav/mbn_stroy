@@ -1,4 +1,5 @@
 import type { Media } from "@/payload-types";
+import { buildMediaAltFallback } from "@/lib/media-alt";
 import type {
   MediaOrientation,
   ProjectMedia,
@@ -25,13 +26,23 @@ function pickImageUrl(media: Media, preferred?: MediaSize): string | undefined {
   return media.url ?? media.thumbnailURL ?? undefined;
 }
 
+function isOrientation(
+  value: string | null | undefined
+): value is MediaOrientation {
+  return value === "landscape" || value === "portrait" || value === "square";
+}
+
 /**
  * Map Payload Media → frontend ProjectMedia.
  * Payload URLs (/api/media/...) are returned as-is — never prefixed with GitHub Pages basePath.
  */
 export function mapPayloadMedia(
   value: number | Media | null | undefined,
-  options?: { imageSize?: MediaSize; idPrefix?: string }
+  options?: {
+    imageSize?: MediaSize;
+    idPrefix?: string;
+    fallbackAlt?: string;
+  }
 ): ProjectMedia | null {
   if (!isPopulatedMedia(value)) return null;
 
@@ -43,27 +54,39 @@ export function mapPayloadMedia(
 
   if (!src) return null;
 
+  const manualAlt = value.alt?.trim();
+
   return {
     id: `${options?.idPrefix ?? "media"}-${value.id}`,
     type,
     src,
-    alt: value.alt ?? undefined,
+    alt: manualAlt || options?.fallbackAlt,
     caption: value.caption ?? undefined,
     width: value.width ?? undefined,
     height: value.height ?? undefined,
-    orientation: (value.orientation as MediaOrientation | null) ?? undefined,
+    orientation: isOrientation(value.orientation)
+      ? value.orientation
+      : undefined,
   };
 }
 
 export function mapPayloadCover(
-  value: number | Media | null | undefined
+  value: number | Media | null | undefined,
+  projectTitle: string
 ): ProjectMedia {
   return (
-    mapPayloadMedia(value, { imageSize: "card", idPrefix: "cover" }) ?? {
+    mapPayloadMedia(value, {
+      imageSize: "card",
+      idPrefix: "cover",
+      fallbackAlt: buildMediaAltFallback({
+        projectTitle,
+        kind: "cover",
+      }),
+    }) ?? {
       id: "cover-placeholder",
       type: "image",
       src: "",
-      alt: "Обложка проекта",
+      alt: buildMediaAltFallback({ projectTitle, kind: "cover" }),
     }
   );
 }

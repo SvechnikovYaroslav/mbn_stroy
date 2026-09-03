@@ -13,6 +13,7 @@
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap",
     "seed": "tsx src/scripts/seed.ts",
+    "migrate:duration": "tsx src/scripts/migrate-duration-fields.ts",
     "publish:test-project": "tsx src/scripts/publish-test-project.ts",
     "create:admin": "tsx src/scripts/create-admin.ts",
     "env:local": "node scripts/create-local-env.mjs"
@@ -22,6 +23,7 @@
     "@payloadcms/db-postgres": "^3.88.0",
     "@payloadcms/next": "^3.88.0",
     "@payloadcms/richtext-lexical": "^3.88.0",
+    "@payloadcms/translations": "^3.88.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^17.4.2",

@@ -1,4 +1,4 @@
-import type { CollectionConfig } from "payload";
+import type { CollectionConfig, FieldHook } from "payload";
 
 import { authenticated } from "@/access";
 import { toSlug } from "@/lib/slugify";
@@ -20,10 +20,48 @@ const roomTypeOptions = (
   Object.entries(sectionTypeLabels) as [string, string][]
 ).map(([value, label]) => ({ value, label }));
 
+const ensureUniqueProjectSlug: FieldHook = async ({
+  value,
+  data,
+  req,
+  originalDoc,
+}) => {
+  const title = data?.title ?? originalDoc?.title;
+  const base =
+    toSlug(String(value || title || "project")) || "project";
+
+  let candidate = base;
+  let suffix = 2;
+
+  while (true) {
+    const existing = await req.payload.find({
+      collection: "projects",
+      where: {
+        and: [
+          { slug: { equals: candidate } },
+          ...(originalDoc?.id
+            ? [{ id: { not_equals: originalDoc.id } }]
+            : []),
+        ],
+      },
+      limit: 1,
+      depth: 0,
+      overrideAccess: true,
+      req,
+    });
+
+    if (!existing.docs.length) {
+      return candidate;
+    }
+
+    candidate = `${base}-${suffix}`;
+    suffix += 1;
+  }
+};
+
 /**
  * Projects admin is the primary content workflow:
  * create project → object work types → sections → inline media → Publish.
- * Media collection remains a technical library; uploads happen here.
  */
 export const Projects: CollectionConfig = {
   slug: "projects",
@@ -67,62 +105,65 @@ export const Projects: CollectionConfig = {
               required: true,
             },
             {
+              name: "location",
+              type: "text",
+              label: "Расположение",
+              required: true,
+            },
+            {
+              name: "area",
+              type: "number",
+              label: "Площадь",
+              admin: {
+                description: "м²",
+              },
+            },
+            {
+              name: "projectType",
+              type: "select",
+              label: "Тип объекта",
+              required: true,
+              options: projectTypeOptions,
+            },
+            {
+              name: "renovationType",
+              type: "select",
+              label: "Тип ремонта",
+              options: renovationTypeOptions,
+            },
+            {
               type: "row",
               fields: [
                 {
-                  name: "location",
-                  type: "text",
-                  label: "Расположение",
-                  required: true,
-                  admin: { width: "50%" },
-                },
-                {
-                  name: "area",
+                  name: "durationValue",
                   type: "number",
-                  label: "Площадь",
+                  label: "Срок",
+                  min: 1,
                   admin: {
                     width: "50%",
-                    description: "м²",
+                    description: "Число",
+                  },
+                },
+                {
+                  name: "durationUnit",
+                  type: "select",
+                  label: "Единица срока",
+                  options: [
+                    { label: "День", value: "day" },
+                    { label: "Месяц", value: "month" },
+                    { label: "Год", value: "year" },
+                  ],
+                  admin: {
+                    width: "50%",
+                    description: "День / месяц / год",
                   },
                 },
               ],
             },
             {
-              type: "row",
-              fields: [
-                {
-                  name: "projectType",
-                  type: "select",
-                  label: "Тип объекта",
-                  required: true,
-                  options: projectTypeOptions,
-                  admin: { width: "50%" },
-                },
-                {
-                  name: "renovationType",
-                  type: "select",
-                  label: "Тип ремонта",
-                  options: renovationTypeOptions,
-                  admin: { width: "50%" },
-                },
-              ],
-            },
-            {
-              type: "row",
-              fields: [
-                {
-                  name: "duration",
-                  type: "text",
-                  label: "Срок",
-                  admin: { width: "50%" },
-                },
-                {
-                  name: "year",
-                  type: "number",
-                  label: "Год",
-                  admin: { width: "50%" },
-                },
-              ],
+              name: "year",
+              type: "number",
+              label: "Год завершения",
             },
             {
               name: "description",
@@ -136,7 +177,8 @@ export const Projects: CollectionConfig = {
               relationTo: "media",
               admin: {
                 allowCreate: true,
-                description: "Загрузите обложку прямо здесь — без перехода в Медиа.",
+                description:
+                  "Перетащите или выберите файл. Alt и подпись заполнять не обязательно.",
               },
             },
           ],
@@ -226,7 +268,7 @@ export const Projects: CollectionConfig = {
                   },
                   admin: {
                     description:
-                      "Фото и видео в одном списке. Порядок сохраняется. Загружайте файлы здесь.",
+                      "Достаточно выбрать или перетащить файлы. Порядок сохраняется.",
                   },
                   fields: [
                     {
@@ -248,42 +290,47 @@ export const Projects: CollectionConfig = {
       ],
     },
     {
-      name: "slug",
-      type: "text",
-      label: "URL",
-      required: true,
-      unique: true,
-      index: true,
-      admin: {
-        position: "sidebar",
-      },
-      hooks: {
-        beforeValidate: [
-          ({ value, data }) => {
-            if (value) return toSlug(String(value));
-            if (data?.title) return toSlug(String(data.title));
-            return value;
-          },
-        ],
-      },
-    },
-    {
       name: "featured",
       type: "checkbox",
-      label: "Избранный",
+      label: "Показывать на главной",
       defaultValue: false,
       admin: {
         position: "sidebar",
       },
     },
     {
-      name: "sortOrder",
-      type: "number",
-      label: "Порядок",
-      defaultValue: 0,
+      type: "collapsible",
+      label: "Дополнительно",
       admin: {
         position: "sidebar",
+        initCollapsed: true,
       },
+      fields: [
+        {
+          name: "slug",
+          type: "text",
+          label: "URL (slug)",
+          required: true,
+          unique: true,
+          index: true,
+          admin: {
+            description:
+              "Генерируется из названия автоматически. Меняйте только при необходимости.",
+          },
+          hooks: {
+            beforeValidate: [ensureUniqueProjectSlug],
+          },
+        },
+        {
+          name: "sortOrder",
+          type: "number",
+          label: "Порядок сортировки",
+          admin: {
+            description:
+              "Необязательно. Если не задан — на сайте сортировка по дате публикации.",
+          },
+        },
+      ],
     },
   ],
 };

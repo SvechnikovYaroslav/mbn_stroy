@@ -117,9 +117,13 @@ npm run seed
 ```bash
 npm run payload -- migrate:create
 npm run payload -- migrate
+npm run migrate:duration
 npm run generate:types
 npm run generate:importmap
 ```
+
+Schema push в dev по умолчанию **выключен** (`PAYLOAD_DB_PUSH=true` только при необходимости).
+Интерактивный drizzle push на Windows зависает и даёт в `/admin` ошибку `Failed to fetch`.
 
 ## Planned
 

@@ -20,14 +20,22 @@ const PROJECT_DEPTH = 3;
 
 function sortPayloadProjects(docs: PayloadProject[]): PayloadProject[] {
   return [...docs].sort((a, b) => {
-    const sortA = a.sortOrder ?? Number.MAX_SAFE_INTEGER;
-    const sortB = b.sortOrder ?? Number.MAX_SAFE_INTEGER;
-    if (sortA !== sortB) return sortA - sortB;
+    const aHasOrder = typeof a.sortOrder === "number";
+    const bHasOrder = typeof b.sortOrder === "number";
+
+    if (aHasOrder && bHasOrder && a.sortOrder !== b.sortOrder) {
+      return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+    }
+
+    if (aHasOrder !== bHasOrder) {
+      return aHasOrder ? -1 : 1;
+    }
 
     const featuredA = a.featured ? 1 : 0;
     const featuredB = b.featured ? 1 : 0;
     if (featuredA !== featuredB) return featuredB - featuredA;
 
+    // Default: newest published / created first
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 }

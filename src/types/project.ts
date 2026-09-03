@@ -2,6 +2,8 @@ export type ProjectType = "apartment" | "house" | "commercial" | "room";
 
 export type RenovationType = "cosmetic" | "capital" | "turnkey";
 
+export type DurationUnit = "day" | "month" | "year";
+
 /**
  * Work performed on the object (independent from rooms / object type).
  */
@@ -81,11 +83,16 @@ export interface Project {
   workTypes: WorkType[];
   renovationType?: RenovationType;
   status: "completed";
+  durationValue?: number;
+  durationUnit?: DurationUnit;
+  /** Formatted display string, e.g. "3 месяца". */
   duration?: string;
   year?: number;
   description?: string;
-  /** CMS featured flag; used for homepage selection. */
+  /** CMS "show on homepage" flag. */
   featured?: boolean;
+  /** Explicit catalog sort; omit to sort by publish/created date. */
+  sortOrder?: number;
   cover: ProjectMedia;
   sections: ProjectSection[];
   /** Demo placeholder without real photography. */
