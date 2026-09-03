@@ -9,13 +9,13 @@ export async function ServicesPreview() {
   const services = await getFeaturedServices(6);
 
   return (
-    <section id="services" className="scroll-mt-20 border-b border-border">
+    <section className="border-b border-border">
       <Container className="py-14 md:py-20">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <h2 className="text-h2 text-foreground">Что мы делаем</h2>
           <p className="max-w-md text-body text-muted-foreground">
-            Ремонт отдельных помещений и работы под ключ — с акцентом на
-            точность и качество пространства.
+            Комплексный ремонт и отдельные виды работ для квартир и домов.
+            Состав работ подбирается под конкретный объект и его состояние.
           </p>
         </div>
 
@@ -53,7 +53,7 @@ export async function ServicesPreview() {
         <div className="mt-8">
           <Link
             href="/services"
-            className="text-small text-foreground underline-offset-4 hover:underline"
+            className="text-small text-foreground underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Все услуги →
           </Link>

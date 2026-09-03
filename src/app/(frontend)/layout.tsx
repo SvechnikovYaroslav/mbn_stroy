@@ -14,8 +14,11 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "MBN Строй — ремонт квартир и домов в Туле",
-  description: `${siteConfig.name} — ремонт квартир, домов и помещений в Туле и Тульской области. ${siteConfig.slogan}.`,
+  title: {
+    default: "MBN Строй — ремонт квартир и домов в Туле",
+    template: "%s",
+  },
+  description: siteConfig.description,
 };
 
 export default function FrontendLayout({
