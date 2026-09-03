@@ -300,10 +300,19 @@ export function LeadForm({
               aria-describedby={
                 fieldErrors?.consentAccepted
                   ? `${formId}-consent-error`
-                  : undefined
+                  : `${formId}-consent-help`
               }
             />
-            <span>Я даю согласие на обработку персональных данных.</span>
+            <span>
+              Я даю{" "}
+              <Link
+                href="/personal-data-consent"
+                className="underline underline-offset-4 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                onClick={(event) => event.stopPropagation()}
+              >
+                согласие на обработку персональных данных
+              </Link>
+            </span>
           </label>
           {fieldErrors?.consentAccepted ? (
             <p
@@ -312,7 +321,21 @@ export function LeadForm({
             >
               {fieldErrors.consentAccepted}
             </p>
-          ) : null}
+          ) : (
+            <p
+              id={`${formId}-consent-help`}
+              className="mt-2 text-small text-muted-foreground"
+            >
+              Подробнее о порядке обработки данных — в{" "}
+              <Link
+                href="/privacy"
+                className="underline underline-offset-4 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                Политике обработки персональных данных
+              </Link>
+              .
+            </p>
+          )}
         </div>
 
         <p className="text-small text-muted-foreground">

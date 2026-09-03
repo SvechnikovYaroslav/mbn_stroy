@@ -95,7 +95,19 @@ export async function SiteFooter() {
         </div>
 
         <div className="mt-12 border-t border-border pt-6">
-          <p className="text-small text-muted-foreground">
+          <ul className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-2">
+            <li>
+              <FooterNavLink href="/privacy">
+                Политика обработки персональных данных
+              </FooterNavLink>
+            </li>
+            <li>
+              <FooterNavLink href="/personal-data-consent">
+                Согласие на обработку персональных данных
+              </FooterNavLink>
+            </li>
+          </ul>
+          <p className="mt-6 text-small text-muted-foreground">
             © {year} {settings.companyName}
           </p>
         </div>

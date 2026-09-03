@@ -105,4 +105,11 @@ export function getContactChannels(settings: SiteSettings): ContactChannel[] {
   return items;
 }
 
+export {
+  getLegalDetails,
+  getPrivacyContactEmail,
+  hasCompleteLegalDetails,
+  mapPayloadSiteSettings,
+} from "@/lib/site-settings/mapper";
+
 export { isStaticDemoSource };

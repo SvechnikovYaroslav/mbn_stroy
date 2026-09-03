@@ -32,7 +32,8 @@ export const Leads: CollectionConfig = {
     create: () => false,
     read: authenticated,
     update: authenticated,
-    delete: authenticated,
+    // Production: use status workflow (completed / spam). Dev may delete test rows.
+    delete: () => process.env.NODE_ENV === "development",
   },
   fields: [
     {

@@ -3,15 +3,18 @@ import type { GlobalConfig } from "payload";
 import { authenticated } from "@/access";
 
 /**
- * Editable contact / brand fields for the public site.
+ * Editable contact / brand / legal fields for the public site.
  * Marketing copy stays in code (config), not here.
+ *
+ * Legal texts on /privacy and /personal-data-consent are technical templates
+ * and must be reviewed with real operator details before production.
  */
 export const SiteSettings: GlobalConfig = {
   slug: "site-settings",
   label: "Настройки сайта",
   admin: {
     description:
-      "Контакты и базовые данные компании для шапки, подвала и страницы «Контакты».",
+      "Контакты, бренд и реквизиты оператора. Пустые поля на сайте не показываются.",
     group: "Сайт",
   },
   access: {
@@ -92,6 +95,50 @@ export const SiteSettings: GlobalConfig = {
           admin: {
             description: "Например: Пн–Пт, 10:00–19:00",
           },
+        },
+      ],
+    },
+    {
+      type: "group",
+      name: "legal",
+      label: "Реквизиты оператора",
+      admin: {
+        description:
+          "Для legal-страниц. Не заполняйте вымышленными данными. Пустые поля не показываются публично.",
+      },
+      fields: [
+        {
+          name: "legalName",
+          type: "text",
+          label: "Юридическое наименование",
+        },
+        {
+          name: "legalForm",
+          type: "text",
+          label: "Форма",
+          admin: {
+            description: "Например: ИП, ООО.",
+          },
+        },
+        {
+          name: "inn",
+          type: "text",
+          label: "ИНН",
+        },
+        {
+          name: "ogrnOrOgrnip",
+          type: "text",
+          label: "ОГРН / ОГРНИП",
+        },
+        {
+          name: "legalAddress",
+          type: "textarea",
+          label: "Юридический адрес",
+        },
+        {
+          name: "privacyEmail",
+          type: "email",
+          label: "Email по вопросам персональных данных",
         },
       ],
     },

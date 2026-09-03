@@ -7,6 +7,7 @@ import { MediaGallery } from "@/components/media/media-gallery";
 import { ProjectMediaItem } from "@/components/media/project-media";
 import { ProjectCard } from "@/components/projects/project-card";
 import { ServiceDescription } from "@/components/services/service-description";
+import { BreadcrumbJsonLd } from "@/components/seo/json-ld";
 import { buttonVariants } from "@/components/ui/button";
 import { getProjects } from "@/lib/projects";
 import {
@@ -19,6 +20,7 @@ import {
   getServiceBySlug,
   getServiceSlugs,
 } from "@/lib/services";
+import { absoluteUrl, isIndexingAllowed } from "@/lib/site-env";
 import {
   serviceSeoDescription,
   serviceSeoTitle,
@@ -47,9 +49,24 @@ export async function generateMetadata({
     return { title: "Услуга не найдена — MBN Строй" };
   }
 
+  const title = serviceSeoTitle(service);
+  const description = serviceSeoDescription(service);
+  const canonical = absoluteUrl(`/services/${service.slug}`);
+
   return {
-    title: serviceSeoTitle(service),
-    description: serviceSeoDescription(service),
+    title,
+    description,
+    ...(canonical ? { alternates: { canonical } } : {}),
+    ...(!isIndexingAllowed()
+      ? { robots: { index: false, follow: false } }
+      : {}),
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      ...(canonical ? { url: canonical } : {}),
+      ...(service.cover?.src ? { images: [{ url: service.cover.src }] } : {}),
+    },
   };
 }
 
@@ -87,6 +104,12 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
   return (
     <main>
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Услуги", path: "/services" },
+          { name: service.title, path: `/services/${service.slug}` },
+        ]}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

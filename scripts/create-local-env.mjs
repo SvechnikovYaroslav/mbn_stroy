@@ -16,6 +16,8 @@ const contents = `# Generated for local MBN Stroy development.
 
 DATABASE_URL=postgresql://mbn_stroy:mbn_stroy_local_dev@127.0.0.1:5432/mbn_stroy
 PAYLOAD_SECRET=${secret}
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+SITE_ENV=development
 `;
 
 writeFileSync(envPath, contents, "utf8");

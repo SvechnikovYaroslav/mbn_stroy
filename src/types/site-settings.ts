@@ -1,6 +1,6 @@
 /**
  * Public site settings (mapped from Payload Global `site-settings`).
- * Empty contact fields stay undefined — UI must hide those items.
+ * Empty contact / legal fields stay undefined — UI must hide those items.
  */
 export interface SiteSettings {
   companyName: string;
@@ -11,6 +11,12 @@ export interface SiteSettings {
   telegram?: string;
   whatsapp?: string;
   workingHours?: string;
+  legalName?: string;
+  legalForm?: string;
+  inn?: string;
+  ogrnOrOgrnip?: string;
+  legalAddress?: string;
+  privacyEmail?: string;
 }
 
 export type ContactChannel = {
@@ -18,4 +24,18 @@ export type ContactChannel = {
   label: string;
   value: string;
   href?: string;
+};
+
+export type LegalDetail = {
+  key: keyof Pick<
+    SiteSettings,
+    | "legalName"
+    | "legalForm"
+    | "inn"
+    | "ogrnOrOgrnip"
+    | "legalAddress"
+    | "privacyEmail"
+  >;
+  label: string;
+  value: string;
 };

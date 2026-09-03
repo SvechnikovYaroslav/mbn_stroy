@@ -19,6 +19,7 @@
     "migrate:duration": "tsx src/scripts/migrate-duration-fields.ts",
     "migrate:work-types-services": "tsx src/scripts/migrate-work-types-services.ts",
     "migrate:leads": "tsx src/scripts/migrate-leads.ts",
+    "migrate:site-legal": "tsx src/scripts/migrate-site-legal.ts",
     "verify:calculator": "tsx src/scripts/verify-calculator.ts",
     "verify:leads": "tsx src/scripts/verify-leads.ts",
     "publish:test-project": "tsx src/scripts/publish-test-project.ts",

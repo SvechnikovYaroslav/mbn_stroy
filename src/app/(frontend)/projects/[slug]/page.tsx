@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Container } from "@/components/layout/container";
 import { MediaGallery } from "@/components/media/media-gallery";
 import { ProjectMediaItem } from "@/components/media/project-media";
+import { BreadcrumbJsonLd } from "@/components/seo/json-ld";
 import { buttonVariants } from "@/components/ui/button";
 import {
   projectTypeLabels,
@@ -13,6 +14,7 @@ import {
 } from "@/config/project";
 import { getProjectBySlug, getProjectSlugs } from "@/lib/projects";
 import { ensurePortfolioDynamic } from "@/lib/projects/dynamic";
+import { absoluteUrl, isIndexingAllowed } from "@/lib/site-env";
 import { cn } from "@/lib/utils";
 
 type ProjectPageProps = {
@@ -35,11 +37,28 @@ export async function generateMetadata({
     return { title: "Проект не найден — MBN Строй" };
   }
 
+  const canonical = absoluteUrl(`/projects/${project.slug}`);
+
   return {
     title: `${project.title} — MBN Строй`,
     description:
-      project.description ??
-      `${project.title}. ${project.location}. Ремонт от MBN Строй.`,
+      project.description?.trim() ||
+      "Пример выполненного ремонта MBN Строй в Туле и Тульской области.",
+    ...(canonical ? { alternates: { canonical } } : {}),
+    ...(!isIndexingAllowed()
+      ? { robots: { index: false, follow: false } }
+      : {}),
+    openGraph: {
+      title: `${project.title} — MBN Строй`,
+      description:
+        project.description?.trim() ||
+        "Пример выполненного ремонта MBN Строй в Туле и Тульской области.",
+      type: "website",
+      ...(canonical ? { url: canonical } : {}),
+      ...(project.cover?.src
+        ? { images: [{ url: project.cover.src }] }
+        : {}),
+    },
   };
 }
 
@@ -54,6 +73,12 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   return (
     <main>
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Проекты", path: "/projects" },
+          { name: project.title, path: `/projects/${project.slug}` },
+        ]}
+      />
       <Container className="py-8 md:py-12">
         <Link
           href="/projects"

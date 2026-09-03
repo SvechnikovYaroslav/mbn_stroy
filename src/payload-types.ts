@@ -719,7 +719,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Контакты и базовые данные компании для шапки, подвала и страницы «Контакты».
+ * Контакты, бренд и реквизиты оператора. Пустые поля на сайте не показываются.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings".
@@ -750,6 +750,20 @@ export interface SiteSetting {
      * Например: Пн–Пт, 10:00–19:00
      */
     workingHours?: string | null;
+  };
+  /**
+   * Для legal-страниц. Не заполняйте вымышленными данными. Пустые поля не показываются публично.
+   */
+  legal?: {
+    legalName?: string | null;
+    /**
+     * Например: ИП, ООО.
+     */
+    legalForm?: string | null;
+    inn?: string | null;
+    ogrnOrOgrnip?: string | null;
+    legalAddress?: string | null;
+    privacyEmail?: string | null;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -832,6 +846,16 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         telegram?: T;
         whatsapp?: T;
         workingHours?: T;
+      };
+  legal?:
+    | T
+    | {
+        legalName?: T;
+        legalForm?: T;
+        inn?: T;
+        ogrnOrOgrnip?: T;
+        legalAddress?: T;
+        privacyEmail?: T;
       };
   updatedAt?: T;
   createdAt?: T;

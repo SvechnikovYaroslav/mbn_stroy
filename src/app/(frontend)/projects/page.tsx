@@ -4,11 +4,26 @@ import { Container } from "@/components/layout/container";
 import { ProjectCatalog } from "@/components/projects/project-catalog";
 import { ensurePortfolioDynamic } from "@/lib/projects/dynamic";
 import { getProjects } from "@/lib/projects";
+import { absoluteUrl, isIndexingAllowed } from "@/lib/site-env";
+
+const title = "Проекты — MBN Строй";
+const description =
+  "Реализованные ремонты квартир, домов и отдельных помещений в Туле и Тульской области.";
+const canonical = absoluteUrl("/projects");
 
 export const metadata: Metadata = {
-  title: "Проекты — MBN Строй",
-  description:
-    "Реализованные ремонты квартир, домов и отдельных помещений в Туле и Тульской области.",
+  title,
+  description,
+  ...(canonical ? { alternates: { canonical } } : {}),
+  ...(!isIndexingAllowed()
+    ? { robots: { index: false, follow: false } }
+    : {}),
+  openGraph: {
+    title,
+    description,
+    type: "website",
+    ...(canonical ? { url: canonical } : {}),
+  },
 };
 
 export default async function ProjectsPage() {
