@@ -9,6 +9,7 @@ import { buttonVariants } from "@/components/ui/button";
 import {
   projectTypeLabels,
   renovationTypeLabels,
+  workTypeLabels,
 } from "@/config/project";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
@@ -108,6 +109,21 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <p className="mt-8 max-w-2xl text-body-lg text-muted-foreground">
             {project.description}
           </p>
+        ) : null}
+
+        {project.workTypes.length > 0 ? (
+          <section className="mt-12 max-w-2xl border-t border-border pt-8">
+            <h2 className="text-caption text-muted-foreground">
+              Выполненные работы
+            </h2>
+            <ul className="mt-4 space-y-2">
+              {project.workTypes.map((workType) => (
+                <li key={workType} className="text-body text-foreground">
+                  {workTypeLabels[workType]}
+                </li>
+              ))}
+            </ul>
+          </section>
         ) : null}
 
         <div className="mt-16 space-y-16 md:mt-20 md:space-y-20">

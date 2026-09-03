@@ -2,6 +2,28 @@ export type ProjectType = "apartment" | "house" | "commercial" | "room";
 
 export type RenovationType = "cosmetic" | "capital" | "turnkey";
 
+/**
+ * Work performed on the object (independent from rooms / object type).
+ * Later may become a CMS collection instead of a fixed enum.
+ */
+export type WorkType =
+  | "finishing"
+  | "electrical"
+  | "plumbing"
+  | "stretch-ceilings"
+  | "windows"
+  | "flooring"
+  | "tiling"
+  | "painting"
+  | "demolition"
+  | "doors"
+  | "heating"
+  | "other";
+
+/**
+ * Rooms / zones shown in media.
+ * `interior` = general object photos without a specific room.
+ */
 export type ProjectSectionType =
   | "bathroom"
   | "kitchen"
@@ -46,6 +68,11 @@ export interface Project {
   location: string;
   area?: number;
   projectType: ProjectType;
+  /**
+   * Demo taxonomy for Milestone 03.
+   * Not verified against actual scope of works for real-photo objects.
+   */
+  workTypes: WorkType[];
   renovationType?: RenovationType;
   status: "completed";
   duration?: string;

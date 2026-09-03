@@ -1,6 +1,14 @@
 import { projects } from "@/data/projects";
-import type { CatalogSectionFilter } from "@/config/project";
-import type { Project, ProjectSectionType, ProjectType } from "@/types/project";
+import type {
+  CatalogSectionFilter,
+  ProjectCatalogQuery,
+} from "@/config/project";
+import type {
+  Project,
+  ProjectSectionType,
+  ProjectType,
+  WorkType,
+} from "@/types/project";
 
 export function getProjects(): Project[] {
   return projects;
@@ -14,12 +22,48 @@ export function getProjectsByType(projectType: ProjectType): Project[] {
   return projects.filter((project) => project.projectType === projectType);
 }
 
+export function getProjectsByWorkType(workType: WorkType): Project[] {
+  return projects.filter((project) => project.workTypes.includes(workType));
+}
+
 export function getProjectsBySection(
   sectionType: ProjectSectionType | CatalogSectionFilter
 ): Project[] {
   return projects.filter((project) =>
     project.sections.some((section) => section.type === sectionType)
   );
+}
+
+/**
+ * Combined catalog filter: AND across taxonomy groups.
+ * Within each group the UI currently uses a single selection.
+ */
+export function filterProjects(
+  query: ProjectCatalogQuery,
+  source: Project[] = projects
+): Project[] {
+  return source.filter((project) => {
+    if (
+      query.projectType &&
+      query.projectType !== "all" &&
+      project.projectType !== query.projectType
+    ) {
+      return false;
+    }
+
+    if (query.workType && !project.workTypes.includes(query.workType)) {
+      return false;
+    }
+
+    if (
+      query.sectionType &&
+      !project.sections.some((section) => section.type === query.sectionType)
+    ) {
+      return false;
+    }
+
+    return true;
+  });
 }
 
 export function getFeaturedProjects(limit = 3): Project[] {

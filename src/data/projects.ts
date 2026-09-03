@@ -4,6 +4,9 @@ import type { Project } from "@/types/project";
  * Local demo portfolio data for Milestone 03.
  * First projects use real company photos from public/media/projects.
  * Remaining entries are explicit placeholders — not real MBN Stroy objects.
+ *
+ * `workTypes` values are demo taxonomy for UI/filtering only.
+ * They are not verified as the actual scope of works for real-photo objects.
  */
 export const projects: Project[] = [
   {
@@ -12,6 +15,8 @@ export const projects: Project[] = [
     title: "Ремонт квартиры",
     location: "Тула",
     projectType: "apartment",
+    // Demo taxonomy — not confirmed against actual works
+    workTypes: ["finishing", "electrical", "plumbing"],
     status: "completed",
     description:
       "Ремонт квартиры в Туле. Фотографии реальных работ компании. Детали площади и сроков будут уточнены позже.",
@@ -87,6 +92,8 @@ export const projects: Project[] = [
     title: "Ремонт квартиры",
     location: "Тула",
     projectType: "apartment",
+    // Demo taxonomy — not confirmed against actual works
+    workTypes: ["finishing", "stretch-ceilings", "painting"],
     status: "completed",
     description:
       "Подборка реальных фотографий интерьера после ремонта. Типы отдельных зон не размечены — будут уточнены при переносе в CMS.",
@@ -102,7 +109,7 @@ export const projects: Project[] = [
         id: "project-002-interior",
         type: "interior",
         title: "Интерьер",
-        description: "Фотографии объекта без привязки к отдельным зонам.",
+        description: "Общие фотографии объекта без привязки к отдельным зонам.",
         media: [
           {
             id: "project-002-interior-01",
@@ -151,6 +158,13 @@ export const projects: Project[] = [
     location: "Тула",
     area: 72,
     projectType: "apartment",
+    workTypes: [
+      "finishing",
+      "electrical",
+      "plumbing",
+      "stretch-ceilings",
+      "windows",
+    ],
     renovationType: "turnkey",
     status: "completed",
     isPlaceholder: true,
@@ -190,6 +204,7 @@ export const projects: Project[] = [
     location: "Тула",
     area: 54,
     projectType: "apartment",
+    workTypes: ["finishing", "plumbing", "tiling"],
     status: "completed",
     isPlaceholder: true,
     cover: {
@@ -220,6 +235,7 @@ export const projects: Project[] = [
     location: "Тульская область",
     area: 91,
     projectType: "apartment",
+    workTypes: ["finishing", "windows", "flooring", "doors"],
     renovationType: "capital",
     status: "completed",
     isPlaceholder: true,
@@ -257,6 +273,13 @@ export const projects: Project[] = [
     location: "Тульская область",
     area: 140,
     projectType: "house",
+    workTypes: [
+      "finishing",
+      "electrical",
+      "plumbing",
+      "heating",
+      "windows",
+    ],
     renovationType: "turnkey",
     status: "completed",
     isPlaceholder: true,
@@ -294,6 +317,7 @@ export const projects: Project[] = [
     location: "Тула",
     area: 8,
     projectType: "room",
+    workTypes: ["plumbing", "tiling", "finishing"],
     status: "completed",
     isPlaceholder: true,
     cover: {
@@ -318,6 +342,7 @@ export const projects: Project[] = [
     location: "Тула",
     area: 68,
     projectType: "apartment",
+    workTypes: ["finishing", "electrical", "stretch-ceilings"],
     status: "completed",
     isPlaceholder: true,
     cover: {

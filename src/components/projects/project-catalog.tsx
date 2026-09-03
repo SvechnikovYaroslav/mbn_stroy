@@ -4,87 +4,131 @@ import { useMemo, useState } from "react";
 
 import { ProjectCard } from "@/components/projects/project-card";
 import {
-  catalogProjectFilters,
+  catalogProjectTypeFilters,
   catalogSectionFilters,
-  type CatalogProjectFilter,
+  catalogWorkTypeFilters,
+  type CatalogProjectTypeFilter,
   type CatalogSectionFilter,
+  type CatalogWorkTypeFilter,
 } from "@/config/project";
+import { filterProjects } from "@/lib/projects";
 import { cn } from "@/lib/utils";
 import type { Project } from "@/types/project";
-
-type CatalogFilter =
-  | { kind: "project"; value: CatalogProjectFilter }
-  | { kind: "section"; value: CatalogSectionFilter };
 
 type ProjectCatalogProps = {
   projects: Project[];
 };
 
+function FilterButton({
+  label,
+  active,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "border px-3 py-1.5 text-small transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        active
+          ? "border-foreground bg-foreground text-background"
+          : "border-border bg-transparent text-muted-foreground hover:border-foreground hover:text-foreground"
+      )}
+      aria-pressed={active}
+    >
+      {label}
+    </button>
+  );
+}
+
 export function ProjectCatalog({ projects }: ProjectCatalogProps) {
-  const [filter, setFilter] = useState<CatalogFilter>({
-    kind: "project",
-    value: "all",
-  });
+  const [projectType, setProjectType] =
+    useState<CatalogProjectTypeFilter>("all");
+  const [workType, setWorkType] = useState<CatalogWorkTypeFilter | null>(null);
+  const [sectionType, setSectionType] =
+    useState<CatalogSectionFilter | null>(null);
 
-  const filtered = useMemo(() => {
-    if (filter.kind === "project") {
-      if (filter.value === "all") return projects;
-      return projects.filter((project) => project.projectType === filter.value);
-    }
-
-    return projects.filter((project) =>
-      project.sections.some((section) => section.type === filter.value)
-    );
-  }, [filter, projects]);
+  const filtered = useMemo(
+    () =>
+      filterProjects(
+        {
+          projectType,
+          workType: workType ?? undefined,
+          sectionType: sectionType ?? undefined,
+        },
+        projects
+      ),
+    [projectType, workType, sectionType, projects]
+  );
 
   return (
     <div>
-      <div
-        className="flex flex-wrap gap-2 border-b border-border pb-6"
-        role="group"
-        aria-label="Фильтры проектов"
-      >
-        {catalogProjectFilters.map((item) => {
-          const active =
-            filter.kind === "project" && filter.value === item.id;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setFilter({ kind: "project", value: item.id })}
-              className={cn(
-                "border px-3 py-1.5 text-small transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                active
-                  ? "border-foreground bg-foreground text-background"
-                  : "border-border bg-transparent text-muted-foreground hover:border-foreground hover:text-foreground"
-              )}
-              aria-pressed={active}
-            >
-              {item.label}
-            </button>
-          );
-        })}
-        <span className="mx-1 hidden h-8 w-px bg-border sm:block" aria-hidden />
-        {catalogSectionFilters.map((item) => {
-          const active =
-            filter.kind === "section" && filter.value === item.id;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setFilter({ kind: "section", value: item.id })}
-              className={cn(
-                "border px-3 py-1.5 text-small transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                active
-                  ? "border-foreground bg-foreground text-background"
-                  : "border-border bg-transparent text-muted-foreground hover:border-foreground hover:text-foreground"
-              )}
-              aria-pressed={active}
-            >
-              {item.label}
-            </button>
-          );
-        })}
+      <div className="space-y-6 border-b border-border pb-8">
+        <div>
+          <p className="text-caption text-muted-foreground">Тип объекта</p>
+          <div
+            className="mt-3 flex flex-wrap gap-2"
+            role="group"
+            aria-label="Тип объекта"
+          >
+            {catalogProjectTypeFilters.map((item) => (
+              <FilterButton
+                key={item.id}
+                label={item.label}
+                active={projectType === item.id}
+                onClick={() => setProjectType(item.id)}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className="text-caption text-muted-foreground">Виды работ</p>
+          <div
+            className="mt-3 flex flex-wrap gap-2"
+            role="group"
+            aria-label="Виды работ"
+          >
+            {catalogWorkTypeFilters.map((item) => (
+              <FilterButton
+                key={item.id}
+                label={item.label}
+                active={workType === item.id}
+                onClick={() =>
+                  setWorkType((current) =>
+                    current === item.id ? null : item.id
+                  )
+                }
+              />
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className="text-caption text-muted-foreground">Помещения</p>
+          <div
+            className="mt-3 flex flex-wrap gap-2"
+            role="group"
+            aria-label="Помещения"
+          >
+            {catalogSectionFilters.map((item) => (
+              <FilterButton
+                key={item.id}
+                label={item.label}
+                active={sectionType === item.id}
+                onClick={() =>
+                  setSectionType((current) =>
+                    current === item.id ? null : item.id
+                  )
+                }
+              />
+            ))}
+          </div>
+        </div>
       </div>
 
       {filtered.length === 0 ? (
