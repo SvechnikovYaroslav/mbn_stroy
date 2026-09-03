@@ -8,37 +8,63 @@ import {
 import path from "node:path";
 
 /**
- * GitHub Pages cannot host Payload /admin or /api.
- * Copy the Payload App Router group aside, remove it for static export, then restore.
+ * GitHub Pages cannot host Payload /admin or dynamic API routes.
+ * Copy Payload + public lead API aside for static export, then restore.
  */
 const payloadDir = path.resolve("src/app/(payload)");
-const backupDir = path.resolve(".cache/payload-app-backup");
+const publicLeadsApiDir = path.resolve("src/app/(frontend)/api");
+const backupRoot = path.resolve(".cache/pages-build-backup");
+const payloadBackup = path.join(backupRoot, "payload");
+const apiBackup = path.join(backupRoot, "frontend-api");
 
 function removeDir(target) {
   if (!existsSync(target)) return;
   rmSync(target, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
 }
 
+function stashDir(source, backup) {
+  if (!existsSync(source)) return false;
+  removeDir(backup);
+  cpSync(source, backup, { recursive: true });
+  removeDir(source);
+  return true;
+}
+
+function restoreDir(source, backup) {
+  if (!existsSync(backup)) return;
+  removeDir(source);
+  cpSync(backup, source, { recursive: true });
+  removeDir(backup);
+}
+
 mkdirSync(path.resolve(".cache"), { recursive: true });
 
 try {
-  if (existsSync(backupDir) && !existsSync(payloadDir)) {
-    // Recover from a previously interrupted Pages build.
-    cpSync(backupDir, payloadDir, { recursive: true });
-    removeDir(backupDir);
+  // Recover from a previously interrupted Pages build.
+  if (existsSync(payloadBackup) && !existsSync(payloadDir)) {
+    restoreDir(payloadDir, payloadBackup);
     console.log("Recovered src/app/(payload) from a previous backup.");
   }
+  if (existsSync(apiBackup) && !existsSync(publicLeadsApiDir)) {
+    restoreDir(publicLeadsApiDir, apiBackup);
+    console.log("Recovered src/app/(frontend)/api from a previous backup.");
+  }
 
-  if (existsSync(payloadDir)) {
-    removeDir(backupDir);
-    cpSync(payloadDir, backupDir, { recursive: true });
-    removeDir(payloadDir);
+  const removedPayload = stashDir(payloadDir, payloadBackup);
+  const removedApi = stashDir(publicLeadsApiDir, apiBackup);
+
+  if (removedPayload) {
     console.log("Temporarily removed src/app/(payload) for GitHub Pages export.");
+  }
+  if (removedApi) {
+    console.log(
+      "Temporarily removed src/app/(frontend)/api for GitHub Pages export."
+    );
   }
 
   process.env.GITHUB_PAGES = "true";
 
-  // Clear stale typed routes that still reference (payload) from prior server builds.
+  // Clear stale typed routes that still reference removed dirs.
   removeDir(path.resolve(".next"));
 
   const result = spawnSync("npm", ["run", "build"], {
@@ -51,11 +77,14 @@ try {
     process.exitCode = result.status ?? 1;
   }
 } finally {
-  if (existsSync(backupDir)) {
-    removeDir(payloadDir);
-    cpSync(backupDir, payloadDir, { recursive: true });
-    removeDir(backupDir);
+  restoreDir(payloadDir, payloadBackup);
+  restoreDir(publicLeadsApiDir, apiBackup);
+  removeDir(backupRoot);
+  if (existsSync(payloadDir)) {
     console.log("Restored src/app/(payload).");
+  }
+  if (existsSync(publicLeadsApiDir)) {
+    console.log("Restored src/app/(frontend)/api.");
   }
 }
 

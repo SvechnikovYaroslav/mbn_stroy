@@ -18,7 +18,9 @@
     "seed:site-settings": "tsx src/scripts/seed-site-settings.ts",
     "migrate:duration": "tsx src/scripts/migrate-duration-fields.ts",
     "migrate:work-types-services": "tsx src/scripts/migrate-work-types-services.ts",
+    "migrate:leads": "tsx src/scripts/migrate-leads.ts",
     "verify:calculator": "tsx src/scripts/verify-calculator.ts",
+    "verify:leads": "tsx src/scripts/verify-leads.ts",
     "publish:test-project": "tsx src/scripts/publish-test-project.ts",
     "create:admin": "tsx src/scripts/create-admin.ts",
     "env:local": "node scripts/create-local-env.mjs"

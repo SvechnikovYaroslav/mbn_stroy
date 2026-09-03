@@ -2,7 +2,10 @@
 
 import { useMemo, useState } from "react";
 
+import Link from "next/link";
+
 import { OptionCard } from "@/components/calculator/option-card";
+import { LeadForm } from "@/components/leads/lead-form";
 import { buttonVariants } from "@/components/ui/button";
 import {
   AREA_DEFAULT,
@@ -14,7 +17,6 @@ import {
   calculatorRenovationDescriptions,
   propertyConditionLabels,
 } from "@/config/calculator";
-import { siteConfig } from "@/config/site";
 import { renovationTypeLabels } from "@/config/project";
 import {
   calculateRenovation,
@@ -32,9 +34,35 @@ import type {
   CalculatorObjectType,
   PropertyCondition,
 } from "@/types/calculator";
+import type { LeadCalculatorSnapshot } from "@/types/lead";
 import type { RenovationType, WorkType } from "@/types/project";
 
 const INPUT_STEPS = 5;
+
+function buildCalculatorSnapshot(
+  input: CalculatorInput,
+  estimateMin: number,
+  estimateMax: number,
+  workRules: ReturnType<typeof getAvailableWorkRules>
+): LeadCalculatorSnapshot {
+  return {
+    objectType: input.objectType,
+    ...(input.apartmentLayout
+      ? { apartmentLayout: input.apartmentLayout }
+      : {}),
+    area: input.area,
+    renovationType: input.renovationType,
+    condition: input.condition,
+    workTypes: input.workTypes.map((slug) => ({
+      slug,
+      title:
+        workRules.find((rule) => rule.workType === slug)?.title ?? slug,
+    })),
+    estimateMin,
+    estimateMax,
+    calculatedAt: new Date().toISOString(),
+  };
+}
 
 type CalculatorWizardProps = {
   config: CalculatorConfig;
@@ -148,12 +176,12 @@ export function CalculatorWizard({
           Для выбранных параметров расчёт пока недоступен. Свяжитесь с нами для
           оценки стоимости.
         </p>
-        <a
-          href={siteConfig.cta.href}
+        <Link
+          href="/contacts"
           className={cn(buttonVariants({ size: "lg" }), "mt-6 inline-flex")}
         >
-          {siteConfig.cta.title}
-        </a>
+          Обсудить ремонт
+        </Link>
       </div>
     );
   }
@@ -429,13 +457,7 @@ export function CalculatorWizard({
               объёма работ и составления сметы.
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a
-                href={siteConfig.cta.href}
-                className={cn(buttonVariants({ size: "lg" }), "inline-flex")}
-              >
-                Обсудить расчёт
-              </a>
+            <div className="mt-8">
               <button
                 type="button"
                 onClick={() => setStep(1)}
@@ -447,6 +469,40 @@ export function CalculatorWizard({
                 Изменить параметры
               </button>
             </div>
+
+            {outcome.available && input ? (
+              <div className="mt-12 border-t border-border pt-10">
+                <LeadForm
+                  source="calculator"
+                  submissionsDisabled={isDemo}
+                  heading="Обсудить этот расчёт"
+                  intro="Оставьте контакт — параметры расчёта будут приложены к заявке."
+                  submitLabel="Отправить расчёт"
+                  calculatorSnapshot={buildCalculatorSnapshot(
+                    input,
+                    outcome.min,
+                    outcome.max,
+                    workRules
+                  )}
+                />
+              </div>
+            ) : (
+              <div className="mt-12 border-t border-border pt-10">
+                <p className="text-body text-muted-foreground">
+                  Можно оставить заявку на странице контактов — обсудим задачу
+                  без предварительного расчёта.
+                </p>
+                <Link
+                  href="/contacts"
+                  className={cn(
+                    buttonVariants({ size: "lg" }),
+                    "mt-6 inline-flex"
+                  )}
+                >
+                  Перейти к контактам
+                </Link>
+              </div>
+            )}
           </div>
         ) : null}
       </div>

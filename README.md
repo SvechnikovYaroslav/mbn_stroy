@@ -100,13 +100,17 @@ PAYLOAD_SECRET=
 npm install
 npm run seed
 npm run seed:calculator
+npm run seed:site-settings
+npm run migrate:leads
 npm run dev
 ```
 
 - Сайт: [http://localhost:3000](http://localhost:3000)
 - Admin: [http://localhost:3000/admin](http://localhost:3000/admin)
 - Калькулятор: [http://localhost:3000/calculator](http://localhost:3000/calculator)
+- Контакты / заявки: [http://localhost:3000/contacts](http://localhost:3000/contacts)
 - Настройки цен в admin: **Калькулятор** (Global)
+- Заявки в admin: **Заявки**
 
 Первого администратора создайте через `/admin` при первом запуске.
 
@@ -116,12 +120,34 @@ Seed work types + demo projects (без admin user):
 npm run seed
 ```
 
+## Leads
+
+Заявки с сайта сохраняются в Payload collection **Заявки** (`leads`).
+
+- Формы: `/contacts`, результат `/calculator`, контекст с `/projects/[slug]` и `/services/[slug]`
+- Создание только через `/api/public-leads` + Local API (публичный Payload create для `leads` запрещён)
+- Калькулятор прикладывает immutable snapshot расчёта
+- GitHub Pages **не** отправляет заявки (кнопка disabled / сообщение о демо)
+
+Проверка:
+
+```bash
+npm run verify:leads
+```
+
+Первичное создание таблицы:
+
+```bash
+$env:PAYLOAD_DB_PUSH='true'; npm run migrate:leads
+```
+
 ## Payload scripts
 
 ```bash
 npm run payload -- migrate:create
 npm run payload -- migrate
 npm run migrate:duration
+npm run migrate:leads
 npm run generate:types
 npm run generate:importmap
 ```
@@ -131,7 +157,9 @@ Schema push в dev по умолчанию **выключен** (`PAYLOAD_DB_PUS
 
 ## Planned
 
-- renovation calculator
+- legal pages (privacy / consent)
+- email / Telegram notifications for leads
+- production rate limiting (Redis / edge)
 - S3-compatible media storage (Yandex Object Storage)
 - SEO / Yandex Metrica
 - production hosting в РФ
