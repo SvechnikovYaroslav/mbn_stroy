@@ -12,12 +12,13 @@ export async function ProjectsPreview() {
   const projects = await getFeaturedProjects(3);
 
   return (
-    <section id="projects" className="scroll-mt-20 border-b border-border">
+    <section className="border-b border-border">
       <Container className="py-14 md:py-20">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <h2 className="text-h2 text-foreground">Избранные проекты</h2>
+          <h2 className="text-h2 text-foreground">Реализованные проекты</h2>
           <p className="max-w-md text-body text-muted-foreground">
-            Реализованные ремонты в Туле и Тульской области.
+            Примеры выполненных работ — от отдельных помещений до комплексного
+            ремонта квартир и домов.
           </p>
         </div>
 
@@ -38,9 +39,12 @@ export async function ProjectsPreview() {
         <div className="mt-10">
           <Link
             href="/projects"
-            className={cn(buttonVariants({ variant: "outline", size: "lg" }), "h-11 px-5")}
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
+              "h-11 px-5"
+            )}
           >
-            Все проекты
+            Смотреть все проекты
           </Link>
         </div>
       </Container>

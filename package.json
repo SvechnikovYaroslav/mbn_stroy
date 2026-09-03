@@ -15,6 +15,7 @@
     "seed": "tsx src/scripts/seed.ts",
     "seed:calculator": "tsx src/scripts/seed-calculator.ts",
     "seed:services": "tsx src/scripts/seed-service-content.ts",
+    "seed:site-settings": "tsx src/scripts/seed-site-settings.ts",
     "migrate:duration": "tsx src/scripts/migrate-duration-fields.ts",
     "migrate:work-types-services": "tsx src/scripts/migrate-work-types-services.ts",
     "verify:calculator": "tsx src/scripts/verify-calculator.ts",

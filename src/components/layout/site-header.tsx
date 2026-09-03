@@ -74,12 +74,12 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden md:block">
-          <a
+          <Link
             href={siteConfig.cta.href}
             className={cn(buttonVariants({ size: "default" }), "h-9 px-4")}
           >
             {siteConfig.cta.title}
-          </a>
+          </Link>
         </div>
 
         <Sheet open={open} onOpenChange={setOpen}>
@@ -117,7 +117,7 @@ export function SiteHeader() {
             <div className="mt-auto border-t border-border p-5">
               <SheetClose
                 render={
-                  <a
+                  <Link
                     href={siteConfig.cta.href}
                     className={cn(
                       buttonVariants({ size: "lg" }),

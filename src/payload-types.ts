@@ -92,9 +92,11 @@ export interface Config {
   };
   fallbackLocale: null;
   globals: {
+    'site-settings': SiteSetting;
     'calculator-settings': CalculatorSetting;
   };
   globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     'calculator-settings': CalculatorSettingsSelect<false> | CalculatorSettingsSelect<true>;
   };
   locale: null;
@@ -617,6 +619,42 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * Контакты и базовые данные компании для шапки, подвала и страницы «Контакты».
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  companyName?: string | null;
+  slogan?: string | null;
+  location?: string | null;
+  /**
+   * Пустые поля на сайте не показываются. Не заполняйте заглушками.
+   */
+  contacts?: {
+    /**
+     * Например: +7 (4872) 00-00-00
+     */
+    phone?: string | null;
+    email?: string | null;
+    /**
+     * URL (https://t.me/…) или username (@name / name).
+     */
+    telegram?: string | null;
+    /**
+     * URL (https://wa.me/…) или номер (+79001234567).
+     */
+    whatsapp?: string | null;
+    /**
+     * Например: Пн–Пт, 10:00–19:00
+     */
+    workingHours?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * Цены и коэффициенты для калькулятора на сайте. Формула расчёта фиксирована в коде и здесь не редактируется.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -677,6 +715,27 @@ export interface CalculatorSetting {
     | null;
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  companyName?: T;
+  slogan?: T;
+  location?: T;
+  contacts?:
+    | T
+    | {
+        phone?: T;
+        email?: T;
+        telegram?: T;
+        whatsapp?: T;
+        workingHours?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

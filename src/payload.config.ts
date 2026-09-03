@@ -11,6 +11,7 @@ import { Projects } from "./collections/Projects";
 import { Users } from "./collections/Users";
 import { WorkTypes } from "./collections/WorkTypes";
 import { CalculatorSettings } from "./globals/CalculatorSettings";
+import { SiteSettings } from "./globals/SiteSettings";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -30,7 +31,7 @@ export default buildConfig({
     fallbackLanguage: "ru",
   },
   collections: [Users, WorkTypes, Media, Projects],
-  globals: [CalculatorSettings],
+  globals: [SiteSettings, CalculatorSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
