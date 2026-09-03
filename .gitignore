@@ -34,13 +34,18 @@ yarn-error.log*
 # env files
 .env
 .env.local
-.env*
+.env.*
+!.env.example
 
 # vercel
 .vercel
 
 # local temp
 .tmp-shots/
+.cache/
+
+# Payload local uploads (not public/media demo assets)
+/media/
 
 # Original HEIC uploads (not web-safe; convert before publishing)
 /media-source/
