@@ -1,0 +1,52 @@
+# Example PowerShell SSH wrapper for Windows.
+# Copy to rebuild.ssh.ps1 (or keep this name after filling deploy.local.env).
+#
+#   Copy-Item deploy.local.env.example deploy.local.env
+#   .\rebuild.ssh.ps1 full
+#   .\rebuild.ssh.ps1 restart
+#   .\rebuild.ssh.ps1 status
+#   .\rebuild.ssh.ps1 logs
+#   .\rebuild.ssh.ps1 logs app
+
+param(
+  [Parameter(ValueFromRemainingArguments = $true)]
+  [string[]]$DeployArgs
+)
+
+$ErrorActionPreference = "Stop"
+$root = Split-Path -Parent $MyInvocation.MyCommand.Path
+$localEnv = Join-Path $root "deploy.local.env"
+
+function Read-LocalEnv([string]$path) {
+  if (-not (Test-Path $path)) { return }
+  Get-Content $path | ForEach-Object {
+    $line = $_.Trim()
+    if (-not $line -or $line.StartsWith("#")) { return }
+    $parts = $line.Split("=", 2)
+    if ($parts.Count -ne 2) { return }
+    $name = $parts[0].Trim()
+    $value = $parts[1].Trim().Trim("'").Trim('"')
+    if (-not [Environment]::GetEnvironmentVariable($name)) {
+      Set-Item -Path "Env:$name" -Value $value
+    }
+  }
+}
+
+Read-LocalEnv $localEnv
+
+$hostName = if ($env:OTDELKA_SSH_HOST) { $env:OTDELKA_SSH_HOST } else { "deploy@51.250.25.221" }
+$key = $env:OTDELKA_SSH_KEY
+$remoteDir = if ($env:OTDELKA_REMOTE_DIR) { $env:OTDELKA_REMOTE_DIR } else { "/opt/otdelka-360" }
+
+if (-not $key) {
+  throw "Set OTDELKA_SSH_KEY in deploy.local.env or the environment"
+}
+
+$quotedArgs = @()
+foreach ($arg in $DeployArgs) {
+  $quotedArgs += "'" + ($arg -replace "'", "'\''") + "'"
+}
+$remote = "cd '$remoteDir' && ./scripts/deploy.sh $($quotedArgs -join ' ')"
+
+& ssh -i $key -o IdentitiesOnly=yes $hostName $remote
+exit $LASTEXITCODE

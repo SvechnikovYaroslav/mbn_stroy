@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Copy to ./rebuild.ssh if you customize this file. The committed rebuild.ssh
+# already reads gitignored deploy.local.env and does not hardcode a key path.
+
+set -Eeuo pipefail
+
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+if [[ -f "${ROOT}/deploy.local.env" ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  source "${ROOT}/deploy.local.env"
+  set +a
+fi
+
+SSH_HOST="${OTDELKA_SSH_HOST:-deploy@51.250.25.221}"
+SSH_KEY="${OTDELKA_SSH_KEY:?Set OTDELKA_SSH_KEY in deploy.local.env or the environment}"
+REMOTE_DIR="${OTDELKA_REMOTE_DIR:-/opt/otdelka-360}"
+
+if [[ "$SSH_KEY" == [A-Za-z]:* ]]; then
+  drive="$(printf '%s' "${SSH_KEY:0:1}" | tr '[:upper:]' '[:lower:]')"
+  SSH_KEY="/${drive}${SSH_KEY:2}"
+  SSH_KEY="${SSH_KEY//\\//}"
+fi
+
+REMOTE_CMD="cd $(printf '%q' "$REMOTE_DIR") && ./scripts/deploy.sh"
+for arg in "$@"; do
+  REMOTE_CMD+=" $(printf '%q' "$arg")"
+done
+
+exec ssh -i "$SSH_KEY" -o IdentitiesOnly=yes "$SSH_HOST" "$REMOTE_CMD"
