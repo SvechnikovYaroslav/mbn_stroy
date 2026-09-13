@@ -8,10 +8,10 @@ import { getServices } from "@/lib/services";
 import {
   getProjectsByWorkType,
   getRelevantServiceMedia,
+  isKnownWorkType,
   resolveServiceCover,
 } from "@/lib/services/related";
 import { brandTitle } from "@/config/site";
-import type { WorkType } from "@/types/project";
 
 export const metadata: Metadata = {
   title: brandTitle("Услуги по ремонту в Туле"),
@@ -47,11 +47,17 @@ export default async function ServicesPage() {
           ) : (
             <ul>
               {services.map((service, index) => {
-                const workType = service.slug as WorkType;
+                const workType = isKnownWorkType(service.slug)
+                  ? service.slug
+                  : null;
                 const cover = resolveServiceCover({
                   serviceCover: service.cover,
-                  relevantMedia: getRelevantServiceMedia(projects, workType),
-                  relatedProjects: getProjectsByWorkType(projects, workType),
+                  relevantMedia: workType
+                    ? getRelevantServiceMedia(projects, workType)
+                    : [],
+                  relatedProjects: workType
+                    ? getProjectsByWorkType(projects, workType)
+                    : [],
                   serviceTitle: service.title,
                 });
 

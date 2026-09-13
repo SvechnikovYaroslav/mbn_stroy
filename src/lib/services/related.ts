@@ -5,6 +5,25 @@ import { getSectionsByWorkType } from "@/lib/projects/filter";
 const DEFAULT_MEDIA_LIMIT = 12;
 const DEFAULT_PROJECT_LIMIT = 6;
 
+const KNOWN_WORK_TYPES: ReadonlySet<string> = new Set<WorkType>([
+  "finishing",
+  "electrical",
+  "plumbing",
+  "stretch-ceilings",
+  "windows",
+  "flooring",
+  "tiling",
+  "painting",
+  "demolition",
+  "doors",
+  "heating",
+  "other",
+]);
+
+export function isKnownWorkType(value: string): value is WorkType {
+  return KNOWN_WORK_TYPES.has(value);
+}
+
 /**
  * Sections that explicitly list this work type (not project-level fallback).
  */

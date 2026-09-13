@@ -13,7 +13,7 @@ import {
   workTypeLabels,
 } from "@/config/project";
 import { brandTitle, siteConfig } from "@/config/site";
-import { getProjectBySlug, getProjectSlugs } from "@/lib/projects";
+import { getProjectBySlug } from "@/lib/projects";
 import { ensurePortfolioDynamic } from "@/lib/projects/dynamic";
 import { absoluteUrl, isIndexingAllowed } from "@/lib/site-env";
 import { cn } from "@/lib/utils";
@@ -22,14 +22,12 @@ type ProjectPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export async function generateStaticParams() {
-  // Cloud Docker build has no Postgres. Production routes render on demand.
-  if (process.env.GITHUB_PAGES !== "true") {
-    return [];
-  }
-  const slugs = await getProjectSlugs();
-  return slugs.map((slug) => ({ slug }));
-}
+/**
+ * Same DYNAMIC_SERVER_USAGE trap as /services/[slug]: force request-time
+ * rendering so Payload queries are allowed.
+ */
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
 
 export async function generateMetadata({
   params,

@@ -13,19 +13,16 @@ import { getProjects } from "@/lib/projects";
 import {
   getRelevantServiceMedia,
   getProjectsByWorkType,
+  isKnownWorkType,
   resolveServiceCover,
 } from "@/lib/services/related";
 import { ensureServicesDynamic } from "@/lib/services/dynamic";
-import {
-  getServiceBySlug,
-  getServiceSlugs,
-} from "@/lib/services";
+import { getServiceBySlug } from "@/lib/services";
 import { absoluteUrl, isIndexingAllowed } from "@/lib/site-env";
 import {
   serviceSeoDescription,
   serviceSeoTitle,
 } from "@/types/service";
-import type { WorkType } from "@/types/project";
 import { cn } from "@/lib/utils";
 import { brandTitle, siteConfig } from "@/config/site";
 
@@ -33,14 +30,12 @@ type ServicePageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export async function generateStaticParams() {
-  // Cloud Docker build has no Postgres. Production routes render on demand.
-  if (process.env.GITHUB_PAGES !== "true") {
-    return [];
-  }
-  const slugs = await getServiceSlugs();
-  return slugs.map((slug) => ({ slug }));
-}
+/**
+ * Request-time rendering: Payload queries and `connection()` must not run
+ * inside a statically classified segment (DYNAMIC_SERVER_USAGE → HTTP 500).
+ */
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
 
 export async function generateMetadata({
   params,
@@ -83,10 +78,14 @@ export default async function ServicePage({ params }: ServicePageProps) {
     notFound();
   }
 
-  const workType = service.slug as WorkType;
+  const workType = isKnownWorkType(service.slug) ? service.slug : null;
   const projects = await getProjects();
-  const relevantMedia = getRelevantServiceMedia(projects, workType);
-  const relatedProjects = getProjectsByWorkType(projects, workType);
+  const relevantMedia = workType
+    ? getRelevantServiceMedia(projects, workType)
+    : [];
+  const relatedProjects = workType
+    ? getProjectsByWorkType(projects, workType)
+    : [];
   const cover = resolveServiceCover({
     serviceCover: service.cover,
     relevantMedia,
