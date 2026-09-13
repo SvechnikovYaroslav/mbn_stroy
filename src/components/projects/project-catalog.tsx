@@ -35,8 +35,8 @@ function FilterButton({
       className={cn(
         "border px-3 py-1.5 text-small transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         active
-          ? "border-foreground bg-foreground text-background"
-          : "border-border bg-transparent text-muted-foreground hover:border-foreground hover:text-foreground"
+          ? "border-primary bg-primary text-primary-foreground"
+          : "border-border bg-transparent text-muted-foreground hover:border-primary hover:text-foreground"
       )}
       aria-pressed={active}
     >

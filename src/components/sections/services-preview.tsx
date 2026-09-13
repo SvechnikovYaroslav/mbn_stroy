@@ -31,7 +31,7 @@ export async function ServicesPreview() {
                   href={`/services/${service.slug}`}
                   className="grid grid-cols-[3.5rem_1fr] items-baseline gap-4 py-5 transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:grid-cols-[5rem_1fr] md:gap-8 md:py-6"
                 >
-                  <span className="text-caption text-muted-foreground">
+                  <span className="text-caption text-primary">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <span>

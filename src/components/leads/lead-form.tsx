@@ -20,7 +20,7 @@ type LeadFormProps = {
   heading?: string;
   intro?: string;
   submitLabel?: string;
-  /** GitHub Pages / static demo — block real submission */
+  /** Optional local/demo mode — block real submission */
   submissionsDisabled?: boolean;
   className?: string;
 };
@@ -193,7 +193,7 @@ export function LeadForm({
             autoComplete="name"
             maxLength={120}
             disabled={submissionsDisabled || pending}
-            className="mt-2 w-full border border-border bg-background px-3 py-2.5 text-body text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+            className="mt-2 w-full border border-input bg-card px-3 py-2.5 text-body text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
             aria-invalid={Boolean(fieldErrors?.name)}
             aria-describedby={
               fieldErrors?.name ? `${formId}-name-error` : undefined
@@ -224,7 +224,7 @@ export function LeadForm({
             inputMode="tel"
             maxLength={40}
             disabled={submissionsDisabled || pending}
-            className="mt-2 w-full border border-border bg-background px-3 py-2.5 text-body text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+            className="mt-2 w-full border border-input bg-card px-3 py-2.5 text-body text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
             aria-invalid={Boolean(fieldErrors?.phone)}
             aria-describedby={
               fieldErrors?.phone ? `${formId}-phone-error` : undefined
@@ -254,7 +254,7 @@ export function LeadForm({
             autoComplete="email"
             maxLength={254}
             disabled={submissionsDisabled || pending}
-            className="mt-2 w-full border border-border bg-background px-3 py-2.5 text-body text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+            className="mt-2 w-full border border-input bg-card px-3 py-2.5 text-body text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
             aria-invalid={Boolean(fieldErrors?.email)}
             aria-describedby={
               fieldErrors?.email ? `${formId}-email-error` : undefined
@@ -283,7 +283,7 @@ export function LeadForm({
             rows={4}
             maxLength={4000}
             disabled={submissionsDisabled || pending}
-            className="mt-2 w-full resize-y border border-border bg-background px-3 py-2.5 text-body text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+            className="mt-2 w-full resize-y border border-input bg-card px-3 py-2.5 text-body text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
             aria-invalid={Boolean(fieldErrors?.comment)}
           />
         </div>

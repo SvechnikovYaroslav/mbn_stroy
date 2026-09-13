@@ -1,40 +1,41 @@
 import Link from "next/link";
 
 import { Container } from "@/components/layout/container";
-import { ProjectMediaItem } from "@/components/media/project-media";
 import { buttonVariants } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
-import { getFeaturedProjects, getProjects } from "@/lib/projects";
-import { ensurePortfolioDynamic } from "@/lib/projects/dynamic";
+import { mediaUrl } from "@/lib/media-url";
 import { cn } from "@/lib/utils";
-import type { ProjectMedia } from "@/types/project";
 
-async function resolveHeroCover(): Promise<ProjectMedia> {
-  const featured = await getFeaturedProjects(1);
-  const featuredCover = featured[0]?.cover;
-  if (featuredCover?.src) return featuredCover;
+const HERO_IMAGE = "/images/hero/otdelka-360-hero.webp";
+const HERO_ALT =
+  "Интерьер квартиры после ремонта — тёплый свет в современном жилом пространстве";
 
-  const projects = await getProjects();
-  const newestCover = projects[0]?.cover;
-  if (newestCover?.src) return newestCover;
-
-  return {
-    id: "hero-placeholder",
-    type: "image",
-    src: "",
-    alt: "Место для фотографии проекта",
-    orientation: "landscape",
-  };
-}
-
-export async function Hero() {
-  await ensurePortfolioDynamic();
-  const cover = await resolveHeroCover();
-
+export function Hero() {
   return (
-    <section className="border-b border-border">
-      <Container className="grid gap-10 py-12 md:gap-12 md:py-16 lg:grid-cols-12 lg:items-end lg:gap-10 lg:py-20">
-        <div className="lg:col-span-6">
+    <section className="relative isolate overflow-hidden border-b border-border">
+      <div className="absolute inset-0">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={mediaUrl(HERO_IMAGE)}
+          alt=""
+          className="h-full w-full object-cover object-center"
+          width={1920}
+          height={1272}
+          decoding="async"
+          fetchPriority="high"
+        />
+        <div
+          className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/25"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/40"
+          aria-hidden="true"
+        />
+      </div>
+
+      <Container className="relative z-10 flex min-h-[32rem] flex-col justify-end py-14 md:min-h-[40rem] md:py-20 lg:min-h-[44rem]">
+        <div className="max-w-2xl">
           <p className="text-caption text-primary">
             {siteConfig.name} · Тула
           </p>
@@ -69,11 +70,8 @@ export async function Hero() {
             </Link>
           </div>
         </div>
-
-        <div className="lg:col-span-6">
-          <ProjectMediaItem media={cover} priority />
-        </div>
       </Container>
+      <span className="sr-only">{HERO_ALT}</span>
     </section>
   );
 }

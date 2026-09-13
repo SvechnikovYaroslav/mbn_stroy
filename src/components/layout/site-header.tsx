@@ -49,7 +49,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background">
+    <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-sm">
       <Container className="flex h-14 items-center justify-between gap-4 lg:h-16">
         <Link
           href="/"

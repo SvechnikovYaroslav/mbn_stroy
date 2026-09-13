@@ -202,7 +202,7 @@ export function CalculatorWizard({
             aria-label={`Прогресс: шаг ${step} из ${INPUT_STEPS}`}
           >
             <div
-              className="h-full bg-foreground transition-[width] duration-300 motion-reduce:transition-none"
+              className="h-full bg-primary transition-[width] duration-300 motion-reduce:transition-none"
               style={{ width: `${(step / INPUT_STEPS) * 100}%` }}
             />
           </div>
@@ -303,7 +303,7 @@ export function CalculatorWizard({
                   max={AREA_SLIDER_MAX}
                   value={Math.min(AREA_SLIDER_MAX, Math.max(AREA_SLIDER_MIN, area))}
                   onChange={(event) => syncArea(Number(event.target.value))}
-                  className="w-full accent-foreground"
+                  className="w-full accent-primary"
                 />
                 <span className="mt-2 flex justify-between text-caption text-muted-foreground">
                   <span>{AREA_SLIDER_MIN} м²</span>

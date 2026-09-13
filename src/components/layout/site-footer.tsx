@@ -31,7 +31,7 @@ export async function SiteFooter() {
   );
 
   return (
-    <footer className="mt-auto border-t border-border bg-secondary/40">
+    <footer className="mt-auto border-t border-border bg-card">
       <Container className="py-12 md:py-16">
         <div className="grid gap-10 md:grid-cols-12 md:gap-8">
           <div className="md:col-span-5">

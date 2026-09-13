@@ -13,7 +13,7 @@ export function WhyMbnSection() {
               key={item.title}
               className="grid grid-cols-[3.5rem_1fr] gap-4 py-6 md:grid-cols-[5rem_1fr] md:gap-8 md:py-8"
             >
-              <span className="text-caption text-muted-foreground">
+              <span className="text-caption text-primary">
                 {String(index + 1).padStart(2, "0")}
               </span>
               <div>

@@ -16,7 +16,7 @@ export function ProcessSection() {
         <ol className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-5 lg:gap-6">
           {processSteps.map((step, index) => (
             <li key={step.title} className="min-w-0">
-              <p className="text-caption text-muted-foreground">
+              <p className="text-caption text-primary">
                 {String(index + 1).padStart(2, "0")}
               </p>
               <h3 className="mt-3 text-h3 text-foreground">{step.title}</h3>

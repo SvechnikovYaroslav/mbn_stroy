@@ -29,7 +29,7 @@ export function ServiceCard({ service, index, cover }: ServiceCardProps) {
           </div>
         ) : null}
         <div className={hasImage ? "md:col-span-7" : "md:col-span-12"}>
-          <p className="text-caption text-muted-foreground">{number}</p>
+          <p className="text-caption text-primary">{number}</p>
           <h2 className="mt-3 text-h2 text-foreground">{service.title}</h2>
           {service.shortDescription ? (
             <p className="mt-3 max-w-xl text-body text-muted-foreground">

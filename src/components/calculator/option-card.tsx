@@ -25,8 +25,8 @@ export function OptionCard({
         "flex cursor-pointer flex-col gap-1 border px-4 py-3 transition-colors",
         "focus-within:ring-2 focus-within:ring-ring",
         selected
-          ? "border-foreground bg-foreground text-background"
-          : "border-border bg-transparent text-foreground hover:border-foreground"
+          ? "border-primary bg-primary text-primary-foreground"
+          : "border-border bg-card text-foreground hover:border-primary"
       )}
     >
       <span className="flex items-start gap-3">
@@ -43,7 +43,7 @@ export function OptionCard({
             <span
               className={cn(
                 "mt-1 block text-small",
-                selected ? "text-background/80" : "text-muted-foreground"
+                selected ? "text-primary-foreground/80" : "text-muted-foreground"
               )}
             >
               {description}
