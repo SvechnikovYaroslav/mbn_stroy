@@ -5,28 +5,17 @@
  * Usage:
  *   npm run seed
  *
+ * Production: use `npm run seed:production` instead (no demo projects/leads).
+ *
  * Requires DATABASE_URL + PAYLOAD_SECRET and a running PostgreSQL.
  */
 import "dotenv/config";
 
 import { getPayload } from "payload";
 
+import { workTypesSeed } from "../data/work-types";
+import { ensureWorkTypes } from "./lib/ensure-work-types";
 import config from "../payload.config";
-
-const workTypesSeed = [
-  { title: "Отделка", slug: "finishing", sortOrder: 10 },
-  { title: "Электрика", slug: "electrical", sortOrder: 20 },
-  { title: "Сантехника", slug: "plumbing", sortOrder: 30 },
-  { title: "Натяжные потолки", slug: "stretch-ceilings", sortOrder: 40 },
-  { title: "Окна", slug: "windows", sortOrder: 50 },
-  { title: "Полы", slug: "flooring", sortOrder: 60 },
-  { title: "Плиточные работы", slug: "tiling", sortOrder: 70 },
-  { title: "Малярные работы", slug: "painting", sortOrder: 80 },
-  { title: "Демонтаж", slug: "demolition", sortOrder: 90 },
-  { title: "Двери", slug: "doors", sortOrder: 100 },
-  { title: "Отопление", slug: "heating", sortOrder: 110 },
-  { title: "Другие работы", slug: "other", sortOrder: 120 },
-] as const;
 
 const demoProjects = [
   {
@@ -80,35 +69,14 @@ async function seed() {
     throw new Error("PAYLOAD_SECRET is required to run seed.");
   }
 
-  const payload = await getPayload({ config });
-
-  const workTypeIds = new Map<string, number | string>();
-
-  for (const item of workTypesSeed) {
-    const existing = await payload.find({
-      collection: "work-types",
-      where: { slug: { equals: item.slug } },
-      limit: 1,
-    });
-
-    if (existing.docs[0]) {
-      workTypeIds.set(item.slug, existing.docs[0].id);
-      continue;
-    }
-
-    const created = await payload.create({
-      collection: "work-types",
-      data: {
-        title: item.title,
-        slug: item.slug,
-        sortOrder: item.sortOrder,
-        active: true,
-      },
-    });
-
-    workTypeIds.set(item.slug, created.id);
-    console.log(`Created work type: ${item.slug}`);
+  if (process.env.SITE_ENV === "production") {
+    throw new Error(
+      "npm run seed creates demo projects. Use npm run seed:production on production."
+    );
   }
+
+  const payload = await getPayload({ config });
+  const workTypeIds = await ensureWorkTypes(payload, workTypesSeed);
 
   for (const project of demoProjects) {
     const existing = await payload.find({

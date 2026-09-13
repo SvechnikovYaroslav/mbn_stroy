@@ -3,7 +3,7 @@ import { withPayload } from "@payloadcms/next/withPayload";
 
 /**
  * GitHub Pages demo hosting uses a project subpath + static export.
- * Local / future production runs a full Next.js + Payload server (no export).
+ * Local / cloud production runs a full Next.js + Payload server (no export).
  * CI sets GITHUB_PAGES=true for https://svechnikovyaroslav.github.io/mbn_stroy/
  *
  * Payload routes under src/app/(payload) are removed for Pages builds via
@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  productionBrowserSourceMaps: false,
   env: {
     NEXT_PUBLIC_BASE_PATH: publicBasePath,
   },

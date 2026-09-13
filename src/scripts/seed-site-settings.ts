@@ -2,6 +2,9 @@
  * Seed / ensure Payload Global `site-settings` with brand defaults.
  * Contact fields left empty — fill in admin when real data exists.
  *
+ * Does not overwrite filled brand fields. Replaces legacy "MBN Строй" only.
+ * Force overwrite brand fields: FORCE_SEED=true
+ *
  * Schema note:
  *   + global table site_settings
  *   Does NOT drop projects / work-types / calculator.
@@ -26,19 +29,48 @@ async function main() {
   console.log("  (no drops of existing collections / calculator)");
 
   const payload = await getPayload({ config });
-
-  await payload.updateGlobal({
+  const current = await payload.findGlobal({
     slug: "site-settings",
-    data: {
-      companyName: demoSiteSettings.companyName,
-      slogan: demoSiteSettings.slogan,
-      location: demoSiteSettings.location,
-      contacts: {},
-    },
+    depth: 0,
     overrideAccess: true,
   });
 
-  console.log("site-settings seeded with brand defaults (contacts empty).");
+  const force = process.env.FORCE_SEED === "true";
+  const data: {
+    companyName?: string;
+    slogan?: string;
+    location?: string;
+    contacts?: Record<string, never>;
+  } = {};
+
+  if (
+    force ||
+    !current.companyName?.trim() ||
+    current.companyName.trim() === "MBN Строй"
+  ) {
+    data.companyName = demoSiteSettings.companyName;
+  }
+  if (force || !current.slogan?.trim()) {
+    data.slogan = demoSiteSettings.slogan;
+  }
+  if (force || !current.location?.trim()) {
+    data.location = demoSiteSettings.location;
+  }
+
+  if (Object.keys(data).length === 0) {
+    console.log("site-settings already has brand values — skip.");
+    process.exit(0);
+  }
+
+  await payload.updateGlobal({
+    slug: "site-settings",
+    data,
+    overrideAccess: true,
+  });
+
+  console.log(
+    `site-settings defaults applied: ${Object.keys(data).join(", ")} (contacts untouched).`
+  );
   process.exit(0);
 }
 

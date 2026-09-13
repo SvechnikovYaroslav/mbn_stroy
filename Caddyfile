@@ -1,0 +1,8 @@
+# STAGE_DOMAIN empty → HTTP on :80 (IP / local smoke-test, no TLS).
+# STAGE_DOMAIN=staging.example.com → Caddy obtains HTTPS for that host.
+# Do not hardcode a production domain here.
+
+{$STAGE_DOMAIN::80} {
+	encode gzip
+	reverse_proxy app:3000
+}

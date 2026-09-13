@@ -5,7 +5,7 @@ export function WhyMbnSection() {
   return (
     <section className="border-b border-border">
       <Container className="py-14 md:py-20">
-        <h2 className="text-h2 text-foreground">Почему MBN Строй</h2>
+        <h2 className="text-h2 text-foreground">Почему Отделка 360</h2>
 
         <ol className="mt-10 divide-y divide-border border-y border-border">
           {whyMbnItems.map((item, index) => (

@@ -5,8 +5,9 @@ import { ProjectCatalog } from "@/components/projects/project-catalog";
 import { ensurePortfolioDynamic } from "@/lib/projects/dynamic";
 import { getProjects } from "@/lib/projects";
 import { absoluteUrl, isIndexingAllowed } from "@/lib/site-env";
+import { brandTitle } from "@/config/site";
 
-const title = "Проекты — MBN Строй";
+const title = brandTitle("Проекты");
 const description =
   "Реализованные ремонты квартир, домов и отдельных помещений в Туле и Тульской области.";
 const canonical = absoluteUrl("/projects");

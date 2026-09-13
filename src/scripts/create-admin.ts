@@ -9,9 +9,9 @@ import { getPayload } from "payload";
 import config from "../payload.config";
 
 async function main() {
-  const email = process.env.ADMIN_EMAIL || "admin@mbn-stroy.local";
+  const email = process.env.ADMIN_EMAIL || "admin@otdelka-360.local";
   const password = process.env.ADMIN_PASSWORD;
-  const name = process.env.ADMIN_NAME || "MBN Admin";
+  const name = process.env.ADMIN_NAME || "Admin";
 
   if (!password || password.length < 12) {
     throw new Error(

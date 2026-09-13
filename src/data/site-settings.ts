@@ -5,7 +5,7 @@ import type { SiteSettings } from "@/types/site-settings";
  * No invented phone/email/messenger values.
  */
 export const demoSiteSettings: SiteSettings = {
-  companyName: "MBN Строй",
+  companyName: "Отделка 360",
   slogan: "Решаем задачи — меняем пространство",
   location: "Тула и Тульская область",
 };

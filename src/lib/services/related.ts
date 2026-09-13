@@ -1,4 +1,5 @@
 import type { Project, ProjectMedia, ProjectSection, WorkType } from "@/types/project";
+import { siteConfig } from "@/config/site";
 import { getSectionsByWorkType } from "@/lib/projects/filter";
 
 const DEFAULT_MEDIA_LIMIT = 12;
@@ -86,6 +87,6 @@ export function resolveServiceCover(options: {
     id: "service-cover-placeholder",
     type: "image",
     src: "",
-    alt: `${options.serviceTitle} — MBN Строй`,
+    alt: `${options.serviceTitle} — ${siteConfig.name}`,
   };
 }

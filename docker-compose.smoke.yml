@@ -1,0 +1,11 @@
+# Temporary smoke-test override: publish the app on the VM without DNS.
+# Do not use this file in the final production topology.
+#
+#   docker compose -f docker-compose.prod.yml -f docker-compose.smoke.yml up -d
+#
+# Then open http://<VM-IP>:3000
+
+services:
+  app:
+    ports:
+      - "3000:3000"

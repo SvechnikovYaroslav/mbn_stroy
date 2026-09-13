@@ -34,7 +34,7 @@ export const SiteSettings: GlobalConfig = {
           name: "companyName",
           type: "text",
           label: "Название компании",
-          defaultValue: "MBN Строй",
+          defaultValue: "Отделка 360",
         },
         {
           name: "slogan",

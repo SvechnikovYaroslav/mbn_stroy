@@ -35,7 +35,9 @@ export async function Hero() {
     <section className="border-b border-border">
       <Container className="grid gap-10 py-12 md:gap-12 md:py-16 lg:grid-cols-12 lg:items-end lg:gap-10 lg:py-20">
         <div className="lg:col-span-6">
-          <p className="text-caption text-primary">MBN Строй · Тула</p>
+          <p className="text-caption text-primary">
+            {siteConfig.name} · Тула
+          </p>
           <h1 className="mt-5 text-display text-foreground">
             <span className="block">Ремонт, который</span>
             <span className="block break-words">меняет пространство.</span>

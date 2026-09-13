@@ -47,7 +47,7 @@ async function main() {
   await payload.updateGlobal({
     slug: "site-settings",
     data: {
-      companyName: doc.companyName || "MBN Строй",
+      companyName: doc.companyName || "Отделка 360",
       slogan: doc.slogan || "Решаем задачи — меняем пространство",
       location: doc.location || "Тула и Тульская область",
       legal: doc.legal || {},

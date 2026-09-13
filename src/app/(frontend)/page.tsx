@@ -8,11 +8,11 @@ import { ProcessSection } from "@/components/sections/process-section";
 import { ProjectsPreview } from "@/components/sections/projects-preview";
 import { ServicesPreview } from "@/components/sections/services-preview";
 import { WhyMbnSection } from "@/components/sections/why-mbn-section";
+import { brandHomeTitle, siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: "MBN Строй — ремонт квартир и домов в Туле",
-  description:
-    "Ремонт квартир, домов и помещений в Туле и Тульской области. Проекты, услуги и предварительный расчёт стоимости ремонта.",
+  title: brandHomeTitle(),
+  description: siteConfig.description,
 };
 
 export default function Home() {

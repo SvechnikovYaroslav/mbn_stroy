@@ -10,10 +10,11 @@ import {
   getRelevantServiceMedia,
   resolveServiceCover,
 } from "@/lib/services/related";
+import { brandTitle } from "@/config/site";
 import type { WorkType } from "@/types/project";
 
 export const metadata: Metadata = {
-  title: "Услуги по ремонту в Туле — MBN Строй",
+  title: brandTitle("Услуги по ремонту в Туле"),
   description:
     "Ремонт и отделочные работы для квартир и домов в Туле и Тульской области.",
 };

@@ -1,3 +1,4 @@
+import { siteConfig } from "@/config/site";
 import type { SiteSetting as PayloadSiteSetting } from "@/payload-types";
 import type { LegalDetail, SiteSettings } from "@/types/site-settings";
 
@@ -13,7 +14,7 @@ export function mapPayloadSiteSettings(
   const legal = doc.legal;
 
   return {
-    companyName: trimOrUndefined(doc.companyName) || "MBN Строй",
+    companyName: trimOrUndefined(doc.companyName) || siteConfig.name,
     slogan:
       trimOrUndefined(doc.slogan) || "Решаем задачи — меняем пространство",
     location: trimOrUndefined(doc.location) || "Тула и Тульская область",

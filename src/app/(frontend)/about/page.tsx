@@ -4,12 +4,12 @@ import Link from "next/link";
 import { Container } from "@/components/layout/container";
 import { buttonVariants } from "@/components/ui/button";
 import { aboutCopy } from "@/config/site-copy";
+import { brandTitle, siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "О компании — MBN Строй",
-  description:
-    "MBN Строй — ремонт квартир и домов в Туле и Тульской области.",
+  title: brandTitle("О компании"),
+  description: `${siteConfig.name} — ремонт квартир и домов в Туле и Тульской области.`,
 };
 
 export default function AboutPage() {

@@ -3,6 +3,7 @@ import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
 import { mapPayloadMedia } from "@/lib/cms/media-mapper";
 import type { Media, WorkType as PayloadWorkType } from "@/payload-types";
 import type { Service } from "@/types/service";
+import { siteConfig } from "@/config/site";
 
 function isEditorState(
   value: unknown
@@ -22,7 +23,7 @@ export function mapPayloadWorkTypeToService(doc: PayloadWorkType): Service {
   const cover = mapPayloadMedia(doc.cover as number | Media | null | undefined, {
     imageSize: "card",
     idPrefix: `service-${doc.id}-cover`,
-    fallbackAlt: `${doc.title} — MBN Строй`,
+    fallbackAlt: `${doc.title} — ${siteConfig.name}`,
   });
 
   return {

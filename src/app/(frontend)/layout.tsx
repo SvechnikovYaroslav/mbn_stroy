@@ -4,7 +4,7 @@ import { Manrope } from "next/font/google";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { OrganizationJsonLd } from "@/components/seo/json-ld";
-import { siteConfig } from "@/config/site";
+import { brandHomeTitle, siteConfig } from "@/config/site";
 import {
   absoluteUrl,
   isIndexingAllowed,
@@ -27,7 +27,7 @@ const canonicalHome = absoluteUrl("/");
 export const metadata: Metadata = {
   ...(metadataBase ? { metadataBase } : {}),
   title: {
-    default: "MBN Строй — ремонт квартир и домов в Туле",
+    default: brandHomeTitle(),
     template: "%s",
   },
   description: siteConfig.description,
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
         },
       }),
   openGraph: {
-    title: "MBN Строй — ремонт квартир и домов в Туле",
+    title: brandHomeTitle(),
     description: siteConfig.description,
     type: "website",
     locale: "ru_RU",

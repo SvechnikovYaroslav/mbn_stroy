@@ -12,6 +12,7 @@ import {
   renovationTypeLabels,
   workTypeLabels,
 } from "@/config/project";
+import { brandTitle, siteConfig } from "@/config/site";
 import { getProjectBySlug, getProjectSlugs } from "@/lib/projects";
 import { ensurePortfolioDynamic } from "@/lib/projects/dynamic";
 import { absoluteUrl, isIndexingAllowed } from "@/lib/site-env";
@@ -34,25 +35,25 @@ export async function generateMetadata({
   const project = await getProjectBySlug(slug);
 
   if (!project) {
-    return { title: "Проект не найден — MBN Строй" };
+    return { title: brandTitle("Проект не найден") };
   }
 
   const canonical = absoluteUrl(`/projects/${project.slug}`);
 
   return {
-    title: `${project.title} — MBN Строй`,
+    title: brandTitle(project.title),
     description:
       project.description?.trim() ||
-      "Пример выполненного ремонта MBN Строй в Туле и Тульской области.",
+      `Пример выполненного ремонта ${siteConfig.name} в Туле и Тульской области.`,
     ...(canonical ? { alternates: { canonical } } : {}),
     ...(!isIndexingAllowed()
       ? { robots: { index: false, follow: false } }
       : {}),
     openGraph: {
-      title: `${project.title} — MBN Строй`,
+      title: brandTitle(project.title),
       description:
         project.description?.trim() ||
-        "Пример выполненного ремонта MBN Строй в Туле и Тульской области.",
+        `Пример выполненного ремонта ${siteConfig.name} в Туле и Тульской области.`,
       type: "website",
       ...(canonical ? { url: canonical } : {}),
       ...(project.cover?.src

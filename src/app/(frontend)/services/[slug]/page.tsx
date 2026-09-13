@@ -27,7 +27,7 @@ import {
 } from "@/types/service";
 import type { WorkType } from "@/types/project";
 import { cn } from "@/lib/utils";
-import { siteConfig } from "@/config/site";
+import { brandTitle, siteConfig } from "@/config/site";
 
 type ServicePageProps = {
   params: Promise<{ slug: string }>;
@@ -46,7 +46,7 @@ export async function generateMetadata({
   const service = await getServiceBySlug(slug);
 
   if (!service) {
-    return { title: "Услуга не найдена — MBN Строй" };
+    return { title: brandTitle("Услуга не найдена") };
   }
 
   const title = serviceSeoTitle(service);

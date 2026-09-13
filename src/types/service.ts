@@ -1,5 +1,6 @@
 import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
 
+import { siteConfig } from "@/config/site";
 import type { ProjectMedia } from "@/types/project";
 
 /**
@@ -21,11 +22,11 @@ export interface Service {
 }
 
 export function serviceSeoTitle(service: Service): string {
-  return service.seoTitle?.trim() || `${service.title} в Туле — MBN Строй`;
+  return service.seoTitle?.trim() || `${service.title} в Туле — ${siteConfig.name}`;
 }
 
 export function serviceSeoDescription(service: Service): string {
   if (service.seoDescription?.trim()) return service.seoDescription.trim();
   if (service.shortDescription?.trim()) return service.shortDescription.trim();
-  return `${service.title} для квартир и домов в Туле и Тульской области. MBN Строй.`;
+  return `${service.title} для квартир и домов в Туле и Тульской области. ${siteConfig.name}.`;
 }

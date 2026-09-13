@@ -159,7 +159,7 @@ export const WorkTypes: CollectionConfig = {
           type: "text",
           label: "SEO заголовок",
           admin: {
-            description: "Если пусто: «{Название} в Туле — MBN Строй».",
+            description: "Если пусто: «{Название} в Туле — Отделка 360».",
           },
         },
         {

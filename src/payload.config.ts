@@ -1,5 +1,6 @@
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import { s3Storage } from "@payloadcms/storage-s3";
 import { ru } from "@payloadcms/translations/languages/ru";
 import path from "path";
 import { buildConfig } from "payload";
@@ -11,17 +12,25 @@ import { Projects } from "./collections/Projects";
 import { Users } from "./collections/Users";
 import { WorkTypes } from "./collections/WorkTypes";
 import { Leads } from "./collections/Leads";
+import { siteConfig } from "./config/site";
 import { CalculatorSettings } from "./globals/CalculatorSettings";
 import { SiteSettings } from "./globals/SiteSettings";
+import {
+  getS3Bucket,
+  getS3Endpoint,
+  getS3Region,
+  isS3Enabled,
+} from "./lib/storage/s3";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
+const s3Enabled = isS3Enabled();
 
 export default buildConfig({
   admin: {
     user: Users.slug,
     meta: {
-      titleSuffix: "— MBN Строй",
+      titleSuffix: `— ${siteConfig.name}`,
     },
     importMap: {
       baseDir: path.resolve(dirname),
@@ -42,12 +51,37 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL || "",
     },
+    migrationDir: path.resolve(dirname, "migrations"),
     /**
      * Interactive drizzle `push` hangs on Windows rename prompts → admin "Failed to fetch".
-     * Opt-in: PAYLOAD_DB_PUSH=true (use for new globals/collections once).
+     * Opt-in for local/dev only: PAYLOAD_DB_PUSH=true.
+     * Production always uses migrations (`npm run migrate`) — never push.
      */
-    push: process.env.PAYLOAD_DB_PUSH === "true",
+    push:
+      process.env.NODE_ENV === "production"
+        ? false
+        : process.env.PAYLOAD_DB_PUSH === "true",
   }),
   sharp,
-  plugins: [],
+  plugins: s3Enabled
+    ? [
+        s3Storage({
+          collections: {
+            media: {
+              prefix: "media",
+            },
+          },
+          bucket: getS3Bucket(),
+          config: {
+            credentials: {
+              accessKeyId: process.env.S3_ACCESS_KEY_ID || "",
+              secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || "",
+            },
+            region: getS3Region(),
+            endpoint: getS3Endpoint(),
+            forcePathStyle: true,
+          },
+        }),
+      ]
+    : [],
 });

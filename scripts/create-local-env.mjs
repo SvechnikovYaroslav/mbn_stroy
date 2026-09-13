@@ -11,7 +11,7 @@ if (existsSync(envPath)) {
 
 const secret = randomBytes(48).toString("hex");
 
-const contents = `# Generated for local MBN Stroy development.
+const contents = `# Generated for local Отделка 360 development.
 # Replace DATABASE_URL with your PostgreSQL credentials if needed.
 
 DATABASE_URL=postgresql://mbn_stroy:mbn_stroy_local_dev@127.0.0.1:5432/mbn_stroy

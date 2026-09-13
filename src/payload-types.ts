@@ -206,7 +206,7 @@ export interface WorkType {
    */
   sortOrder?: number | null;
   /**
-   * Если пусто: «{Название} в Туле — MBN Строй».
+   * Если пусто: «{Название} в Туле — Отделка 360».
    */
   seoTitle?: string | null;
   /**

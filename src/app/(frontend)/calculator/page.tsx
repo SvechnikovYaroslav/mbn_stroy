@@ -3,10 +3,11 @@ import type { Metadata } from "next";
 import { CalculatorWizard } from "@/components/calculator/calculator-wizard";
 import { Container } from "@/components/layout/container";
 import { ensureCalculatorDynamic } from "@/lib/calculator/dynamic";
+import { brandTitle } from "@/config/site";
 import { getCalculatorConfig, isStaticDemoSource } from "@/lib/calculator";
 
 export const metadata: Metadata = {
-  title: "Калькулятор ремонта — MBN Строй",
+  title: brandTitle("Калькулятор ремонта"),
   description:
     "Рассчитайте предварительную стоимость ремонта квартиры или дома в Туле и Тульской области.",
 };

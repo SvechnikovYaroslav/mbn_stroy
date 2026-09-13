@@ -1,6 +1,9 @@
 /**
  * Seed / upsert Payload Global `calculator-settings` with demo pricing.
  *
+ * By default skips if base rates already exist (does not overwrite CMS data).
+ * Force overwrite: FORCE_SEED=true
+ *
  * Schema note (non-destructive):
  *   + global table calculator_settings (+ array/rels tables)
  *   Does NOT drop projects / media / users.
@@ -43,6 +46,21 @@ async function main() {
   console.log("  (no drops of existing collections)");
 
   const payload = await getPayload({ config });
+
+  if (process.env.FORCE_SEED !== "true") {
+    const current = await payload.findGlobal({
+      slug: "calculator-settings",
+      depth: 0,
+      overrideAccess: true,
+    });
+    if (current.baseRates && current.baseRates.length > 0) {
+      console.log(
+        "Calculator settings already present — skip. Set FORCE_SEED=true to overwrite."
+      );
+      process.exit(0);
+    }
+  }
+
   const workTypeIds = await resolveWorkTypeIds(payload);
 
   const missing = demoCalculatorSettings.workRules
