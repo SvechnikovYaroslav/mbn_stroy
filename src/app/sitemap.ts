@@ -46,30 +46,41 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return [];
   }
 
-  await Promise.all([ensurePortfolioDynamic(), ensureServicesDynamic()]);
+  try {
+    await Promise.all([ensurePortfolioDynamic(), ensureServicesDynamic()]);
 
-  const [projects, services] = await Promise.all([
-    getProjects(),
-    getServices(),
-  ]);
+    const [projects, services] = await Promise.all([
+      getProjects(),
+      getServices(),
+    ]);
 
-  const items: MetadataRoute.Sitemap = [];
+    const items: MetadataRoute.Sitemap = [];
 
-  for (const path of STATIC_PATHS) {
-    const row = entry(path);
-    if (row) items.push(row);
+    for (const path of STATIC_PATHS) {
+      const row = entry(path);
+      if (row) items.push(row);
+    }
+
+    for (const project of projects) {
+      const row = entry(`/projects/${project.slug}`);
+      if (row) items.push(row);
+    }
+
+    for (const service of services) {
+      if (!service.showOnServicesPage) continue;
+      const row = entry(`/services/${service.slug}`);
+      if (row) items.push(row);
+    }
+
+    return items;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error(`[sitemap] Falling back to static paths: ${message}`);
+    const items: MetadataRoute.Sitemap = [];
+    for (const path of STATIC_PATHS) {
+      const row = entry(path);
+      if (row) items.push(row);
+    }
+    return items;
   }
-
-  for (const project of projects) {
-    const row = entry(`/projects/${project.slug}`);
-    if (row) items.push(row);
-  }
-
-  for (const service of services) {
-    if (!service.showOnServicesPage) continue;
-    const row = entry(`/services/${service.slug}`);
-    if (row) items.push(row);
-  }
-
-  return items;
 }

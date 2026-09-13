@@ -17,6 +17,8 @@ COPY . .
 # NEXT_PUBLIC_* are inlined at build time. Runtime secrets stay in env_file.
 ARG NEXT_PUBLIC_SITE_URL=
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
+ARG SITE_ENV=staging
+ENV SITE_ENV=$SITE_ENV
 ENV NODE_ENV=production
 # Payload config requires a secret during `next build`. Overridden at runtime.
 ENV PAYLOAD_SECRET=build-time-placeholder-not-used-at-runtime
