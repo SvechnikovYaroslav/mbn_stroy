@@ -34,6 +34,10 @@ type ServicePageProps = {
 };
 
 export async function generateStaticParams() {
+  // Cloud Docker build has no Postgres. Production routes render on demand.
+  if (process.env.GITHUB_PAGES !== "true") {
+    return [];
+  }
   const slugs = await getServiceSlugs();
   return slugs.map((slug) => ({ slug }));
 }

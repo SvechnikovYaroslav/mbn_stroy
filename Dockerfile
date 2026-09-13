@@ -20,6 +20,8 @@ ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 ENV NODE_ENV=production
 # Payload config requires a secret during `next build`. Overridden at runtime.
 ENV PAYLOAD_SECRET=build-time-placeholder-not-used-at-runtime
+# Do not connect to Postgres while collecting page data in the image build.
+ENV DATABASE_URL=
 RUN npm run build \
   && npm prune --omit=dev
 
