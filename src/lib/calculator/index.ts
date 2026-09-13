@@ -1,7 +1,5 @@
-import { demoCalculatorSettings } from "@/data/calculator-settings";
 import { getCms } from "@/lib/cms";
 import { mapPayloadCalculatorSettings } from "@/lib/calculator/payload-mapper";
-import { isStaticDemoSource } from "@/lib/projects/source";
 import type { CalculatorConfig } from "@/types/calculator";
 
 async function getCmsCalculatorConfig(): Promise<CalculatorConfig> {
@@ -20,15 +18,7 @@ async function getCmsCalculatorConfig(): Promise<CalculatorConfig> {
   }
 }
 
-/**
- * Public calculator config access.
- * GITHUB_PAGES → static demo; otherwise Payload Global via Local API.
- */
+/** Public calculator config — Payload Global via Local API. */
 export async function getCalculatorConfig(): Promise<CalculatorConfig> {
-  if (isStaticDemoSource()) {
-    return demoCalculatorSettings;
-  }
   return getCmsCalculatorConfig();
 }
-
-export { isStaticDemoSource };

@@ -1,7 +1,7 @@
 import type { Service } from "@/types/service";
 
 /**
- * Static demo services for GitHub Pages (same domain model as Payload).
+ * Static demo services (same domain model as Payload). Used by seed.
  * `other` omitted — showOnServicesPage false.
  */
 export const demoServices: Service[] = [

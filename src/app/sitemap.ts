@@ -1,14 +1,8 @@
 import type { MetadataRoute } from "next";
 
 import { getProjects } from "@/lib/projects";
-import { ensurePortfolioDynamic } from "@/lib/projects/dynamic";
 import { getServices } from "@/lib/services";
-import { ensureServicesDynamic } from "@/lib/services/dynamic";
 import { absoluteUrl, isIndexingAllowed } from "@/lib/site-env";
-import { isStaticDemoSource } from "@/lib/projects/source";
-
-/** Required for `output: export` (GitHub Pages). */
-export const dynamic = "force-static";
 
 const STATIC_PATHS = [
   "/",
@@ -26,14 +20,7 @@ function entry(
   lastModified?: Date
 ): MetadataRoute.Sitemap[number] | null {
   const url = absoluteUrl(pathname);
-  if (!url) {
-    // Without NEXT_PUBLIC_SITE_URL still emit path-relative for static demo tooling
-    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
-    return {
-      url: `${basePath}${pathname === "/" ? "/" : pathname}`,
-      ...(lastModified ? { lastModified } : {}),
-    };
-  }
+  if (!url) return null;
   return {
     url,
     ...(lastModified ? { lastModified } : {}),
@@ -41,14 +28,11 @@ function entry(
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // Staging / GitHub Pages: empty sitemap (robots already Disallow: /)
-  if (!isIndexingAllowed() && !isStaticDemoSource()) {
+  if (!isIndexingAllowed()) {
     return [];
   }
 
   try {
-    await Promise.all([ensurePortfolioDynamic(), ensureServicesDynamic()]);
-
     const [projects, services] = await Promise.all([
       getProjects(),
       getServices(),

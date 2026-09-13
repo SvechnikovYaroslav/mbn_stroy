@@ -18,7 +18,7 @@
 - shadcn/ui
 - Payload CMS
 - PostgreSQL 17
-- Yandex Object Storage (media: otdelka-360-media, backups: otdelka-360-backups)
+- Yandex Object Storage (media: otdelka-360-media-storage, backups: otdelka-360-backups)
 - Caddy (production reverse proxy)
 
 ## Architecture
@@ -44,28 +44,11 @@ app:3000  (Next.js + Payload)
    ↓
 postgres:5432  (Docker network only)
 
-Payload media  →  Yandex Object Storage (otdelka-360-media)
+Payload media  →  Yandex Object Storage (otdelka-360-media-storage)
 DB backups     →  Yandex Object Storage (otdelka-360-backups), prefix db-backups/YYYY-MM-DD/
 ```
 
 Портфолио в server runtime читает **только published** проекты. Изменения в `/admin` после Publish видны на сайте без `npm run build` / redeploy (dynamic routes).
-
-### GitHub Pages demo
-
-```text
-src/data/projects.ts
-   ↓
-static export frontend
-```
-
-GitHub Pages **не** подключается к PostgreSQL и **не** использует S3.
-Demo — зафиксированный snapshot mock data, `noindex`, заявки отключены.
-
-```bash
-npm run build:pages
-```
-
-Репозиторий и Pages URL пока сохраняют путь `/mbn_stroy` (имя GitHub repo). Публичный бренд на страницах — **Отделка 360**.
 
 ## Local database
 
@@ -156,7 +139,7 @@ npm run dev
 
 - `NEXT_PUBLIC_SITE_URL` — канонический origin (canonical, OG, sitemap, robots Sitemap)
 - `SITE_ENV=production` — индексация разрешена
-- `SITE_ENV=staging` или GitHub Pages — `noindex, nofollow` и `robots Disallow: /`
+- `SITE_ENV=staging` — `noindex, nofollow` и `robots Disallow: /`
 - `/admin` и `/api` не попадают в sitemap; в production robots — Disallow
 
 Первый cloud deploy: **`SITE_ENV=staging`**.
@@ -168,7 +151,6 @@ npm run dev
 - Формы: `/contacts`, результат `/calculator`, контекст с `/projects/[slug]` и `/services/[slug]`
 - Создание только через `/api/public-leads` + Local API (публичный Payload create для `leads` запрещён)
 - Калькулятор прикладывает immutable snapshot расчёта
-- GitHub Pages **не** отправляет заявки (кнопка disabled / сообщение о демо)
 - Удаление заявок в production отключено (`delete` только в development); lifecycle через статусы
 
 Проверка:
@@ -206,6 +188,48 @@ docker compose --env-file .env.production -f docker-compose.prod.yml run --rm ap
 | `npm run seed` | Local/dev: work types + demo project drafts (запрещён при `SITE_ENV=production`) |
 | `npm run seed:calculator` | Заполняет калькулятор, если base rates пустые (`FORCE_SEED=true` — перезаписать) |
 | `npm run seed:site-settings` | Brand defaults, не трогает заполненные поля |
+
+## Staging SSH deploy
+
+Daily deploy is SSH into one VM. There is **no** GitHub Actions deploy.
+
+On the VM, the canonical script is `scripts/deploy.sh` (lock via `flock`, `.env.production` + `docker-compose.prod.yml`).
+
+| Mode | What it does |
+| --- | --- |
+| `full` | clean tracked tree, `git fetch` + `checkout main` + `pull --ff-only`, build app, wait for postgres, `npm run migrate` (no seed), recreate postgres/app/caddy, health + `scripts/smoke-public-routes.mjs` |
+| `restart` | recreate app/caddy without git/build/migrate. **NEXT_PUBLIC_*** and `SITE_ENV` changes need `full` |
+| `status` | SHA, compose ps, health, disk, memory (no secrets) |
+| `logs [service]` | tail logs for all or `app` / `caddy` / `postgres` (no env dump) |
+
+Local wrapper (machine-specific key path is **not** committed):
+
+```bash
+cp deploy.local.env.example deploy.local.env
+# set OTDELKA_SSH_KEY to your private key
+
+# Git Bash / WSL
+./rebuild.ssh full
+./rebuild.ssh restart
+./rebuild.ssh status
+./rebuild.ssh logs
+./rebuild.ssh logs app
+```
+
+Windows PowerShell (committed wrapper; key path stays in `deploy.local.env`):
+
+```powershell
+Copy-Item deploy.local.env.example deploy.local.env
+.\rebuild.ssh.ps1 full
+```
+
+`full` stops before migrations if the image build fails. A failed migration does not drop the database or continue. A failed smoke test fails the deploy loudly and does **not** reverse migrations.
+
+Public smoke (also used by `full`):
+
+```bash
+SMOKE_BASE_URL=https://stage.xn--360-5cdtg9ahy4b.xn--p1ai npm run smoke:public
+```
 
 ## Production (Yandex VM) — first deploy
 

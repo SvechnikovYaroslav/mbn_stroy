@@ -6,7 +6,6 @@ import { Container } from "@/components/layout/container";
 import { ContactsLeadSection } from "@/components/leads/contacts-lead-section";
 import { buttonVariants } from "@/components/ui/button";
 import { brandTitle, siteConfig } from "@/config/site";
-import { isStaticDemoSource } from "@/lib/projects/source";
 import { ensureSiteSettingsDynamic } from "@/lib/site-settings/dynamic";
 import { getSiteSettings } from "@/lib/site-settings";
 import { cn } from "@/lib/utils";
@@ -19,7 +18,6 @@ export const metadata: Metadata = {
 export default async function ContactsPage() {
   await ensureSiteSettingsDynamic();
   const settings = await getSiteSettings();
-  const submissionsDisabled = isStaticDemoSource();
 
   return (
     <main>
@@ -44,7 +42,7 @@ export default async function ContactsPage() {
 
       <section className="border-b border-border">
         <Container className="py-14 md:py-20">
-          <ContactsLeadSection submissionsDisabled={submissionsDisabled} />
+          <ContactsLeadSection />
         </Container>
       </section>
 

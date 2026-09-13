@@ -1,7 +1,6 @@
 import { demoSiteSettings } from "@/data/site-settings";
 import { getCms } from "@/lib/cms";
 import { mapPayloadSiteSettings } from "@/lib/site-settings/mapper";
-import { isStaticDemoSource } from "@/lib/projects/source";
 import type { ContactChannel, SiteSettings } from "@/types/site-settings";
 
 async function getCmsSiteSettings(): Promise<SiteSettings> {
@@ -22,7 +21,6 @@ async function getCmsSiteSettings(): Promise<SiteSettings> {
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {
-  if (isStaticDemoSource()) return demoSiteSettings;
   return getCmsSiteSettings();
 }
 
@@ -111,5 +109,3 @@ export {
   hasCompleteLegalDetails,
   mapPayloadSiteSettings,
 } from "@/lib/site-settings/mapper";
-
-export { isStaticDemoSource };

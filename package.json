@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:pages": "node scripts/build-github-pages.mjs",
     "start": "next start",
     "lint": "eslint",
     "payload": "payload",
@@ -28,6 +27,10 @@
     "verify:leads": "tsx src/scripts/verify-leads.ts",
     "publish:test-project": "tsx src/scripts/publish-test-project.ts",
     "create:admin": "tsx src/scripts/create-admin.ts",
+    "list:users": "tsx src/scripts/list-users.ts",
+    "create:owners": "tsx src/scripts/create-owner-admins.ts",
+    "delete:user": "tsx src/scripts/delete-user.ts",
+    "smoke:public": "node scripts/smoke-public-routes.mjs",
     "env:local": "node scripts/create-local-env.mjs"
   },
   "dependencies": {

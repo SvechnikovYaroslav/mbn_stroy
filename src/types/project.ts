@@ -46,7 +46,7 @@ export interface ProjectMedia {
   /**
    * Final media URL or path.
    * Static demo: `/media/...` (resolved via mediaUrl / basePath).
-   * Payload: `/api/media/file/...` or absolute URL — never GitHub Pages-prefixed.
+   * Payload: `/api/media/file/...` or absolute URL.
    */
   src: string;
   alt?: string;

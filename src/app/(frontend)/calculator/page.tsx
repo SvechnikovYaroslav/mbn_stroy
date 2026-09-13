@@ -4,7 +4,7 @@ import { CalculatorWizard } from "@/components/calculator/calculator-wizard";
 import { Container } from "@/components/layout/container";
 import { ensureCalculatorDynamic } from "@/lib/calculator/dynamic";
 import { brandTitle } from "@/config/site";
-import { getCalculatorConfig, isStaticDemoSource } from "@/lib/calculator";
+import { getCalculatorConfig } from "@/lib/calculator";
 
 export const metadata: Metadata = {
   title: brandTitle("Калькулятор ремонта"),
@@ -15,7 +15,6 @@ export const metadata: Metadata = {
 export default async function CalculatorPage() {
   await ensureCalculatorDynamic();
   const config = await getCalculatorConfig();
-  const isDemo = isStaticDemoSource();
 
   return (
     <main>
@@ -31,7 +30,7 @@ export default async function CalculatorPage() {
 
       <section>
         <Container className="py-10 md:py-14">
-          <CalculatorWizard config={config} isDemo={isDemo} />
+          <CalculatorWizard config={config} />
         </Container>
       </section>
     </main>

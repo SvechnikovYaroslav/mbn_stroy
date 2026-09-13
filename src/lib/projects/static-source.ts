@@ -28,7 +28,7 @@ function normalizeProject(project: Project): Project {
 
 const projects = rawProjects.map(normalizeProject);
 
-/** GitHub Pages / static demo source — never touches PostgreSQL. */
+/** Local demo source over src/data/projects.ts — never touches PostgreSQL. */
 export async function getStaticProjects(): Promise<Project[]> {
   return projects;
 }

@@ -10,13 +10,12 @@ export function getSiteEnv(): SiteEnv {
   if (raw === "production" || raw === "staging" || raw === "development") {
     return raw;
   }
-  if (process.env.GITHUB_PAGES === "true") return "staging";
   if (process.env.NODE_ENV === "production") return "production";
   return "development";
 }
 
 export function isIndexingAllowed(): boolean {
-  return getSiteEnv() === "production" && process.env.GITHUB_PAGES !== "true";
+  return getSiteEnv() === "production";
 }
 
 /**
@@ -37,30 +36,16 @@ export function getSiteUrl(): string | undefined {
 export function absoluteUrl(pathname = "/"): string | undefined {
   const origin = getSiteUrl();
   if (!origin) return undefined;
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
   const path = pathname.startsWith("/") ? pathname : `/${pathname}`;
-  return `${origin}${basePath}${path === "/" ? "" : path}` || `${origin}${basePath}/`;
+  return `${origin}${path === "/" ? "" : path}`;
 }
 
 export function metadataBaseUrl(): URL | undefined {
   const origin = getSiteUrl();
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
-  if (origin) {
-    try {
-      return new URL(`${origin}${basePath}/`);
-    } catch {
-      return undefined;
-    }
+  if (!origin) return undefined;
+  try {
+    return new URL(`${origin}/`);
+  } catch {
+    return undefined;
   }
-
-  // Demo-only fallback for static export asset resolution — not a production canonical.
-  if (process.env.GITHUB_PAGES === "true") {
-    try {
-      return new URL("https://svechnikovyaroslav.github.io/mbn_stroy/");
-    } catch {
-      return undefined;
-    }
-  }
-
-  return undefined;
 }

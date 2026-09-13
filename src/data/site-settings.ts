@@ -1,7 +1,7 @@
 import type { SiteSettings } from "@/types/site-settings";
 
 /**
- * Static fallback for GitHub Pages.
+ * Brand defaults and CMS-error fallback for public site settings.
  * No invented phone/email/messenger values.
  */
 export const demoSiteSettings: SiteSettings = {

@@ -5,7 +5,6 @@ import {
   MIN_FORM_FILL_MS,
 } from "@/lib/leads/rate-limit";
 import { validateLeadInput } from "@/lib/leads/validate";
-import { isStaticDemoSource } from "@/lib/projects/source";
 import { CONSENT_VERSION, type LeadFormInput, type LeadSubmitResult } from "@/types/lead";
 
 const ERROR_GENERIC =
@@ -23,14 +22,6 @@ export async function createLead(
   raw: LeadFormInput,
   options: CreateLeadOptions = {}
 ): Promise<LeadSubmitResult> {
-  if (isStaticDemoSource()) {
-    return {
-      ok: false,
-      code: "disabled",
-      message: "Демонстрационная версия — отправка заявок отключена.",
-    };
-  }
-
   // Honeypot: silent reject (no lead created)
   if (raw.companyWebsite && raw.companyWebsite.trim()) {
     return { ok: true };

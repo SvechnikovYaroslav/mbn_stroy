@@ -1,7 +1,7 @@
 import type { CalculatorConfig } from "@/types/calculator";
 
 /**
- * Static demo calculator settings for GitHub Pages.
+ * Static demo calculator settings. Used by seed / verify scripts.
  * Temporary illustrative numbers — not a public offer.
  */
 export const demoCalculatorSettings: CalculatorConfig = {

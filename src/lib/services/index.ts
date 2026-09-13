@@ -1,7 +1,5 @@
-import { demoServices } from "@/data/services";
 import { getCms } from "@/lib/cms";
 import { mapPayloadWorkTypeToService, sortServices } from "@/lib/services/mapper";
-import { isStaticDemoSource } from "@/lib/projects/source";
 import type { Service } from "@/types/service";
 
 async function getCmsServices(): Promise<Service[]> {
@@ -56,22 +54,12 @@ async function getCmsServiceBySlug(slug: string): Promise<Service | undefined> {
 }
 
 export async function getServices(): Promise<Service[]> {
-  if (isStaticDemoSource()) {
-    return sortServices(
-      demoServices.filter((service) => service.showOnServicesPage)
-    );
-  }
   return getCmsServices();
 }
 
 export async function getServiceBySlug(
   slug: string
 ): Promise<Service | undefined> {
-  if (isStaticDemoSource()) {
-    return demoServices.find(
-      (service) => service.slug === slug && service.showOnServicesPage
-    );
-  }
   return getCmsServiceBySlug(slug);
 }
 
@@ -85,5 +73,3 @@ export async function getFeaturedServices(limit = 6): Promise<Service[]> {
 export async function getServiceSlugs(): Promise<string[]> {
   return (await getServices()).map((service) => service.slug);
 }
-
-export { isStaticDemoSource };

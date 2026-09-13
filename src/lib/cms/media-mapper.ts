@@ -34,7 +34,7 @@ function isOrientation(
 
 /**
  * Map Payload Media → frontend ProjectMedia.
- * Payload URLs (/api/media/...) are returned as-is — never prefixed with GitHub Pages basePath.
+ * Payload URLs (/api/media/...) are returned as-is.
  */
 export function mapPayloadMedia(
   value: number | Media | null | undefined,

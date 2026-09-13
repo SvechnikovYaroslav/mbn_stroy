@@ -1,7 +1,7 @@
 import type { Project } from "@/types/project";
 
 /**
- * Local demo portfolio data (GitHub Pages snapshot).
+ * Local demo / seed snapshot for portfolio data.
  * Same domain model as Payload-mapped projects: roomType + section.workTypes.
  *
  * Project.workTypes here are authoring-level values; static-source normalizes
