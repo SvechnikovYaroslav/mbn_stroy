@@ -28,7 +28,7 @@ set +a
 
 : "${POSTGRES_USER:?POSTGRES_USER is required}"
 : "${POSTGRES_DB:?POSTGRES_DB is required}"
-: "${S3_BUCKET:?S3_BUCKET is required}"
+: "${BACKUP_S3_BUCKET:?BACKUP_S3_BUCKET is required}"
 : "${S3_ACCESS_KEY_ID:?S3_ACCESS_KEY_ID is required}"
 : "${S3_SECRET_ACCESS_KEY:?S3_SECRET_ACCESS_KEY is required}"
 
@@ -48,6 +48,7 @@ chmod 644 "$TMP"
 
 echo "Uploading backup to Object Storage..."
 docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" run --rm \
+  -e S3_BUCKET="$BACKUP_S3_BUCKET" \
   -v "$TMP:/tmp/backup.sql.gz:ro" \
   app node scripts/upload-s3.mjs /tmp/backup.sql.gz "$KEY"
 

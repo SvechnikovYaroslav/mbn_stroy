@@ -18,7 +18,7 @@
 - shadcn/ui
 - Payload CMS
 - PostgreSQL 17
-- Yandex Object Storage (production media + DB backups)
+- Yandex Object Storage (media: otdelka-360-media, backups: otdelka-360-backups)
 - Caddy (production reverse proxy)
 
 ## Architecture
@@ -45,7 +45,7 @@ app:3000  (Next.js + Payload)
 postgres:5432  (Docker network only)
 
 Payload media  →  Yandex Object Storage (otdelka-360-media)
-DB backups     →  Object Storage prefix db-backups/YYYY-MM-DD/
+DB backups     →  Yandex Object Storage (otdelka-360-backups), prefix db-backups/YYYY-MM-DD/
 ```
 
 Портфолио в server runtime читает **только published** проекты. Изменения в `/admin` после Publish видны на сайте без `npm run build` / redeploy (dynamic routes).
@@ -221,6 +221,8 @@ git checkout feat/cloud-deploy
 cp .env.production.example .env.production
 # заполнить secrets: PAYLOAD_SECRET, POSTGRES_PASSWORD, DATABASE_URL,
 # S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY, NEXT_PUBLIC_SITE_URL
+# S3_BUCKET=otdelka-360-media
+# BACKUP_S3_BUCKET=otdelka-360-backups
 # SITE_ENV=staging
 # STAGE_DOMAIN=   # пусто для HTTP на :80 по IP
 
@@ -273,7 +275,9 @@ chmod +x scripts/backup-postgres.sh
 ./scripts/backup-postgres.sh
 ```
 
-Логика: `pg_dump` → `gzip` → Object Storage `db-backups/YYYY-MM-DD/otdelka-360-<timestamp>.sql.gz`.
+Логика: `pg_dump` → `gzip` → bucket `BACKUP_S3_BUCKET` (`otdelka-360-backups`), ключ `db-backups/YYYY-MM-DD/otdelka-360-<timestamp>.sql.gz`.
+
+`S3_BUCKET` (`otdelka-360-media`) используется только Payload Media и в бэкапы не пишется.
 
 Пример cron на VM (не создаётся автоматически):
 
@@ -287,7 +291,7 @@ Retention automation пока не нужна.
 
 Не выполняется автоматически.
 
-1. Скачать объект `db-backups/YYYY-MM-DD/....sql.gz` из bucket `otdelka-360-media`.
+1. Скачать объект `db-backups/YYYY-MM-DD/....sql.gz` из bucket `otdelka-360-backups` (`BACKUP_S3_BUCKET`).
 2. Распаковать: `gunzip otdelka-360-....sql.gz`
 3. Восстановить в **остановленный/чистый** postgres (или отдельную базу):
 
