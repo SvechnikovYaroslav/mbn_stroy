@@ -24,7 +24,14 @@ ENV NODE_ENV=production
 ENV PAYLOAD_SECRET=build-time-placeholder-not-used-at-runtime
 # Do not connect to Postgres while collecting page data in the image build.
 ENV DATABASE_URL=
-RUN npm run build \
+# The admin import map must contain the S3 upload handler used at runtime.  The
+# real credentials remain runtime-only; these non-secret placeholders merely
+# make Payload include the installed client component in the generated map.
+RUN S3_BUCKET=build-time-placeholder \
+  S3_ACCESS_KEY_ID=build-time-placeholder \
+  S3_SECRET_ACCESS_KEY=build-time-placeholder \
+  npm run generate:importmap \
+  && npm run build \
   && npm prune --omit=dev
 
 FROM base AS runner
