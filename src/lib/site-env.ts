@@ -10,7 +10,8 @@ export function getSiteEnv(): SiteEnv {
   if (raw === "production" || raw === "staging" || raw === "development") {
     return raw;
   }
-  if (process.env.NODE_ENV === "production") return "production";
+  // Never infer public indexing from NODE_ENV: a production build also runs on
+  // staging. Production must opt in explicitly with SITE_ENV=production.
   return "development";
 }
 

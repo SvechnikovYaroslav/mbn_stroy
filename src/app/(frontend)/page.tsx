@@ -8,12 +8,9 @@ import { ProcessSection } from "@/components/sections/process-section";
 import { ProjectsPreview } from "@/components/sections/projects-preview";
 import { ServicesPreview } from "@/components/sections/services-preview";
 import { WhyMbnSection } from "@/components/sections/why-mbn-section";
-import { brandHomeTitle, siteConfig } from "@/config/site";
+import { pageMetadata, seoConfig } from "@/config/seo";
 
-export const metadata: Metadata = {
-  title: brandHomeTitle(),
-  description: siteConfig.description,
-};
+export const metadata: Metadata = pageMetadata({ pathname: "/", title: seoConfig.defaultTitle, description: seoConfig.defaultDescription });
 
 export default function Home() {
   return (

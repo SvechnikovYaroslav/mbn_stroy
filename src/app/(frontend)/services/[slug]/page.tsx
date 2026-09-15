@@ -18,7 +18,7 @@ import {
 } from "@/lib/services/related";
 import { ensureServicesDynamic } from "@/lib/services/dynamic";
 import { getServiceBySlug } from "@/lib/services";
-import { absoluteUrl, isIndexingAllowed } from "@/lib/site-env";
+import { pageMetadata } from "@/config/seo";
 import {
   serviceSeoDescription,
   serviceSeoTitle,
@@ -50,23 +50,12 @@ export async function generateMetadata({
 
   const title = serviceSeoTitle(service);
   const description = serviceSeoDescription(service);
-  const canonical = absoluteUrl(`/services/${service.slug}`);
-
-  return {
+  return pageMetadata({
+    pathname: `/services/${service.slug}`,
     title,
     description,
-    ...(canonical ? { alternates: { canonical } } : {}),
-    ...(!isIndexingAllowed()
-      ? { robots: { index: false, follow: false } }
-      : {}),
-    openGraph: {
-      title,
-      description,
-      type: "website",
-      ...(canonical ? { url: canonical } : {}),
-      ...(service.cover?.src ? { images: [{ url: service.cover.src }] } : {}),
-    },
-  };
+    ...(service.cover?.src ? { imagePath: service.cover.src } : {}),
+  });
 }
 
 export default async function ServicePage({ params }: ServicePageProps) {

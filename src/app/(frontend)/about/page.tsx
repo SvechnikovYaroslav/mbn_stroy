@@ -5,12 +5,10 @@ import { Container } from "@/components/layout/container";
 import { buttonVariants } from "@/components/ui/button";
 import { aboutCopy } from "@/config/site-copy";
 import { brandTitle, siteConfig } from "@/config/site";
+import { pageMetadata } from "@/config/seo";
 import { cn } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: brandTitle("О компании"),
-  description: `${siteConfig.name} — ремонт квартир и домов в Туле и Тульской области.`,
-};
+export const metadata: Metadata = pageMetadata({ pathname: "/about", title: brandTitle("О компании и подходе к ремонту в Туле"), description: `${siteConfig.name} — ремонт квартир, домов и отдельных помещений в Туле и Тульской области.` });
 
 export default function AboutPage() {
   return (

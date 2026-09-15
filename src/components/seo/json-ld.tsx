@@ -1,24 +1,26 @@
 import { absoluteUrl } from "@/lib/site-env";
-import type { SiteSettings } from "@/types/site-settings";
-
-type OrganizationJsonLdProps = {
-  settings: SiteSettings;
-};
+import { seoConfig } from "@/config/seo";
 
 /**
  * Organization / LocalBusiness JSON-LD using only confirmed fields.
  */
-export function OrganizationJsonLd({ settings }: OrganizationJsonLdProps) {
+export function OrganizationJsonLd() {
   const url = absoluteUrl("/") || undefined;
 
   const data: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    name: settings.companyName,
-    areaServed: settings.location,
+    name: seoConfig.siteName,
+    areaServed: seoConfig.region,
     ...(url ? { url } : {}),
-    ...(settings.phone ? { telephone: settings.phone } : {}),
-    ...(settings.email ? { email: settings.email } : {}),
+    telephone: seoConfig.phone,
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: seoConfig.address.country,
+      addressRegion: seoConfig.address.region,
+      addressLocality: seoConfig.address.locality,
+      streetAddress: seoConfig.address.street,
+    },
   };
 
   return (
@@ -27,6 +29,12 @@ export function OrganizationJsonLd({ settings }: OrganizationJsonLdProps) {
       dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
     />
   );
+}
+
+export function WebsiteJsonLd() {
+  const url = absoluteUrl("/");
+  if (!url) return null;
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "WebSite", name: seoConfig.siteName, url }) }} />;
 }
 
 type BreadcrumbItem = {

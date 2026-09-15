@@ -12,12 +12,9 @@ import {
   resolveServiceCover,
 } from "@/lib/services/related";
 import { brandTitle } from "@/config/site";
+import { pageMetadata } from "@/config/seo";
 
-export const metadata: Metadata = {
-  title: brandTitle("Услуги по ремонту в Туле"),
-  description:
-    "Ремонт и отделочные работы для квартир и домов в Туле и Тульской области.",
-};
+export const metadata: Metadata = pageMetadata({ pathname: "/services", title: brandTitle("Услуги по ремонту в Туле"), description: "Ремонт и отделочные работы для квартир и домов в Туле и Тульской области." });
 
 export default async function ServicesPage() {
   await ensureServicesDynamic();

@@ -193,7 +193,7 @@ export function LeadForm({
             autoComplete="name"
             maxLength={120}
             disabled={submissionsDisabled || pending}
-            className="mt-2 w-full border border-input bg-card px-3 py-2.5 text-body text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+            className="ym-disable-keys mt-2 w-full border border-input bg-card px-3 py-2.5 text-body text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
             aria-invalid={Boolean(fieldErrors?.name)}
             aria-describedby={
               fieldErrors?.name ? `${formId}-name-error` : undefined
@@ -224,7 +224,7 @@ export function LeadForm({
             inputMode="tel"
             maxLength={40}
             disabled={submissionsDisabled || pending}
-            className="mt-2 w-full border border-input bg-card px-3 py-2.5 text-body text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+            className="ym-disable-keys mt-2 w-full border border-input bg-card px-3 py-2.5 text-body text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
             aria-invalid={Boolean(fieldErrors?.phone)}
             aria-describedby={
               fieldErrors?.phone ? `${formId}-phone-error` : undefined
@@ -254,7 +254,7 @@ export function LeadForm({
             autoComplete="email"
             maxLength={254}
             disabled={submissionsDisabled || pending}
-            className="mt-2 w-full border border-input bg-card px-3 py-2.5 text-body text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+            className="ym-disable-keys mt-2 w-full border border-input bg-card px-3 py-2.5 text-body text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
             aria-invalid={Boolean(fieldErrors?.email)}
             aria-describedby={
               fieldErrors?.email ? `${formId}-email-error` : undefined
@@ -283,7 +283,7 @@ export function LeadForm({
             rows={4}
             maxLength={4000}
             disabled={submissionsDisabled || pending}
-            className="mt-2 w-full resize-y border border-input bg-card px-3 py-2.5 text-body text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+            className="ym-disable-keys mt-2 w-full resize-y border border-input bg-card px-3 py-2.5 text-body text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
             aria-invalid={Boolean(fieldErrors?.comment)}
           />
         </div>
@@ -304,13 +304,13 @@ export function LeadForm({
               }
             />
             <span>
-              Я даю{" "}
+              Я даю согласие на обработку персональных данных в соответствии с{" "}
               <Link
-                href="/personal-data-consent"
+                href="/legal/consent"
                 className="underline underline-offset-4 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={(event) => event.stopPropagation()}
               >
-                согласие на обработку персональных данных
+                Согласием на обработку персональных данных
               </Link>
             </span>
           </label>
@@ -328,7 +328,7 @@ export function LeadForm({
             >
               Подробнее о порядке обработки данных — в{" "}
               <Link
-                href="/privacy"
+                href="/legal/privacy"
                 className="underline underline-offset-4 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 Политике обработки персональных данных

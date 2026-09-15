@@ -4,28 +4,13 @@ import { Container } from "@/components/layout/container";
 import { ProjectCatalog } from "@/components/projects/project-catalog";
 import { ensurePortfolioDynamic } from "@/lib/projects/dynamic";
 import { getProjects } from "@/lib/projects";
-import { absoluteUrl, isIndexingAllowed } from "@/lib/site-env";
 import { brandTitle } from "@/config/site";
+import { pageMetadata } from "@/config/seo";
 
-const title = brandTitle("Проекты");
+const title = brandTitle("Проекты ремонта и отделки в Туле");
 const description =
   "Реализованные ремонты квартир, домов и отдельных помещений в Туле и Тульской области.";
-const canonical = absoluteUrl("/projects");
-
-export const metadata: Metadata = {
-  title,
-  description,
-  ...(canonical ? { alternates: { canonical } } : {}),
-  ...(!isIndexingAllowed()
-    ? { robots: { index: false, follow: false } }
-    : {}),
-  openGraph: {
-    title,
-    description,
-    type: "website",
-    ...(canonical ? { url: canonical } : {}),
-  },
-};
+export const metadata: Metadata = pageMetadata({ pathname: "/projects", title, description });
 
 export default async function ProjectsPage() {
   await ensurePortfolioDynamic();

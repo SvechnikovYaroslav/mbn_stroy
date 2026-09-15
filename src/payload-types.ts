@@ -408,10 +408,21 @@ export interface Lead {
     estimateMax?: number | null;
     calculatedAt?: string | null;
   };
-  status: 'new' | 'in-progress' | 'contacted' | 'completed' | 'spam';
+  status: 'new' | 'in-progress' | 'contacted' | 'completed' | 'spam' | 'contract';
   consentAccepted: boolean;
   consentAcceptedAt?: string | null;
   consentVersion?: string | null;
+  privacyPolicyVersion?: string | null;
+  consentSource?: string | null;
+  lastActivityAt?: string | null;
+  /**
+   * Обычная заявка хранится до года с последнего взаимодействия.
+   */
+  expiresAt?: string | null;
+  /**
+   * Не удаляйте такие данные автоматически: к ним применяются сроки хранения документов по закону.
+   */
+  contractConcluded?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -675,6 +686,11 @@ export interface LeadsSelect<T extends boolean = true> {
   consentAccepted?: T;
   consentAcceptedAt?: T;
   consentVersion?: T;
+  privacyPolicyVersion?: T;
+  consentSource?: T;
+  lastActivityAt?: T;
+  expiresAt?: T;
+  contractConcluded?: T;
   updatedAt?: T;
   createdAt?: T;
 }

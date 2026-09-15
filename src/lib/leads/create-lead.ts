@@ -5,7 +5,8 @@ import {
   MIN_FORM_FILL_MS,
 } from "@/lib/leads/rate-limit";
 import { validateLeadInput } from "@/lib/leads/validate";
-import { CONSENT_VERSION, type LeadFormInput, type LeadSubmitResult } from "@/types/lead";
+import { type LeadFormInput, type LeadSubmitResult } from "@/types/lead";
+import { currentLegalVersions } from "@/lib/legal/registry";
 
 const ERROR_GENERIC =
   "Не удалось отправить заявку. Попробуйте ещё раз или воспользуйтесь контактами на странице.";
@@ -62,6 +63,11 @@ export async function createLead(
   try {
     const payload = await getCms();
     const snapshot = data.calculatorSnapshot;
+    const versions = currentLegalVersions();
+    const consentAt = data.consentAcceptedAt;
+    const expiresAt = new Date(
+      Date.parse(consentAt) + 365 * 24 * 60 * 60 * 1000
+    ).toISOString();
 
     await payload.create({
       collection: "leads",
@@ -76,8 +82,13 @@ export async function createLead(
         contextSlug: data.contextSlug,
         status: "new",
         consentAccepted: true,
-        consentAcceptedAt: data.consentAcceptedAt,
-        consentVersion: CONSENT_VERSION,
+        consentAcceptedAt: consentAt,
+        consentVersion: versions.consent,
+        privacyPolicyVersion: versions.privacy,
+        consentSource: data.source,
+        lastActivityAt: consentAt,
+        expiresAt,
+        contractConcluded: false,
         hasCalculatorSnapshot: Boolean(snapshot),
         ...(snapshot
           ? {

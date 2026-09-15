@@ -6,14 +6,12 @@ import { Container } from "@/components/layout/container";
 import { ContactsLeadSection } from "@/components/leads/contacts-lead-section";
 import { buttonVariants } from "@/components/ui/button";
 import { brandTitle, siteConfig } from "@/config/site";
+import { pageMetadata } from "@/config/seo";
 import { ensureSiteSettingsDynamic } from "@/lib/site-settings/dynamic";
 import { getSiteSettings } from "@/lib/site-settings";
 import { cn } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: brandTitle("Контакты"),
-  description: `Связаться с ${siteConfig.name} по вопросам ремонта квартир и домов в Туле и Тульской области.`,
-};
+export const metadata: Metadata = pageMetadata({ pathname: "/contacts", title: brandTitle("Контакты в Туле"), description: `Связаться с ${siteConfig.name} по вопросам ремонта квартир, домов и отдельных помещений в Туле и Тульской области.` });
 
 export default async function ContactsPage() {
   await ensureSiteSettingsDynamic();

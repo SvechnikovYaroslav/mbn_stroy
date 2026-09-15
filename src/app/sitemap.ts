@@ -11,8 +11,6 @@ const STATIC_PATHS = [
   "/calculator",
   "/about",
   "/contacts",
-  "/privacy",
-  "/personal-data-consent",
 ] as const;
 
 function entry(

@@ -4,13 +4,10 @@ import { CalculatorWizard } from "@/components/calculator/calculator-wizard";
 import { Container } from "@/components/layout/container";
 import { ensureCalculatorDynamic } from "@/lib/calculator/dynamic";
 import { brandTitle } from "@/config/site";
+import { pageMetadata } from "@/config/seo";
 import { getCalculatorConfig } from "@/lib/calculator";
 
-export const metadata: Metadata = {
-  title: brandTitle("Калькулятор ремонта"),
-  description:
-    "Рассчитайте предварительную стоимость ремонта квартиры или дома в Туле и Тульской области.",
-};
+export const metadata: Metadata = pageMetadata({ pathname: "/calculator", title: brandTitle("Калькулятор стоимости ремонта в Туле"), description: "Рассчитайте предварительный диапазон стоимости ремонта квартиры, дома или помещения в Туле и Тульской области." });
 
 export default async function CalculatorPage() {
   await ensureCalculatorDynamic();

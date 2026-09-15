@@ -15,7 +15,7 @@ import {
 import { brandTitle, siteConfig } from "@/config/site";
 import { getProjectBySlug } from "@/lib/projects";
 import { ensurePortfolioDynamic } from "@/lib/projects/dynamic";
-import { absoluteUrl, isIndexingAllowed } from "@/lib/site-env";
+import { pageMetadata } from "@/config/seo";
 import { cn } from "@/lib/utils";
 
 type ProjectPageProps = {
@@ -40,29 +40,12 @@ export async function generateMetadata({
     return { title: brandTitle("Проект не найден") };
   }
 
-  const canonical = absoluteUrl(`/projects/${project.slug}`);
-
-  return {
+  return pageMetadata({
+    pathname: `/projects/${project.slug}`,
     title: brandTitle(project.title),
-    description:
-      project.description?.trim() ||
-      `Пример выполненного ремонта ${siteConfig.name} в Туле и Тульской области.`,
-    ...(canonical ? { alternates: { canonical } } : {}),
-    ...(!isIndexingAllowed()
-      ? { robots: { index: false, follow: false } }
-      : {}),
-    openGraph: {
-      title: brandTitle(project.title),
-      description:
-        project.description?.trim() ||
-        `Пример выполненного ремонта ${siteConfig.name} в Туле и Тульской области.`,
-      type: "website",
-      ...(canonical ? { url: canonical } : {}),
-      ...(project.cover?.src
-        ? { images: [{ url: project.cover.src }] }
-        : {}),
-    },
-  };
+    description: project.description?.trim() || `Пример выполненного ремонта ${siteConfig.name} в Туле и Тульской области.`,
+    ...(project.cover?.src ? { imagePath: project.cover.src } : {}),
+  });
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {

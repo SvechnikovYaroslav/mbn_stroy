@@ -67,4 +67,5 @@ export type LeadSubmitResult =
       fieldErrors?: Partial<Record<string, string>>;
     };
 
-export const CONSENT_VERSION = "v1";
+/** Kept for backwards compatibility; new submissions use the legal registry. */
+export const CONSENT_VERSION = "1.0";

@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Container } from "@/components/layout/container";
+import { CookieSettingsLink } from "@/components/legal/cookie-settings-link";
 import { siteConfig } from "@/config/site";
 import { ensureSiteSettingsDynamic } from "@/lib/site-settings/dynamic";
 import { getContactChannels, getSiteSettings } from "@/lib/site-settings";
@@ -97,15 +98,18 @@ export async function SiteFooter() {
         <div className="mt-12 border-t border-border pt-6">
           <ul className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-2">
             <li>
-              <FooterNavLink href="/privacy">
+              <FooterNavLink href="/legal/privacy">
                 Политика обработки персональных данных
               </FooterNavLink>
             </li>
             <li>
-              <FooterNavLink href="/personal-data-consent">
+              <FooterNavLink href="/legal/consent">
                 Согласие на обработку персональных данных
               </FooterNavLink>
             </li>
+            <li><FooterNavLink href="/legal/cookies">Политика cookies</FooterNavLink></li>
+            <li><FooterNavLink href="/legal/terms">Пользовательское соглашение</FooterNavLink></li>
+            <li><CookieSettingsLink /></li>
           </ul>
           <p className="mt-6 text-small text-muted-foreground">
             © {year} {settings.companyName}
