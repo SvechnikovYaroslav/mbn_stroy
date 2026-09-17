@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 const KEY = "otdelka360_cookie_consent";
@@ -9,11 +9,6 @@ type Consent = { analytics: boolean; policyVersion: string; decidedAt: string };
 
 function readConsent(): Consent | null {
   try { const value = localStorage.getItem(KEY); return value ? JSON.parse(value) as Consent : null; } catch { return null; }
-}
-
-function subscribeConsent(callback: () => void) {
-  window.addEventListener("storage", callback);
-  return () => window.removeEventListener("storage", callback);
 }
 
 function removeMetrikaCookies() {
@@ -36,16 +31,26 @@ function loadMetrika(id: string) {
 }
 
 export function CookieConsent({ metrikaId }: { metrikaId?: string }) {
-  const consent = useSyncExternalStore(subscribeConsent, readConsent, () => null);
+  const [consent, setConsent] = useState<Consent | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   useEffect(() => {
+    const syncConsent = () => setConsent(readConsent());
+    syncConsent();
+    window.addEventListener("storage", syncConsent);
+    return () => window.removeEventListener("storage", syncConsent);
+  }, []);
+  useEffect(() => {
     if (consent?.analytics && metrikaId) loadMetrika(metrikaId);
+  }, [consent, metrikaId]);
+  useEffect(() => {
     const openSettings = () => setSettingsOpen(true);
     window.addEventListener(EVENT, openSettings);
     return () => window.removeEventListener(EVENT, openSettings);
-  }, [consent, metrikaId]);
+  }, []);
   function decide(analytics: boolean) {
-    localStorage.setItem(KEY, JSON.stringify({ analytics, policyVersion: "1.0", decidedAt: new Date().toISOString() }));
+    const nextConsent = { analytics, policyVersion: "1.0", decidedAt: new Date().toISOString() };
+    localStorage.setItem(KEY, JSON.stringify(nextConsent));
+    setConsent(nextConsent);
     setSettingsOpen(false);
     if (analytics && metrikaId) loadMetrika(metrikaId);
     if (!analytics) { removeMetrikaCookies(); window.location.reload(); }
