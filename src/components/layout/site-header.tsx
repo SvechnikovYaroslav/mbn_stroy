@@ -50,43 +50,48 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-sm">
-      <Container className="flex h-14 items-center justify-between gap-4 lg:h-16">
+      <Container className="flex h-14 items-center justify-between gap-3 lg:h-16 lg:gap-5">
         <Link
           href="/"
-          className="text-small font-semibold tracking-tight text-foreground transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="shrink-0 text-base font-bold tracking-tight text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:text-[1.1875rem]"
         >
           {siteConfig.name}
         </Link>
 
         <nav
           aria-label="Основная навигация"
-          className="hidden items-center gap-8 md:flex"
+          className="hidden min-w-0 items-center gap-5 lg:flex xl:gap-7"
         >
           {siteConfig.navigation.map((item) => (
             <NavLink
               key={item.href}
               href={item.href}
-              className="text-small text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="accent-link text-small text-muted-foreground"
             >
               {item.title}
             </NavLink>
           ))}
         </nav>
 
-        <div className="hidden md:block">
-          <Link
-            href={siteConfig.cta.href}
-            className={cn(buttonVariants({ size: "default" }), "h-9 px-4")}
-          >
-            {siteConfig.cta.title}
-          </Link>
-        </div>
+        <a
+          href="tel:+79207414124"
+          className="accent-link hidden shrink-0 text-small font-semibold tabular-nums text-foreground lg:inline-flex"
+        >
+          +7 920 741-41-24
+        </a>
+
+        <a
+          href="tel:+79207414124"
+          className="accent-link ml-auto text-small font-semibold text-foreground lg:hidden"
+        >
+          Позвонить
+        </a>
 
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger
             className={cn(
               buttonVariants({ variant: "ghost", size: "icon" }),
-              "md:hidden"
+              "shrink-0 lg:hidden"
             )}
             aria-label="Открыть меню"
           >
@@ -117,8 +122,8 @@ export function SiteHeader() {
             <div className="mt-auto border-t border-border p-5">
               <SheetClose
                 render={
-                  <Link
-                    href={siteConfig.cta.href}
+                  <a
+                    href="tel:+79207414124"
                     className={cn(
                       buttonVariants({ size: "lg" }),
                       "h-11 w-full px-4"
@@ -127,7 +132,7 @@ export function SiteHeader() {
                   />
                 }
               >
-                {siteConfig.cta.title}
+                Позвонить: +7 920 741-41-24
               </SheetClose>
             </div>
           </SheetContent>

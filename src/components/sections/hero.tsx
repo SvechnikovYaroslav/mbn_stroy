@@ -2,7 +2,6 @@ import Link from "next/link";
 
 import { Container } from "@/components/layout/container";
 import { buttonVariants } from "@/components/ui/button";
-import { siteConfig } from "@/config/site";
 import { mediaUrl } from "@/lib/media-url";
 import { cn } from "@/lib/utils";
 
@@ -25,11 +24,11 @@ export function Hero() {
           fetchPriority="high"
         />
         <div
-          className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/25"
+          className="absolute inset-0 bg-gradient-to-r from-background/85 via-background/65 to-background/20"
           aria-hidden="true"
         />
         <div
-          className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/40"
+          className="absolute inset-0 bg-gradient-to-t from-background/85 via-transparent to-background/30"
           aria-hidden="true"
         />
       </div>
@@ -37,20 +36,15 @@ export function Hero() {
       <Container className="relative z-10 flex min-h-[32rem] flex-col justify-end py-14 md:min-h-[40rem] md:py-20 lg:min-h-[44rem]">
         <div className="max-w-2xl">
           <p className="text-caption text-primary">
-            {siteConfig.name} · Тула
+            Тула и Тульская область
           </p>
           <h1 className="mt-5 text-display text-foreground">
             <span className="block">Ремонт, который</span>
             <span className="block break-words">меняет пространство.</span>
           </h1>
           <p className="mt-6 max-w-xl text-body-lg text-muted-foreground">
-            Ремонт квартир и домов в Туле и Тульской области.
-            <br />
-            Берём задачу целиком — от оценки объёма работ до готового
-            пространства.
-          </p>
-          <p className="mt-4 text-small text-muted-foreground">
-            {siteConfig.slogan}
+            Ремонт квартир и домов в Туле и Тульской области. Берём на себя
+            весь цикл работ — от оценки и сметы до готового результата.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
             <Link
