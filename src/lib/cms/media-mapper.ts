@@ -60,8 +60,14 @@ export function mapPayloadMedia(
     id: `${options?.idPrefix ?? "media"}-${value.id}`,
     type,
     src,
+    ...(type === "image"
+      ? { thumbnailSrc: pickImageUrl(value, "thumbnail") ?? src }
+      : {}),
     alt: manualAlt || options?.fallbackAlt,
     caption: value.caption ?? undefined,
+    ...(type === "video" && value.thumbnailURL
+      ? { poster: value.thumbnailURL }
+      : {}),
     width: value.width ?? undefined,
     height: value.height ?? undefined,
     orientation: isOrientation(value.orientation)

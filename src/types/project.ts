@@ -49,6 +49,8 @@ export interface ProjectMedia {
    * Payload: `/api/media/file/...` or absolute URL.
    */
   src: string;
+  /** Smaller derivative for compact previews when Payload generated one. */
+  thumbnailSrc?: string;
   alt?: string;
   caption?: string;
   /** Public path for video poster (without site basePath). */
