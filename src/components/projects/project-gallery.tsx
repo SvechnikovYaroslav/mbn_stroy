@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import Lightbox, { type Slide } from "yet-another-react-lightbox";
@@ -85,6 +85,7 @@ export function ProjectGallery({ project }: ProjectGalleryProps) {
   const media = useMemo(() => projectMediaSequence(project), [project]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const lightboxScrollY = useRef(0);
   const [playingIndex, setPlayingIndex] = useState<number | null>(null);
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
@@ -99,6 +100,24 @@ export function ProjectGallery({ project }: ProjectGalleryProps) {
     },
     [emblaApi]
   );
+
+  const openLightbox = useCallback(() => {
+    lightboxScrollY.current = window.scrollY;
+    setLightboxOpen(true);
+  }, []);
+
+  const restoreLightboxScroll = useCallback(() => {
+    // The lightbox restores focus after its exit animation. Browsers may scroll
+    // the focused trigger into view, so restore the viewport on the next frame.
+    requestAnimationFrame(() => {
+      const root = document.documentElement;
+      const previousScrollBehavior = root.style.scrollBehavior;
+
+      root.style.scrollBehavior = "auto";
+      window.scrollTo(0, lightboxScrollY.current);
+      root.style.scrollBehavior = previousScrollBehavior;
+    });
+  }, []);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -165,7 +184,7 @@ export function ProjectGallery({ project }: ProjectGalleryProps) {
                 ) : (
                   <button
                     type="button"
-                    onClick={() => setLightboxOpen(true)}
+                    onClick={openLightbox}
                     className="group/main h-full w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
                     aria-label={`Открыть галерею, ${mediaLabel(item, index)}`}
                   >
@@ -220,7 +239,7 @@ export function ProjectGallery({ project }: ProjectGalleryProps) {
                 onClick={() => {
                   if (isMorePreview) {
                     selectSlide(index);
-                    setLightboxOpen(true);
+                    openLightbox();
                   } else {
                     selectSlide(index);
                   }
@@ -276,7 +295,10 @@ export function ProjectGallery({ project }: ProjectGalleryProps) {
           Close: "Закрыть",
           Lightbox: "Галерея проекта",
         }}
-        on={{ view: ({ index }) => setSelectedIndex(index) }}
+        on={{
+          view: ({ index }) => setSelectedIndex(index),
+          exited: restoreLightboxScroll,
+        }}
       />
     </div>
   );
