@@ -90,6 +90,10 @@ export const catalogSectionFilters: {
 
 export type ProjectCatalogQuery = {
   projectType?: CatalogProjectTypeFilter;
+  /** Legacy single-value fields retained for server-side callers. */
   workType?: CatalogWorkTypeFilter;
   sectionType?: CatalogSectionFilter;
+  /** Multiple selections are combined with OR inside their taxonomy group. */
+  workTypes?: CatalogWorkTypeFilter[];
+  sectionTypes?: CatalogSectionFilter[];
 };

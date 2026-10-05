@@ -65,7 +65,7 @@ export function sectionMatchesWorkType(
 }
 
 /**
- * Combined catalog filter: AND across taxonomy groups.
+ * Combined catalog filter: AND across taxonomy groups, OR within a group.
  *
  * When both workType and roomType filters are set, requires a single section
  * that matches roomType and (section workTypes or empty→project fallback).
@@ -82,24 +82,42 @@ export function matchesProjectFilters(
     return false;
   }
 
-  const workFilter = query.workType;
-  const roomFilter = query.sectionType;
+  const workFilters = query.workTypes?.length
+    ? query.workTypes
+    : query.workType
+      ? [query.workType]
+      : [];
+  const roomFilters = query.sectionTypes?.length
+    ? query.sectionTypes
+    : query.sectionType
+      ? [query.sectionType]
+      : [];
 
-  if (workFilter && roomFilter) {
+  if (workFilters.length && roomFilters.length) {
     return project.sections.some(
       (section) =>
-        section.roomType === roomFilter &&
-        sectionMatchesWorkType(section, workFilter, project.workTypes)
+        section.roomType !== undefined &&
+        roomFilters.some((roomFilter) => roomFilter === section.roomType) &&
+        workFilters.some((workFilter) =>
+          sectionMatchesWorkType(section, workFilter, project.workTypes)
+        )
     );
   }
 
-  if (workFilter && !project.workTypes.includes(workFilter)) {
+  if (
+    workFilters.length &&
+    !workFilters.some((workFilter) => project.workTypes.includes(workFilter))
+  ) {
     return false;
   }
 
   if (
-    roomFilter &&
-    !project.sections.some((section) => section.roomType === roomFilter)
+    roomFilters.length &&
+    !project.sections.some(
+      (section) =>
+        section.roomType !== undefined &&
+        roomFilters.some((roomFilter) => roomFilter === section.roomType)
+    )
   ) {
     return false;
   }

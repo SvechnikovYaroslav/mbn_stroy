@@ -19,7 +19,7 @@ export default async function ProjectsPage() {
   return (
     <main>
       <section className="border-b border-border">
-        <Container className="py-12 md:py-16">
+        <Container className="py-9 md:py-11">
           <h1 className="text-h1 text-foreground">Проекты</h1>
           <p className="mt-4 max-w-2xl text-body-lg text-muted-foreground">
             Реализованные ремонты квартир, домов и отдельных помещений в Туле и
@@ -29,7 +29,7 @@ export default async function ProjectsPage() {
       </section>
 
       <section>
-        <Container className="py-10 md:py-14">
+        <Container className="py-7 md:py-8">
           {projects.length === 0 ? (
             <p className="text-body text-muted-foreground">
               Проекты скоро появятся.
