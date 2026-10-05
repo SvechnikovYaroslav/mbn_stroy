@@ -3,8 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Container } from "@/components/layout/container";
-import { MediaGallery } from "@/components/media/media-gallery";
-import { ProjectMediaItem } from "@/components/media/project-media";
+import { ProjectGallery } from "@/components/projects/project-gallery";
 import { BreadcrumbJsonLd } from "@/components/seo/json-ld";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -17,9 +16,11 @@ import { getProjectBySlug } from "@/lib/projects";
 import { ensurePortfolioDynamic } from "@/lib/projects/dynamic";
 import { pageMetadata } from "@/config/seo";
 import { cn } from "@/lib/utils";
+import type { ProjectSectionType } from "@/types/project";
 
 type ProjectPageProps = {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ room?: string | string[] }>;
 };
 
 /**
@@ -48,14 +49,22 @@ export async function generateMetadata({
   });
 }
 
-export default async function ProjectPage({ params }: ProjectPageProps) {
+export default async function ProjectPage({ params, searchParams }: ProjectPageProps) {
   await ensurePortfolioDynamic();
   const { slug } = await params;
+  const { room } = await searchParams;
   const project = await getProjectBySlug(slug);
 
   if (!project) {
     notFound();
   }
+
+  const requestedRoom = typeof room === "string" ? room : undefined;
+  const initialRoom = project.sections.some(
+    (section) => section.roomType === requestedRoom
+  )
+    ? (requestedRoom as ProjectSectionType)
+    : undefined;
 
   return (
     <main>
@@ -115,8 +124,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           </dl>
         </header>
 
-        <div className="mt-10">
-          <ProjectMediaItem media={project.cover} priority />
+        <div className="mt-10 md:mt-12">
+          <ProjectGallery project={project} variant="detail" initialRoom={initialRoom} />
         </div>
 
         {project.description ? (
@@ -140,29 +149,6 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           </section>
         ) : null}
 
-        <div className="mt-16 space-y-16 md:mt-20 md:space-y-20">
-          {project.sections.map((section) => (
-            <section key={section.id} className="border-t border-border pt-10">
-              <h2 className="text-h2 text-foreground">{section.title}</h2>
-              {section.description ? (
-                <p className="mt-3 max-w-2xl text-body text-muted-foreground">
-                  {section.description}
-                </p>
-              ) : null}
-              {section.workTypes.length > 0 ? (
-                <p className="mt-3 text-small text-muted-foreground">
-                  Виды работ:{" "}
-                  {section.workTypes
-                    .map((workType) => workTypeLabels[workType])
-                    .join(" · ")}
-                </p>
-              ) : null}
-              <div className="mt-8">
-                <MediaGallery items={section.media} />
-              </div>
-            </section>
-          ))}
-        </div>
 
         <section className="mt-20 border-t border-border pt-12 md:mt-24 md:pt-16">
           <h2 className="text-h2 text-foreground">Хотите похожий ремонт?</h2>

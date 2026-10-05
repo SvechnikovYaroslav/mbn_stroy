@@ -67,6 +67,7 @@ export function ProjectCatalog({ projects }: ProjectCatalogProps) {
   const clearAll = () => { setProjectType("all"); setWorkTypes([]); setSectionTypes([]); };
   const selectedChips = [...catalogWorkTypeFilters.filter((item) => workTypes.includes(item.id)), ...catalogSectionFilters.filter((item) => sectionTypes.includes(item.id))];
 
+  const roomContext = sectionTypes.length === 1 ? sectionTypes[0] : undefined;
   return <div>
     <div className="border-b border-border pb-6 md:pb-7">
       <div className="flex flex-wrap items-center gap-2 md:gap-3" role="group" aria-label="Фильтры проектов">
@@ -89,6 +90,6 @@ export function ProjectCatalog({ projects }: ProjectCatalogProps) {
         return <button key={item.id} type="button" onClick={() => isWorkType ? setWorkTypes((current) => current.filter((value) => value !== item.id)) : setSectionTypes((current) => current.filter((value) => value !== item.id))} className="inline-flex h-8 items-center gap-1 rounded-md border border-border bg-muted px-2.5 text-small text-foreground transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">{item.label}<XIcon className="size-3.5" aria-hidden="true" /><span className="sr-only">Удалить фильтр {item.label}</span></button>;
       })}<button type="button" onClick={clearAll} className="h-8 px-1 text-small text-primary transition-colors hover:text-gold-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Сбросить всё</button></div>}
     </div>
-    {filtered.length === 0 ? <div className="mt-10 border border-border bg-surface p-6 md:p-8"><p className="text-body text-foreground">По выбранным параметрам проектов не найдено.</p><button type="button" onClick={clearAll} className="mt-4 h-10 rounded-lg border border-primary px-4 text-small font-medium text-primary transition-colors hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Сбросить фильтры</button></div> : <ul className="mt-8 grid gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-6 lg:gap-y-12">{filtered.map((project) => <li key={project.id}><ProjectCard project={project} /></li>)}</ul>}
+    {filtered.length === 0 ? <div className="mt-10 border border-border bg-surface p-6 md:p-8"><p className="text-body text-foreground">По выбранным параметрам проектов не найдено.</p><button type="button" onClick={clearAll} className="mt-4 h-10 rounded-lg border border-primary px-4 text-small font-medium text-primary transition-colors hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Сбросить фильтры</button></div> : <ul className="mt-8 grid gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-6 lg:gap-y-12">{filtered.map((project) => <li key={project.id}><ProjectCard project={project} room={roomContext} /></li>)}</ul>}
   </div>;
 }

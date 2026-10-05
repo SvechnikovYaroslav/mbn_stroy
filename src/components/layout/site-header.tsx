@@ -121,6 +121,7 @@ export function SiteHeader() {
 
             <div className="mt-auto border-t border-border p-5">
               <SheetClose
+                nativeButton={false}
                 render={
                   <a
                     href="tel:+79207414124"
