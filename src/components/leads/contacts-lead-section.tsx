@@ -8,6 +8,9 @@ import type { LeadContextType, LeadSource } from "@/types/lead";
 
 type ContactsLeadSectionProps = {
   submissionsDisabled?: boolean;
+  heading?: string;
+  intro?: string;
+  commentLabel?: string;
 };
 
 function resolveContext(searchParams: URLSearchParams): {
@@ -38,6 +41,9 @@ function resolveContext(searchParams: URLSearchParams): {
 
 function ContactsLeadFormInner({
   submissionsDisabled = false,
+  heading,
+  intro,
+  commentLabel,
 }: ContactsLeadSectionProps) {
   const searchParams = useSearchParams();
   const context = resolveContext(searchParams);
@@ -48,20 +54,37 @@ function ContactsLeadFormInner({
       contextType={context.contextType}
       contextSlug={context.contextSlug}
       submissionsDisabled={submissionsDisabled}
+      heading={heading}
+      intro={intro}
+      commentLabel={commentLabel}
     />
   );
 }
 
 export function ContactsLeadSection({
   submissionsDisabled = false,
+  heading,
+  intro,
+  commentLabel,
 }: ContactsLeadSectionProps) {
   return (
     <Suspense
       fallback={
-        <LeadForm source="contact" submissionsDisabled={submissionsDisabled} />
+        <LeadForm
+          source="contact"
+          submissionsDisabled={submissionsDisabled}
+          heading={heading}
+          intro={intro}
+          commentLabel={commentLabel}
+        />
       }
     >
-      <ContactsLeadFormInner submissionsDisabled={submissionsDisabled} />
+      <ContactsLeadFormInner
+        submissionsDisabled={submissionsDisabled}
+        heading={heading}
+        intro={intro}
+        commentLabel={commentLabel}
+      />
     </Suspense>
   );
 }

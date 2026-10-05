@@ -19,6 +19,7 @@ type LeadFormProps = {
   calculatorSnapshot?: LeadCalculatorSnapshot;
   heading?: string;
   intro?: string;
+  commentLabel?: string;
   submitLabel?: string;
   /** Optional local/demo mode — block real submission */
   submissionsDisabled?: boolean;
@@ -63,6 +64,7 @@ export function LeadForm({
   calculatorSnapshot,
   heading = "Расскажите о задаче",
   intro = "Оставьте контакты и кратко опишите объект. Мы сможем обсудить задачу и уточнить детали ремонта.",
+  commentLabel = "Расскажите о задаче",
   submitLabel = "Отправить заявку",
   submissionsDisabled = false,
   className,
@@ -275,7 +277,7 @@ export function LeadForm({
             htmlFor={`${formId}-comment`}
             className="text-small text-foreground"
           >
-            Расскажите о задаче
+            {commentLabel}
           </label>
           <textarea
             id={`${formId}-comment`}
