@@ -46,32 +46,14 @@ async function main() {
   assert(phoneOnly.ok, "name+phone should pass");
   console.log("OK: name + phone");
 
-  const emailOnly = validateLeadInput({
-    email: "client@example.com",
-    consentAccepted: true,
-    source: "contact",
-    formMountedAt: Date.now() - 5_000,
-  });
-  assert(emailOnly.ok, "email-only should pass");
-  console.log("OK: email only");
-
   const noContact = validateLeadInput({
     name: "Тест",
     consentAccepted: true,
     source: "contact",
     formMountedAt: Date.now() - 5_000,
   });
-  assert(!noContact.ok, "no phone/email should fail");
-  console.log("OK: no phone/email rejected");
-
-  const badEmail = validateLeadInput({
-    email: "not-an-email",
-    consentAccepted: true,
-    source: "contact",
-    formMountedAt: Date.now() - 5_000,
-  });
-  assert(!badEmail.ok, "invalid email should fail");
-  console.log("OK: invalid email rejected");
+  assert(!noContact.ok, "missing phone should fail");
+  console.log("OK: missing phone rejected");
 
   const noConsent = validateLeadInput({
     phone: "+79991234567",

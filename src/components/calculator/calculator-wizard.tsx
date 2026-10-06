@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import Link from "next/link";
 
@@ -93,6 +93,9 @@ export function CalculatorWizard({
   );
   const [condition, setCondition] = useState<PropertyCondition | null>(null);
   const [workTypes, setWorkTypes] = useState<WorkType[]>([]);
+  const [summaryOpen, setSummaryOpen] = useState(false);
+  const apartmentQuestionRef = useRef<HTMLDivElement>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
 
   const renovationOptions = useMemo(
     () =>
@@ -120,6 +123,23 @@ export function CalculatorWizard({
       : null;
 
   const outcome = input ? calculateRenovation(input, config) : null;
+
+  function revealIfNeeded(element: HTMLElement | null) {
+    if (!element) return;
+    const rect = element.getBoundingClientRect();
+    const headerOffset = 88;
+    if (rect.top >= headerOffset && rect.bottom <= window.innerHeight - 16) return;
+    element.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+      block: "nearest",
+    });
+  }
+
+  useEffect(() => {
+    if (step === 6) requestAnimationFrame(() => revealIfNeeded(resultRef.current));
+  }, [step]);
 
   function syncArea(next: number) {
     const clamped = Math.min(AREA_HARD_MAX, Math.max(1, Math.round(next)));
@@ -187,14 +207,15 @@ export function CalculatorWizard({
   }
 
   return (
-    <div className="border border-border">
+    <div className={cn(step === 6 ? "" : "border border-border")}>
       {step <= 5 ? (
-        <div className="border-b border-border px-4 py-4 md:px-8">
-          <p className="text-caption text-muted-foreground">
+        <div className="border-b border-border px-4 py-3 md:px-8">
+          <p className="flex justify-between text-caption text-muted-foreground">
             Шаг {step} из {INPUT_STEPS}
+            <span>{Math.round((step / INPUT_STEPS) * 100)}%</span>
           </p>
           <div
-            className="mt-3 h-1 w-full bg-muted"
+            className="mt-2 h-1 w-full bg-muted"
             role="progressbar"
             aria-valuemin={1}
             aria-valuemax={INPUT_STEPS}
@@ -209,7 +230,7 @@ export function CalculatorWizard({
         </div>
       ) : null}
 
-      <div className="px-4 py-8 md:px-8 md:py-10">
+      <div className="px-4 py-6 md:px-8 md:py-7">
         {step === 1 ? (
           <fieldset>
             <legend className="text-h2 text-foreground">
@@ -226,13 +247,16 @@ export function CalculatorWizard({
                     setObjectType(type);
                     if (type !== "apartment") setApartmentLayout(null);
                     setRenovationType(null);
+                    if (type === "apartment") {
+                      requestAnimationFrame(() => revealIfNeeded(apartmentQuestionRef.current));
+                    }
                   }}
                 />
               ))}
             </div>
 
             {objectType === "apartment" ? (
-              <div className="mt-10">
+              <div ref={apartmentQuestionRef} className="mt-7 scroll-mt-24">
                 <p className="text-h3 text-foreground">
                   Какой формат квартиры?
                 </p>
@@ -389,12 +413,12 @@ export function CalculatorWizard({
         ) : null}
 
         {step === 6 && outcome ? (
-          <div aria-live="polite">
+          <div ref={resultRef} aria-live="polite" className="scroll-mt-24">
             <h2 className="text-h2 text-foreground">
               Предварительная стоимость
             </h2>
             {outcome.available ? (
-              <p className="mt-6 text-3xl font-medium tracking-tight text-foreground md:text-4xl">
+              <p className="mt-4 text-4xl font-medium tracking-tight text-foreground md:text-5xl">
                 {formatRubRange(outcome.min, outcome.max)}
               </p>
             ) : (
@@ -411,7 +435,7 @@ export function CalculatorWizard({
             ) : null}
 
             {input ? (
-              <dl className="mt-8 space-y-2 text-body text-muted-foreground">
+              <dl className="hidden">
                 <div>
                   <dt className="sr-only">Объект</dt>
                   <dd>
@@ -451,13 +475,17 @@ export function CalculatorWizard({
               </dl>
             ) : null}
 
-            <p className="mt-8 max-w-2xl text-small text-muted-foreground">
-              Расчёт является предварительным и не является публичной офертой.
-              Точная стоимость определяется после осмотра объекта, уточнения
-              объёма работ и составления сметы.
+            <p className="mt-4 max-w-2xl text-small text-muted-foreground">
+              Расчёт предварительный. Точную стоимость определим после осмотра объекта и составления сметы.
             </p>
+            <p className="mt-2 text-caption text-muted-foreground">Не является публичной офертой.</p>
 
-            <div className="mt-8">
+            <a href="tel:+79207414124" className="mt-5 inline-flex items-center gap-2 text-body font-medium text-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="size-4 fill-none stroke-current stroke-2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .8 2.9a2 2 0 0 1-.5 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.4 1.9.7 2.9.8a2 2 0 0 1 1.6 1.9Z" /></svg>
+              +7 920 741-41-24
+            </a>
+
+            <div className="mt-8 hidden">
               <button
                 type="button"
                 onClick={() => setStep(1)}
@@ -471,13 +499,15 @@ export function CalculatorWizard({
             </div>
 
             {outcome.available && input ? (
-              <div className="mt-12 border-t border-border pt-10">
+              <div className="mt-8 grid gap-8 border-t border-border pt-8 lg:grid-cols-[minmax(0,1.6fr)_minmax(16rem,1fr)]">
                 <LeadForm
                   source="calculator"
                   submissionsDisabled={isDemo}
-                  heading="Обсудить этот расчёт"
-                  intro="Оставьте контакт — параметры расчёта будут приложены к заявке."
-                  submitLabel="Отправить расчёт"
+                  heading="Обсудить расчёт"
+                  intro="Оставьте контакты — свяжемся в день обращения."
+                  commentLabel="Комментарий к расчёту"
+                  commentPlaceholder="Дополнительные пожелания или особенности объекта"
+                  submitLabel="Отправить заявку"
                   calculatorSnapshot={buildCalculatorSnapshot(
                     input,
                     outcome.min,
@@ -485,6 +515,28 @@ export function CalculatorWizard({
                     workRules
                   )}
                 />
+                <div className="hidden border-l border-border pl-6 md:block">
+                  <p className="text-caption font-medium text-foreground">ПАРАМЕТРЫ РАСЧЁТА</p>
+                  <div className="mt-4 space-y-2 text-body text-muted-foreground">
+                    <p>{calculatorObjectTypeLabels[input.objectType]}{input.apartmentLayout ? ` · ${apartmentLayoutLabels[input.apartmentLayout]}` : ""}</p>
+                    <p>{input.area} м² · {renovationTypeLabels[input.renovationType]}</p>
+                    <p>{propertyConditionLabels[input.condition]}</p>
+                    {input.workTypes.length > 0 ? <><p className="pt-3 text-caption font-medium text-foreground">РАБОТЫ</p><p>{input.workTypes.map((slug) => workRules.find((item) => item.workType === slug)?.title ?? slug).join(" · ")}</p></> : null}
+                  </div>
+                  <button type="button" onClick={() => setStep(1)} className="mt-6 text-small font-medium text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Изменить параметры <span aria-hidden="true">→</span></button>
+                </div>
+                <div className="md:hidden">
+                  <button type="button" aria-expanded={summaryOpen} onClick={() => setSummaryOpen((open) => !open)} className="flex w-full items-center justify-between border-t border-border pt-5 text-h3 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                    Параметры расчёта
+                    <svg aria-hidden="true" viewBox="0 0 24 24" className={cn("size-4 fill-none stroke-current stroke-2 transition-transform motion-reduce:transition-none", summaryOpen && "rotate-180")}><path d="m6 9 6 6 6-6" /></svg>
+                  </button>
+                  {summaryOpen ? <div className="mt-4 space-y-2 text-body text-muted-foreground">
+                    <p>{calculatorObjectTypeLabels[input.objectType]}{input.apartmentLayout ? ` · ${apartmentLayoutLabels[input.apartmentLayout]}` : ""}</p>
+                    <p>{input.area} м² · {renovationTypeLabels[input.renovationType]}</p><p>{propertyConditionLabels[input.condition]}</p>
+                    {input.workTypes.length > 0 ? <><p className="pt-3 text-caption font-medium text-foreground">РАБОТЫ</p><p>{input.workTypes.map((slug) => workRules.find((item) => item.workType === slug)?.title ?? slug).join(" · ")}</p></> : null}
+                  </div> : null}
+                  <button type="button" onClick={() => setStep(1)} className="mt-5 text-small font-medium text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Изменить параметры <span aria-hidden="true">→</span></button>
+                </div>
               </div>
             ) : (
               <div className="mt-12 border-t border-border pt-10">

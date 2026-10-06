@@ -14,7 +14,6 @@ import type { RenovationType, WorkType } from "@/types/project";
 
 const NAME_MAX = 120;
 const PHONE_MAX = 40;
-const EMAIL_MAX = 254;
 const COMMENT_MAX = 4000;
 const CONTEXT_SLUG_MAX = 120;
 const WORK_TYPES_MAX = 20;
@@ -77,8 +76,6 @@ const WORK_TYPES = new Set<WorkType>([
 
 const CONTEXT_TYPES = new Set<LeadContextType>(["project", "service"]);
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 export type ValidatedLeadInput = {
   name?: string;
   phone?: string;
@@ -123,19 +120,13 @@ export function validateLeadInput(raw: LeadFormInput): {
 
   const name = trim(raw.name, NAME_MAX);
   const phoneRaw = trim(raw.phone, PHONE_MAX);
-  const email = trim(raw.email, EMAIL_MAX)?.toLowerCase();
   const comment = trim(raw.comment, COMMENT_MAX);
   const contextSlug = trim(raw.contextSlug, CONTEXT_SLUG_MAX);
 
   const phone = phoneRaw ? normalizePhone(phoneRaw) : undefined;
 
-  if (!phone && !email) {
-    fieldErrors.phone = "Укажите телефон или email.";
-    fieldErrors.email = "Укажите телефон или email.";
-  }
-
-  if (email && !EMAIL_RE.test(email)) {
-    fieldErrors.email = "Проверьте формат email.";
+  if (!phone) {
+    fieldErrors.phone = "Укажите номер телефона.";
   }
 
   if (phone && phone.replace(/\D/g, "").length < 10) {
@@ -196,7 +187,6 @@ export function validateLeadInput(raw: LeadFormInput): {
     data: {
       ...(name ? { name } : {}),
       ...(phone ? { phone } : {}),
-      ...(email ? { email } : {}),
       ...(preferredContact ? { preferredContact } : {}),
       ...(comment ? { comment } : {}),
       source: raw.source,

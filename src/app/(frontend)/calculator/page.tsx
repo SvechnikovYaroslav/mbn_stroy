@@ -16,17 +16,16 @@ export default async function CalculatorPage() {
   return (
     <main>
       <section className="border-b border-border">
-        <Container className="py-12 md:py-16">
+        <Container className="py-7 md:py-9">
           <h1 className="text-h1 text-foreground">Калькулятор ремонта</h1>
-          <p className="mt-4 max-w-2xl text-body-lg text-muted-foreground">
-            Ответьте на несколько вопросов и получите предварительный диапазон
-            стоимости ремонта в Туле и Тульской области.
+          <p className="mt-3 max-w-2xl text-body-lg text-muted-foreground">
+            Предварительная оценка стоимости ремонта за несколько шагов.
           </p>
         </Container>
       </section>
 
       <section>
-        <Container className="py-10 md:py-14">
+        <Container className="py-7 md:py-9">
           <CalculatorWizard config={config} />
         </Container>
       </section>

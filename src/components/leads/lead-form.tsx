@@ -20,6 +20,7 @@ type LeadFormProps = {
   heading?: string;
   intro?: string;
   commentLabel?: string;
+  commentPlaceholder?: string;
   submitLabel?: string;
   /** Optional local/demo mode — block real submission */
   submissionsDisabled?: boolean;
@@ -65,6 +66,7 @@ export function LeadForm({
   heading = "Расскажите о задаче",
   intro = "Оставьте контакты и кратко опишите объект. Мы сможем обсудить задачу и уточнить детали ремонта.",
   commentLabel = "Расскажите о задаче",
+  commentPlaceholder,
   submitLabel = "Отправить заявку",
   submissionsDisabled = false,
   className,
@@ -100,7 +102,6 @@ export function LeadForm({
     const payload = {
       name: String(fd.get("name") || ""),
       phone: String(fd.get("phone") || ""),
-      email: String(fd.get("email") || ""),
       comment: String(fd.get("comment") || ""),
       companyWebsite: String(fd.get("companyWebsite") || ""),
       consentAccepted,
@@ -132,8 +133,7 @@ export function LeadForm({
       >
         <h2 className="text-h2 text-foreground">Заявка отправлена</h2>
         <p className="mt-4 text-body-lg text-muted-foreground">
-          Спасибо. Мы получили информацию об объекте и свяжемся с вами по
-          указанным контактам.
+          Свяжемся с вами в день обращения.
         </p>
         <Link
           href="/"
@@ -186,7 +186,7 @@ export function LeadForm({
             htmlFor={`${formId}-name`}
             className="text-small text-foreground"
           >
-            Имя
+            Имя <span className="text-muted-foreground">(необязательно)</span>
           </label>
           <input
             id={`${formId}-name`}
@@ -216,7 +216,7 @@ export function LeadForm({
             htmlFor={`${formId}-phone`}
             className="text-small text-foreground"
           >
-            Телефон
+            Телефон <span aria-hidden="true">*</span>
           </label>
           <input
             id={`${formId}-phone`}
@@ -225,6 +225,8 @@ export function LeadForm({
             autoComplete="tel"
             inputMode="tel"
             maxLength={40}
+            required
+            aria-required="true"
             disabled={submissionsDisabled || pending}
             className="ym-disable-keys mt-2 w-full border border-input bg-card px-3 py-2.5 text-body text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
             aria-invalid={Boolean(fieldErrors?.phone)}
@@ -244,46 +246,17 @@ export function LeadForm({
 
         <div>
           <label
-            htmlFor={`${formId}-email`}
-            className="text-small text-foreground"
-          >
-            Email
-          </label>
-          <input
-            id={`${formId}-email`}
-            name="email"
-            type="email"
-            autoComplete="email"
-            maxLength={254}
-            disabled={submissionsDisabled || pending}
-            className="ym-disable-keys mt-2 w-full border border-input bg-card px-3 py-2.5 text-body text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
-            aria-invalid={Boolean(fieldErrors?.email)}
-            aria-describedby={
-              fieldErrors?.email ? `${formId}-email-error` : undefined
-            }
-          />
-          {fieldErrors?.email ? (
-            <p
-              id={`${formId}-email-error`}
-              className="mt-1 text-small text-destructive"
-            >
-              {fieldErrors.email}
-            </p>
-          ) : null}
-        </div>
-
-        <div>
-          <label
             htmlFor={`${formId}-comment`}
             className="text-small text-foreground"
           >
-            {commentLabel}
+            {commentLabel} <span className="text-muted-foreground">(необязательно)</span>
           </label>
           <textarea
             id={`${formId}-comment`}
             name="comment"
             rows={4}
             maxLength={4000}
+            placeholder={commentPlaceholder}
             disabled={submissionsDisabled || pending}
             className="ym-disable-keys mt-2 w-full resize-y border border-input bg-card px-3 py-2.5 text-body text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
             aria-invalid={Boolean(fieldErrors?.comment)}
@@ -295,6 +268,8 @@ export function LeadForm({
             <input
               type="checkbox"
               checked={consentAccepted}
+              required
+              aria-required="true"
               onChange={(event) => setConsentAccepted(event.target.checked)}
               disabled={submissionsDisabled || pending}
               className="mt-1 size-4 shrink-0 border border-border accent-primary"
