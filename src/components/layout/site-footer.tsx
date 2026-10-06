@@ -3,8 +3,6 @@ import Link from "next/link";
 import { Container } from "@/components/layout/container";
 import { CookieSettingsLink } from "@/components/legal/cookie-settings-link";
 import { siteConfig } from "@/config/site";
-import { ensureSiteSettingsDynamic } from "@/lib/site-settings/dynamic";
-import { getSiteSettings } from "@/lib/site-settings";
 
 function FooterNavLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
@@ -14,9 +12,7 @@ function FooterNavLink({ href, children }: { href: string; children: React.React
   );
 }
 
-export async function SiteFooter() {
-  await ensureSiteSettingsDynamic();
-  const settings = await getSiteSettings();
+export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
@@ -27,8 +23,6 @@ export async function SiteFooter() {
             <p className="text-h3 text-foreground">{siteConfig.name}</p>
             <p className="mt-4 text-small text-muted-foreground">
               Ремонт квартир и домов
-              <br />
-              Тула и Тульская область
             </p>
           </div>
 
@@ -43,13 +37,20 @@ export async function SiteFooter() {
 
           <div className="md:col-span-4">
             <p className="text-caption text-muted-foreground">Контакты</p>
-            <ul className="mt-4 space-y-3">
-              <li><a href="tel:+79207414124" className="text-small text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">+7 920 741-41-24</a></li>
-              <li className="text-small text-foreground">Тула и Тульская область</li>
-              {settings.email ? (
-                <li><a href={`mailto:${settings.email}`} className="text-small text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">{settings.email}</a></li>
-              ) : null}
-            </ul>
+            <div className="mt-4 space-y-6">
+              <div className="space-y-2">
+                <a href="tel:+79207414124" className="block text-body-lg font-medium text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">+7 920 741-41-24</a>
+                <a href="mailto:otdelka-360@yandex.ru" className="block text-small text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">otdelka-360@yandex.ru</a>
+              </div>
+              <div>
+                <p className="text-caption text-muted-foreground">Офис</p>
+                <p className="mt-2 text-small text-foreground">г. Тула, ул. Кирова, 135/1</p>
+              </div>
+              <div>
+                <p className="text-caption text-muted-foreground">Соцсети</p>
+                <a href="https://vk.ru/otdelka360tula" className="mt-2 inline-flex text-small text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">ВКонтакте <span className="ml-1" aria-hidden="true">→</span></a>
+              </div>
+            </div>
           </div>
         </div>
 

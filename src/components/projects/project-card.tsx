@@ -12,7 +12,7 @@ type ProjectCardProps = {
 export function ProjectCard({ project, room }: ProjectCardProps) {
   return (
     <article>
-      <ProjectGallery project={project} />
+      <ProjectGallery project={project} variant="card" />
       <Link
         href={`/projects/${project.slug}${room ? `?room=${encodeURIComponent(room)}` : ""}`}
         className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
