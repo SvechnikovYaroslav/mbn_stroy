@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Container } from "@/components/layout/container";
+import { Reveal } from "@/components/motion/reveal";
 import { buttonVariants } from "@/components/ui/button";
 import { aboutCopy } from "@/config/site-copy";
 import { cn } from "@/lib/utils";
@@ -9,7 +10,7 @@ import { cn } from "@/lib/utils";
 export function CtaSection() {
   return (
     <section>
-      <Container className="py-16 md:py-24">
+      <Reveal className="motion-section"><Container className="py-16 md:py-24">
         <div className="max-w-2xl border-t border-border pt-12 md:pt-16">
           <h2 className="text-h2 text-foreground">{aboutCopy.ctaHeading}</h2>
           <p className="mt-4 text-body-lg text-muted-foreground">
@@ -33,7 +34,7 @@ export function CtaSection() {
             </Link>
           </div>
         </div>
-      </Container>
+      </Container></Reveal>
     </section>
   );
 }

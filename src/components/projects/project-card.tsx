@@ -15,10 +15,10 @@ export function ProjectCard({ project, room }: ProjectCardProps) {
       <ProjectGallery project={project} variant="card" />
       <Link
         href={`/projects/${project.slug}${room ? `?room=${encodeURIComponent(room)}` : ""}`}
-        className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="project-card-link focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
-        <div className="mt-4 border-t border-border pt-4">
-          <h3 className="text-h3 text-foreground">{project.title}</h3>
+        <div className="mt-4 pt-4">
+          <h3 className="project-card-title text-h3 text-foreground">{project.title}<span aria-hidden="true" className="project-card-arrow ml-2 inline-block text-muted-foreground">→</span></h3>
           <p className="mt-1 text-small text-muted-foreground">
             {project.location}
           </p>

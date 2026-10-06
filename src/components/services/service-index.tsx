@@ -13,7 +13,7 @@ export function ServiceIndex({ services }: ServiceIndexProps) {
         <li key={service.id} className="border-b border-border transition-colors hover:border-primary">
           <Link
             href={`/services/${service.slug}`}
-            className="group grid gap-x-4 gap-y-3 py-5 transition-colors hover:bg-muted/30 focus-visible:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:grid-cols-[2.5rem_minmax(0,1fr)_auto] sm:items-start sm:py-6"
+            className="service-row-link group grid gap-x-4 gap-y-3 py-5 transition-colors hover:bg-muted/30 focus-visible:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:grid-cols-[2.5rem_minmax(0,1fr)_auto] sm:items-start sm:py-6"
           >
             <span className="text-caption text-muted-foreground transition-colors group-hover:text-primary group-focus-visible:text-primary">
               {String(index + 1).padStart(2, "0")}

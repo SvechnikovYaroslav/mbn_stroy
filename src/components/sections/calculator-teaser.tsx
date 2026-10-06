@@ -1,13 +1,14 @@
 import Link from "next/link";
 
 import { Container } from "@/components/layout/container";
+import { Reveal } from "@/components/motion/reveal";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function CalculatorTeaser() {
   return (
     <section className="border-b border-border">
-      <Container className="py-14 md:py-20">
+      <Reveal className="motion-section"><Container className="py-14 md:py-20">
         <div className="max-w-2xl">
           <h2 className="text-h2 text-foreground">
             Сколько может стоить ремонт?
@@ -27,7 +28,7 @@ export function CalculatorTeaser() {
             объекта и фактического объёма работ.
           </p>
         </div>
-      </Container>
+      </Container></Reveal>
     </section>
   );
 }

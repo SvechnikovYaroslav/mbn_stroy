@@ -1,10 +1,11 @@
 import { Container } from "@/components/layout/container";
+import { Reveal } from "@/components/motion/reveal";
 import { whyMbnItems } from "@/config/site-copy";
 
 export function WhyMbnSection() {
   return (
     <section className="border-b border-border">
-      <Container className="py-14 md:py-20">
+      <Reveal className="motion-section"><Container className="py-14 md:py-20">
         <h2 className="text-h2 text-foreground">Почему Отделка 360</h2>
 
         <ol className="mt-10 divide-y divide-border border-y border-border">
@@ -25,7 +26,7 @@ export function WhyMbnSection() {
             </li>
           ))}
         </ol>
-      </Container>
+      </Container></Reveal>
     </section>
   );
 }

@@ -1,5 +1,6 @@
 import { Container } from "@/components/layout/container";
 import { FaqAccordion } from "@/components/faq/faq-accordion";
+import { Reveal } from "@/components/motion/reveal";
 import { faqItems } from "@/config/site-copy";
 
 export function FaqSection() {
@@ -22,12 +23,12 @@ export function FaqSection() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Container className="py-14 md:py-20">
+      <Reveal className="motion-section"><Container className="py-14 md:py-20">
         <h2 className="text-h2 text-foreground">Частые вопросы</h2>
         <div className="mt-8 max-w-3xl border-t border-border">
           <FaqAccordion />
         </div>
-      </Container>
+      </Container></Reveal>
     </section>
   );
 }

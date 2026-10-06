@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Container } from "@/components/layout/container";
+import { Reveal } from "@/components/motion/reveal";
 import { buttonVariants } from "@/components/ui/button";
 import { mediaUrl } from "@/lib/media-url";
 import { cn } from "@/lib/utils";
@@ -34,7 +35,7 @@ export function Hero() {
       </div>
 
       <Container className="relative z-10 flex min-h-[32rem] flex-col justify-end py-14 md:min-h-[40rem] md:py-20 lg:min-h-[44rem]">
-        <div className="max-w-2xl">
+        <Reveal className="max-w-2xl">
           <p className="text-caption text-primary">
             Тула и Тульская область
           </p>
@@ -63,7 +64,7 @@ export function Hero() {
               Смотреть проекты
             </Link>
           </div>
-        </div>
+        </Reveal>
       </Container>
       <span className="sr-only">{HERO_ALT}</span>
     </section>

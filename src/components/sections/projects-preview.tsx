@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Container } from "@/components/layout/container";
+import { Reveal } from "@/components/motion/reveal";
 import { ProjectCard } from "@/components/projects/project-card";
 import { buttonVariants } from "@/components/ui/button";
 import { getFeaturedProjects } from "@/lib/projects";
@@ -13,7 +14,7 @@ export async function ProjectsPreview() {
 
   return (
     <section className="border-b border-border">
-      <Container className="py-14 md:py-20">
+      <Reveal className="motion-section"><Container className="py-14 md:py-20">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <h2 className="text-h2 text-foreground">Реализованные проекты</h2>
           <p className="max-w-md text-body text-muted-foreground">
@@ -27,9 +28,9 @@ export async function ProjectsPreview() {
             Проекты скоро появятся.
           </p>
         ) : (
-          <ul className="mt-10 grid gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+          <ul className="motion-stagger mt-10 grid gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
             {projects.map((project) => (
-              <li key={project.id}>
+              <li key={project.id} className="motion-stagger-item">
                 <ProjectCard project={project} />
               </li>
             ))}
@@ -47,7 +48,7 @@ export async function ProjectsPreview() {
             Смотреть все проекты
           </Link>
         </div>
-      </Container>
+      </Container></Reveal>
     </section>
   );
 }
