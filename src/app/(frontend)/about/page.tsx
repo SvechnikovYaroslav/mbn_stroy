@@ -14,19 +14,19 @@ export const metadata: Metadata = pageMetadata({ pathname: "/about", title: bran
 
 const trustFacts = [
   { label: "Договор", text: "Работаем официально по договору." },
-  { label: "Смета", text: "Составляем смету до начала работ.", detail: "Если появляется дополнительный объём работ, изменения согласовываются отдельно." },
+  { label: "Смета", text: "Составляем смету до начала работ.", detail: "Если в процессе меняется объём работ или появляются задачи, которые невозможно было определить при первоначальном осмотре, изменения согласовываем отдельно." },
   { label: "Гарантия", text: "Предоставляем гарантию на выполненные работы." },
   { label: "Выезд", text: "Бесплатный выезд и замер по Туле." },
-  { label: "Контроль", text: "Контроль качества в ходе ремонта." },
-  { label: "Оплата", text: "Небольшая предоплата, далее — поэтапная оплата." },
+  { label: "Контроль", text: "Контролируем качество работ на всех этапах ремонта." },
+  { label: "Оплата", text: "Расчёты привязаны к согласованным этапам работ: аванс на старте, далее — поэтапная оплата." },
 ] as const;
 
 const processSteps = [
-  { title: "Обсуждаем задачу", text: "Бесплатно консультируем, уточняем объект, задачи и желаемый результат." },
+  { title: "Обсуждаем задачу", text: "Бесплатно консультируем, уточняем особенности объекта, ваши задачи и желаемый результат." },
   { title: "Выезжаем на объект", text: "В Туле выезд и замер выполняются бесплатно." },
-  { title: "Составляем смету и договор", text: "Определяем состав работ, стоимость и условия выполнения." },
-  { title: "Выполняем ремонт", text: "Работы выполняют свои мастера и постоянные бригады. В ходе ремонта проводится контроль качества и могут предоставляться фотоотчёты." },
-  { title: "Принимаем результат", text: "Оплата проходит поэтапно. На выполненные работы предоставляется гарантия." },
+  { title: "Составляем смету и договор", text: "Определяем состав работ, стоимость, сроки и условия выполнения." },
+  { title: "Выполняем ремонт", text: "Работы выполняют наши мастера и постоянные бригады. Контролируем качество и предоставляем фотоотчёты по ходу ремонта." },
+  { title: "Сдаём объект", text: "Завершаем согласованные работы и передаём готовый результат. На выполненные работы предоставляется гарантия." },
 ] as const;
 
 const workGroups = [
@@ -45,7 +45,7 @@ export default async function AboutPage() {
         <Container className="py-12 md:py-16 lg:py-20">
           <p className="text-caption font-medium tracking-[0.12em] text-primary uppercase">О компании</p>
           <h1 className="mt-4 max-w-4xl text-h1 text-foreground">Берём ремонт целиком — от сметы до готового объекта.</h1>
-          <p className="mt-5 max-w-3xl text-body-lg text-muted-foreground">«Отделка 360» выполняет капитальный ремонт квартир и домов под ключ, а также отдельные виды работ. Работаем в Туле, выезд по Тульской области обсуждается индивидуально.</p>
+          <p className="mt-5 max-w-3xl text-body-lg text-muted-foreground">«Отделка 360» выполняет капитальный ремонт квартир, домов и коммерческих помещений. Берём на себя комплекс работ по объекту — от подготовки и инженерных систем до чистовой отделки. Работаем в Туле, выезд по Тульской области обсуждается индивидуально.</p>
         </Container>
       </section>
 
@@ -78,8 +78,8 @@ export default async function AboutPage() {
         <Container className="py-16 md:py-20 lg:py-24">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
             <div>
-              <h2 className="max-w-xl text-h2 text-foreground">Комплексный ремонт без набора отдельных подрядчиков</h2>
-              <p className="mt-5 max-w-2xl text-body-lg text-muted-foreground">Заказчик может обратиться как за ремонтом под ключ, так и за отдельным видом работ.</p>
+              <h2 className="max-w-xl text-h2 text-foreground">Один подрядчик на весь ремонт</h2>
+              <p className="mt-5 max-w-2xl text-body-lg text-muted-foreground">Вы приходите с задачей по объекту, а мы берём на себя комплекс необходимых работ — от подготовки помещений и инженерных систем до чистовой отделки.</p>
               <Link href="/services" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "mt-7 h-11 px-5")}>Все услуги <span aria-hidden="true">→</span></Link>
             </div>
             <div className="grid gap-x-8 border-y border-border py-5 sm:grid-cols-3">
@@ -94,14 +94,14 @@ export default async function AboutPage() {
       <section>
         <Container className="py-16 md:py-20 lg:py-24">
           <div className="grid gap-10 md:grid-cols-2 md:gap-16">
-            <article className="border-t border-border pt-6"><h2 className="text-h3 text-foreground">Материалы</h2><p className="mt-4 max-w-2xl text-body-lg text-muted-foreground">Черновые материалы может закупать компания или заказчик. Чистовые материалы закупаются по согласованию. Помогаем с выбором материалов и работаем с материалами заказчика.</p><p className="mt-4 max-w-2xl text-body text-muted-foreground">Доставка и подъём при необходимости выполняются сторонними подрядчиками.</p></article>
-            <article className="border-t border-border pt-6"><h2 className="text-h3 text-foreground">Оплата</h2><p className="mt-4 max-w-2xl text-body-lg text-muted-foreground">Перед началом работ предусмотрена небольшая предоплата, остальные платежи проходят поэтапно.</p><p className="mt-4 text-body text-muted-foreground">Наличные · перевод · расчётный счёт</p></article>
+            <article className="border-t border-border pt-6"><h2 className="text-h3 text-foreground">Материалы</h2><p className="mt-4 max-w-2xl text-body-lg text-muted-foreground">Черновые материалы можем закупать мы или заказчик. Чистовые материалы закупаются по согласованию. Помогаем с выбором и работаем с материалами заказчика.</p><p className="mt-4 max-w-2xl text-body text-muted-foreground">При необходимости доставка и подъём материалов выполняются с привлечением сторонних подрядчиков.</p></article>
+            <article className="border-t border-border pt-6"><h2 className="text-h3 text-foreground">Оплата</h2><p className="mt-4 max-w-2xl text-body-lg text-muted-foreground">Порядок расчётов согласовывается до начала ремонта. На старте предусмотрен аванс, дальнейшая оплата производится по завершении согласованных этапов работ.</p><p className="mt-4 text-body text-muted-foreground">Наличные · перевод · расчётный счёт</p></article>
           </div>
         </Container>
       </section>
 
       <section className="border-y border-border">
-        <Container className="py-16 md:py-20 lg:py-24"><div className="max-w-3xl"><h2 className="text-h2 text-foreground">Кто выполняет работы</h2><p className="mt-5 text-body-lg text-muted-foreground">Работаем со своими мастерами и постоянными бригадами. В ходе ремонта проводится контроль качества.</p><p className="mt-6 text-body text-muted-foreground">Срок зависит от объёма и состава работ, состояния объекта и выбранных решений. Конкретный график определяется после осмотра и согласования задачи.</p></div></Container>
+        <Container className="py-16 md:py-20 lg:py-24"><div className="max-w-3xl"><h2 className="text-h2 text-foreground">Кто выполняет работы</h2><p className="mt-5 text-body-lg text-muted-foreground">Работы выполняют наши мастера и постоянные бригады. За ходом ремонта и качеством выполненных работ ведётся контроль.</p><p className="mt-6 text-body text-muted-foreground">Срок зависит от объёма и состава работ, состояния объекта и выбранных решений. Конкретный график определяем после осмотра объекта и согласования задачи.</p></div></Container>
       </section>
 
       {projects.length > 0 ? <section><Container className="py-16 md:py-20 lg:py-24">

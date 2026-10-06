@@ -127,7 +127,7 @@ async function main() {
     durationUnit: "month" as const,
     year: 2025,
     description:
-      "Тестовый опубликованный проект из Payload CMS для проверки frontend integration.",
+      "Тестовый опубликованный проект из Payload CMS для проверки frontend integration." as never,
     featured: true,
     cover: cover.id,
     sections: [

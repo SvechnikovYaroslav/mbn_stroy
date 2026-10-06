@@ -90,7 +90,7 @@ export interface Project {
   /** Formatted display string, e.g. "3 месяца". */
   duration?: string;
   year?: number;
-  description?: string;
+  description?: DefaultTypedEditorState | string;
   /** CMS "show on homepage" flag. */
   featured?: boolean;
   /** Explicit catalog sort; omit to sort by publish/created date. */
@@ -100,3 +100,4 @@ export interface Project {
   /** Demo placeholder without real photography. */
   isPlaceholder?: boolean;
 }
+import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";

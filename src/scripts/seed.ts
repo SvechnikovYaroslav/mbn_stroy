@@ -101,7 +101,7 @@ async function seed() {
         area: project.area,
         projectType: project.projectType,
         renovationType: project.renovationType,
-        description: project.description,
+        description: project.description as never,
         featured: false,
         workTypes: project.workSlugs
           .map((slug) => workTypeIds.get(slug))

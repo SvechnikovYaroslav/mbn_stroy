@@ -14,6 +14,7 @@ import type {
   RenovationType,
   WorkType,
 } from "@/types/project";
+import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
 
 import { mapPayloadCover, mapPayloadMedia } from "./media-mapper";
 
@@ -70,6 +71,10 @@ function isRenovationTypeSlug(value: string): value is RenovationType {
 
 function isDurationUnit(value: string): value is DurationUnit {
   return KNOWN_DURATION_UNITS.has(value);
+}
+
+function isEditorState(value: unknown): value is DefaultTypedEditorState {
+  return typeof value === "object" && value !== null && "root" in value;
 }
 
 function isPopulatedWorkType(
@@ -171,7 +176,7 @@ export function mapPayloadProject(doc: PayloadProject): Project {
     durationUnit,
     duration: formatDuration(durationValue, durationUnit),
     year: doc.year ?? undefined,
-    description: doc.description ?? undefined,
+    description: isEditorState(doc.description) ? doc.description : undefined,
     featured: Boolean(doc.featured),
     sortOrder:
       typeof doc.sortOrder === "number" ? doc.sortOrder : undefined,

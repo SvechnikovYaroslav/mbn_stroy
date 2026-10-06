@@ -299,7 +299,24 @@ export interface Project {
    */
   durationUnit?: ('day' | 'month' | 'year') | null;
   year?: number | null;
-  description?: string | null;
+  /**
+   * Используйте короткие абзацы и списки. Виды работ указываются отдельно в соответствующем поле.
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   /**
    * Перетащите или выберите файл. Alt и подпись заполнять не обязательно.
    */

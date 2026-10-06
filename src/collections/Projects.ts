@@ -1,4 +1,5 @@
 import type { CollectionConfig, FieldHook } from "payload";
+import { BoldFeature, HeadingFeature, InlineToolbarFeature, lexicalEditor, LinkFeature, OrderedListFeature, ParagraphFeature, UnorderedListFeature } from "@payloadcms/richtext-lexical";
 
 import { authenticated } from "@/access";
 import { toSlug } from "@/lib/slugify";
@@ -167,7 +168,21 @@ export const Projects: CollectionConfig = {
             },
             {
               name: "description",
-              type: "textarea",
+              type: "richText",
+              editor: lexicalEditor({
+                features: () => [
+                  ParagraphFeature(),
+                  HeadingFeature({ enabledHeadingSizes: ["h2", "h3"] }),
+                  BoldFeature(),
+                  UnorderedListFeature(),
+                  OrderedListFeature(),
+                  LinkFeature(),
+                  InlineToolbarFeature(),
+                ],
+              }),
+              admin: {
+                description: "Используйте короткие абзацы и списки. Виды работ указываются отдельно в соответствующем поле.",
+              },
               label: "Описание",
             },
             {
