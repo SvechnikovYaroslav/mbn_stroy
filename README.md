@@ -240,7 +240,7 @@ SMOKE_BASE_URL=https://stage.xn--360-5cdtg9ahy4b.xn--p1ai npm run smoke:public
 ```bash
 git clone <repo-url>
 cd <repo>
-git checkout feat/cloud-deploy
+git checkout main
 
 cp .env.production.example .env.production
 # заполнить secrets: PAYLOAD_SECRET, POSTGRES_PASSWORD, DATABASE_URL,

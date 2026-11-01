@@ -1,0 +1,13 @@
+# Closed test-mode override: publish the app only on 127.0.0.1 so it is
+# reachable via an SSH tunnel but never on the public interface.
+#
+#   docker compose --env-file .env.production \
+#     -f docker-compose.prod.yml -f docker-compose.test.yml up -d app
+#
+# Windows side: ssh -i <key> -L 3000:127.0.0.1:3000 deploy@<host>
+# then open http://127.0.0.1:3000
+
+services:
+  app:
+    ports:
+      - "127.0.0.1:3000:3000"

@@ -33,7 +33,7 @@ function Read-LocalEnv([string]$path) {
 
 Read-LocalEnv $localEnv
 
-$sshHost = if ($env:OTDELKA_SSH_HOST) { $env:OTDELKA_SSH_HOST } else { "deploy@51.250.25.221" }
+$sshHost = if ($env:OTDELKA_SSH_HOST) { $env:OTDELKA_SSH_HOST } else { "deploy@51.250.74.173" }
 $key = $env:OTDELKA_SSH_KEY
 $remoteDir = if ($env:OTDELKA_REMOTE_DIR) { $env:OTDELKA_REMOTE_DIR } else { "/opt/otdelka-360" }
 

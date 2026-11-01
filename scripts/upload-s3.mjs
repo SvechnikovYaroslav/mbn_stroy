@@ -4,8 +4,12 @@
  * Usage: node scripts/upload-s3.mjs <file> <object-key>
  * Never logs access keys.
  */
-import { readFileSync } from "node:fs";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { readFileSync, statSync } from "node:fs";
+import {
+  S3Client,
+  PutObjectCommand,
+  HeadObjectCommand,
+} from "@aws-sdk/client-s3";
 
 const [filePath, key] = process.argv.slice(2);
 
@@ -46,4 +50,16 @@ await client.send(
   })
 );
 
-console.log(`Uploaded s3://${bucket}/${key}`);
+const head = await client.send(
+  new HeadObjectCommand({ Bucket: bucket, Key: key })
+);
+
+const expected = statSync(filePath).size;
+if (head.ContentLength !== expected) {
+  console.error(
+    `Verification failed: s3://${bucket}/${key} size ${head.ContentLength} != local ${expected}`
+  );
+  process.exit(1);
+}
+
+console.log(`Uploaded and verified s3://${bucket}/${key} (${expected} bytes)`);

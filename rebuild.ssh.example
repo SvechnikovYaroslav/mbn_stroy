@@ -12,7 +12,7 @@ if [[ -f "${ROOT}/deploy.local.env" ]]; then
   set +a
 fi
 
-SSH_HOST="${OTDELKA_SSH_HOST:-deploy@51.250.25.221}"
+SSH_HOST="${OTDELKA_SSH_HOST:-deploy@51.250.74.173}"
 SSH_KEY="${OTDELKA_SSH_KEY:?Set OTDELKA_SSH_KEY in deploy.local.env or the environment}"
 REMOTE_DIR="${OTDELKA_REMOTE_DIR:-/opt/otdelka-360}"
 
