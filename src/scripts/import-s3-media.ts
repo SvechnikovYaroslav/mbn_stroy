@@ -50,7 +50,7 @@ const items = JSON.parse(readFileSync(mapFile, "utf8")) as {
 
 const payload = await getPayload({ config });
 const tmp = mkdtempSync(join(tmpdir(), "s3-import-"));
-const results: { oldKey: string; newName: string; mediaId: number | string; status: string }[] = [];
+const results: { oldKey: string; newName: string; mediaId: number | string | null; status: string }[] = [];
 
 try {
   for (const [idx, it] of items.entries()) {

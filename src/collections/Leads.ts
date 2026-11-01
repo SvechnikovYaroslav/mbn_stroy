@@ -2,6 +2,17 @@ import type { CollectionConfig } from "payload";
 
 import { authenticated } from "@/access";
 
+const escapeHtml = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+const SOURCE_LABELS: Record<string, string> = {
+  contact: "Форма контактов",
+  calculator: "Калькулятор",
+  project: "Страница проекта",
+  service: "Страница услуги",
+  other: "Другое",
+};
+
 /**
  * Public leads are created only via Local API (overrideAccess)
  * from our validated server action — never via anonymous REST create.
@@ -28,6 +39,57 @@ export const Leads: CollectionConfig = {
     group: "Сайт",
   },
   defaultSort: "-createdAt",
+  hooks: {
+    afterChange: [
+      async ({ doc, operation, req }) => {
+        // Notify on new leads only — edits never re-notify.
+        if (operation !== "create") return doc;
+        const notifyTo = process.env.NOTIFY_EMAIL?.trim();
+        if (!notifyTo || !req.payload.email?.sendEmail) {
+          req.payload.logger.warn(
+            `Lead ${doc.id}: email notification skipped (SMTP not configured)`
+          );
+          return doc;
+        }
+        const snap = doc.calculatorSnapshot;
+        const adminUrl = `${(process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "")}/admin/collections/leads/${doc.id}`;
+        const rows: [string, string][] = [
+          ["Имя", doc.name],
+          ["Телефон", doc.phone],
+          ["Email", doc.email],
+          ["Связаться", doc.preferredContact],
+          ["Источник", SOURCE_LABELS[doc.source] || doc.source],
+          ["Контекст", doc.contextSlug],
+          ["Площадь", snap?.area && `${snap.area} м²`],
+          ["Тип ремонта", snap?.renovationType],
+          ["Оценка", snap?.estimateMin && `от ${snap.estimateMin} до ${snap.estimateMax} ₽`],
+          ["Работы", snap?.workTypes?.map((w: { title?: string }) => w.title).filter(Boolean).join(", ")],
+          ["Комментарий", doc.comment],
+          ["Дата", doc.createdAt],
+        ].filter((r): r is [string, string] => Boolean(r[1]));
+        const text = rows.map(([k, v]) => `${k}: ${v}`).join("\n") + `\n\n${adminUrl}`;
+        const html =
+          `<h2>Новая заявка №${doc.id}</h2><table cellpadding="6" style="border-collapse:collapse">` +
+          rows.map(([k, v]) => `<tr><td><b>${k}</b></td><td>${escapeHtml(String(v))}</td></tr>`).join("") +
+          `</table><p><a href="${adminUrl}">Открыть в админке</a></p>`;
+        try {
+          await req.payload.email.sendEmail({
+            to: notifyTo,
+            subject: `Отделка 360 — новая заявка №${doc.id}`,
+            text,
+            html,
+          });
+          req.payload.logger.info(`Lead ${doc.id}: notification sent`);
+        } catch (err) {
+          // Never fail the request — the lead is already persisted.
+          req.payload.logger.error(
+            `Lead ${doc.id}: notification failed: ${err instanceof Error ? err.message : err}`
+          );
+        }
+        return doc;
+      },
+    ],
+  },
   access: {
     create: () => false,
     read: authenticated,

@@ -1,4 +1,5 @@
 import { postgresAdapter } from "@payloadcms/db-postgres";
+import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { ru } from "@payloadcms/translations/languages/ru";
@@ -25,6 +26,10 @@ import {
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 const s3Enabled = isS3Enabled();
+// Email is enabled only with real SMTP envs — no fake/Ethereal delivery.
+const smtpEnabled = Boolean(
+  process.env.SMTP_HOST?.trim() && process.env.SMTP_USER?.trim() && process.env.SMTP_PASS?.trim()
+);
 
 export default buildConfig({
   admin: {
@@ -63,6 +68,23 @@ export default buildConfig({
         : process.env.PAYLOAD_DB_PUSH === "true",
   }),
   sharp,
+  email: smtpEnabled
+    ? nodemailerAdapter({
+        defaultFromAddress: process.env.SMTP_FROM || process.env.SMTP_USER || "",
+        defaultFromName: "Сайт Отделка 360",
+        transportOptions: {
+          host: process.env.SMTP_HOST,
+          port: Number(process.env.SMTP_PORT) || 465,
+          secure: true,
+          auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+          },
+          connectionTimeout: 15_000,
+          socketTimeout: 20_000,
+        },
+      })
+    : undefined,
   plugins: s3Enabled
     ? [
         s3Storage({
